@@ -1,3 +1,5 @@
+# Borrowed from: https://github.com/holman/dotfiles
+
 require 'rake'
 
 desc "Hook our dotfiles into system-standard positions."

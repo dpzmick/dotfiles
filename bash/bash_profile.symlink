@@ -5,13 +5,23 @@ fi
 
 ~/.banner
 
+# history
+shopt -s histappend
+PROMPT_COMMAND='history -a'
+export HISTCONTROL="ignoredups"
+export HISTIGNORE="&:ls:[bf]g:exit"
+
+# vi editing mode
+set -o vi
+
+# fixes simple spelling mistakes in cd
+shopt -s cdspell
+
 #setup environment variables
 export PATH=~/dotfiles/bin:/usr/local/sbin:/usr/local/bin:$PATH
 export PATH=/usr/local/share/python:/usr/local/share/npm/bin:$PATH
 export EDITOR=/usr/bin/vim
 
-
-# User specific aliases and functions
 # Colors
 source ~/.bash_colors
 PS1="\[$txtcyn\]( \u\[$txtwht\]@\[$txtgrn\]\h \[$txtylw\]\w\[$txtcyn\] ) \n$ \[$txtwht\]"
@@ -19,11 +29,15 @@ PS1="\[$txtcyn\]( \u\[$txtwht\]@\[$txtgrn\]\h \[$txtylw\]\w\[$txtcyn\] ) \n$ \[$
 #Aliases
 alias ls="ls -G"
 alias la='ls -a'
+alias ll='ls -l'
 alias l='ls'
 alias g='grep'
-alias ssh='ssh -C4c arcfour,blowfish-cbc'
+alias hs='history | grep -i'
+
+# functions
 function cdl { cd $1; ls;}
 
+# todotxt
 export TODOTXT_DEFAULT_ACTION=ls
 alias t='todo.sh'
 
