@@ -1,0 +1,34 @@
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+~/.banner
+
+#setup environment variables
+export PATH=~/dotfiles/bin:/usr/local/sbin:/usr/local/bin:$PATH
+export PATH=/usr/local/share/python:/usr/local/share/npm/bin:$PATH
+export EDITOR=/usr/bin/vim
+
+
+# User specific aliases and functions
+# Colors
+source ~/.bash_colors
+PS1="\[$txtcyn\]( \u\[$txtwht\]@\[$txtgrn\]\h \[$txtylw\]\w\[$txtcyn\] ) \n$ \[$txtwht\]"
+
+#Aliases
+alias ls="ls -G"
+alias la='ls -a'
+alias l='ls'
+alias g='grep'
+alias ssh='ssh -C4c arcfour,blowfish-cbc'
+function cdl { cd $1; ls;}
+
+export TODOTXT_DEFAULT_ACTION=ls
+alias t='todo.sh'
+
+# for python/homebrew
+# http://docs.mopidy.com/en/latest/installation/gstreamer/#installing-gstreamer-on-os-x
+
+export PYTHONPATH=$(brew --prefix)/lib/python2.7/site-packages:$PYTHONPATH
+export ANDROID_SDK_ROOT=/usr/local/Cellar/android-sdk/r20.0.1

@@ -1,0 +1,2 @@
+brew install figlet
+brew install todo-txt

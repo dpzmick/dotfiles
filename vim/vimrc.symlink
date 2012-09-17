@@ -1,0 +1,18 @@
+set nocompatible
+set autoindent
+set smartindent
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set smartcase
+set showmatch
+syntax on
+filetype plugin indent on
+set number
+colorscheme desert
+set spell
+
+set textwidth=80
+set cc=+1
+
+set transparency=15
