@@ -1,18 +1,91 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" David Zmick
+" started with this: http://amix.dk/vim/vimrc.html
+" and working my way to what I want
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" General
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" don't try and be compatible
 set nocompatible
-set autoindent
-set smartindent
-set tabstop=4
-set shiftwidth=4
-set expandtab
-set smartcase
-set showmatch
-syntax on
-filetype plugin indent on
+
+" use filetype
+filetype plugin on
+filetype indent on
+
+" automatically read a file when changed
+set autoread
+
+" spelling
+setlocal spell spelllang=en_us
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" UI
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" show incomplete commands
+set showcmd
+
+" always show line numbers
 set number
+
+" always show a ruler
+set ruler
+set backspace=eol,start,indent
+
+" ignorecase, but be smart about it
+set ignorecase
+set smartcase
+
+" highlight search results
+set hlsearch
+
+" be incremental, like most web browsers
+set incsearch
+
+" use regex magic
+set magic
+
+" show matching brackets
+set showmatch
+
+" time in milliseconds to flash match (default 5)
+" set mat=5
+
+" don't be annoying
+set noerrorbells
+set novisualbell
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Syntax, Colors, and Fonts
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" enable syntax highlighting
+syntax enable
+
+" Set colorscheme
 colorscheme desert
-set spell
 
+" TODO encoding
+" Issues, not sure if ascii or utf8 is a better idea for code. Everything has
+" been working with defaults so far, best to stay with defaults.
+" set encoding=utf8
+set fileformats="unix,dos"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Tabs and Indentation
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use Spaces, such that tab = 4 spaces
+set shiftwidth=4
+set tabstop=4
+set expandtab
+
+" but try to be smart about tabs
+set smarttab
+
+" Lets use 80 character lines
 set textwidth=80
-set cc=+1
+set colorcolumn=+1 " and show a pretty line
 
-set transparency=15
+" smart + auto indent
+set smartindent
+set autoindent
