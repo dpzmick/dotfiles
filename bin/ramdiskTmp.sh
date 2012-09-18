@@ -13,5 +13,3 @@ mkdir ~/tmp/cache/chrome
 mv ~/Library/Caches/Chromium/Default/Cache ~/tmp/cache/chrome/Cache
 rm -rf ~/Library/Caches/Chromium/Default
 ln -s ~/tmp/cache/chrome ~/Library/Caches/Chromium/Default
-
-touch ~/woke

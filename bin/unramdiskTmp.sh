@@ -7,5 +7,3 @@ mv ~/tmp/cache/chrome/Cache ~/Library/Caches/Chromium/Default/
 # remove disk
 hdiutil detach -force ~/tmp
 rm ~/tmp
-
-touch ~/slept
