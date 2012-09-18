@@ -13,7 +13,7 @@ import_timid: no
 ignore: .AppleDouble ._* *~ .DS_Store
 #replace
 art_filename: cover
-plugins: web, bpd, cmus
+plugins: web bpd cmus
 #pluginpath
 threaded: yes
 color: yes
