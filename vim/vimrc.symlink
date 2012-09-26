@@ -18,7 +18,7 @@ Bundle 'gmarik/vundle'
 " My Bundles here:
 " original repos on github
 Bundle 'tpope/vim-rails.git'
-Bundle 'vim-javascript'
+Bundle 'pangloss/vim-javascript'
 " vim-scripts repos
 " non github repos
 
