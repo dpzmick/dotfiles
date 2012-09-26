@@ -1,0 +1,29 @@
+{
+	"extensions":
+	[
+		".ackrc",
+		".aliases",
+		".bash_profile",
+		".bash_prompt",
+		".bashrc",
+		".brew",
+		".exports",
+		".functions",
+		".git",
+		".gitattributes",
+		".gitconfig",
+		".gitignore",
+		".hushlogin",
+		".inputrc",
+		".npmrc",
+		".osx",
+		".packages",
+		".pkginit",
+		".screenrc",
+		".vim",
+		".vimrc",
+		".zhsrc",
+		".zlogin",
+		".wgetrc"
+	]
+}

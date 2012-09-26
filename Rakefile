@@ -3,6 +3,11 @@
 require 'rake'
 
 desc "Hook our dotfiles into system-standard positions."
+
+task :testGlob do
+
+end
+
 task :install do
   linkables = Dir.glob('*/**{.symlink}')
 
@@ -34,6 +39,7 @@ task :install do
     end
     `ln -s "$PWD/#{linkable}" "#{target}"`
   end
+  `$PWD/sublime/sublimeInstall.sh`
 end
 
 task :uninstall do
@@ -52,8 +58,8 @@ task :uninstall do
     if File.exists?("#{ENV["HOME"]}/.#{file}.backup")
       `mv "$HOME/.#{file}.backup" "$HOME/.#{file}"` 
     end
-
-  end
+   end
+   `$PWD/sublime/sublimeUninstall.sh`
 end
 
 task :default => 'install'
