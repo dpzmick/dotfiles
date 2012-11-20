@@ -39,7 +39,6 @@ task :install do
     end
     `ln -s "$PWD/#{linkable}" "#{target}"`
   end
-  `$PWD/sublime/sublimeInstall.sh`
 end
 
 task :uninstall do
@@ -59,7 +58,6 @@ task :uninstall do
       `mv "$HOME/.#{file}.backup" "$HOME/.#{file}"` 
     end
    end
-   `$PWD/sublime/sublimeUninstall.sh`
 end
 
 task :default => 'install'

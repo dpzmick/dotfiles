@@ -1,6 +1,5 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " David Zmick
-" started with this: http://amix.dk/vim/vimrc.html
 " and working my way to what I want
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -17,8 +16,22 @@ Bundle 'gmarik/vundle'
 
 " My Bundles here:
 " original repos on github
-Bundle 'tpope/vim-rails.git'
 Bundle 'pangloss/vim-javascript'
+Bundle 'scrooloose/nerdtree'
+Bundle 'kien/ctrlp.vim'
+Bundle 'ervandew/supertab'
+Bundle 'tpope/vim-endwise'
+Bundle 'tpope/vim-surround'
+Bundle 'majutsushi/tagbar'
+Bundle 'fholgado/minibufexpl.vim'
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'ap/vim-css-color'
+Bundle 'sjl/gundo.vim'
+" Bundle 'msanders/snipmate.vim'
+Bundle 'vim-scripts/Rename2'
+" Bundle 'vim-scripts/ZoomWin'
+Bundle 'scrooloose/syntastic'
+Bundle 'tpope/vim-markdown'
 " vim-scripts repos
 " non github repos
 
@@ -81,10 +94,8 @@ syntax enable
 " Set colorscheme
 colorscheme desert
 
-" TODO encoding
-" Issues, not sure if ascii or utf8 is a better idea for code. Everything has
-" been working with defaults so far, best to stay with defaults.
-" set encoding=utf8
+" Encoding
+set encoding=utf8
 set fileformats="unix,dos"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -105,3 +116,18 @@ set colorcolumn=+1 " and show a pretty line
 " smart + auto indent
 set smartindent
 set autoindent
+
+" always display the status line, even if only one window is displayed
+set laststatus=2
+
+"""""""""""
+" powerline
+"""""""""""
+set guifont=Menlo\ for\ Powerline
+let g:Powerline_symbols = 'fancy'
+
+
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>

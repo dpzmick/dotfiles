@@ -1,2 +1,6 @@
 " Make macvim transparent
 set transparency=15
+
+" hide toolbar and scroll bar
+set guioptions-=r
+set guioptions-=L
