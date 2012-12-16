@@ -27,7 +27,7 @@ source ~/.bash_colors
 if [ -n "$SSH_CLIENT" ]; then
     text="\[$txtred\]\h"
 else
-    text="\[$textgrn\]\h"
+    text="\[$txtgrn\]\h"
 fi
 PS1="\[$txtcyn\]( \u\[$txtwht\]@${text} \[$txtylw\]\w\[$txtcyn\] ) \n\[$txtcyn\]$ \[$txtwht\]"
 
