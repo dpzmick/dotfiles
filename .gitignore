@@ -1,4 +1,3 @@
 *.swp
 .DS_Store
 vim/vim.symlink/bundle/*
-bin/subl

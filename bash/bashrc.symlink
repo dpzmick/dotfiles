@@ -24,7 +24,10 @@ export EDITOR=/usr/bin/vim
 
 # Colors
 source ~/.bash_colors
-PS1="\[$txtcyn\]( \u\[$txtwht\]@\[$txtgrn\]\h \[$txtylw\]\w\[$txtcyn\] ) \n$ \[$txtwht\]"
+if [ -n "$SSH_CLIENT" ]; then
+    text="ssh"
+fi
+PS1="\[$txtcyn\]( \u\[$txtwht\]@\[$txtgrn\]\h${text} \[$txtylw\]\w\[$txtcyn\] ) \n \[$txtcyn\]$ \[$txtwht\]"
 
 #Aliases
 alias ls="ls -G"
