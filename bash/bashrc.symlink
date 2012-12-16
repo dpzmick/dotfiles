@@ -25,7 +25,7 @@ export EDITOR=/usr/bin/vim
 # Colors
 source ~/.bash_colors
 if [ -n "$SSH_CLIENT" ]; then
-    text="\[$txtred\]\h-ssh"
+    text="ssh@\[$txtred\]\h"
 else
     text="\[$textgrn\]\h"
 fi
