@@ -27,11 +27,10 @@ Bundle 'fholgado/minibufexpl.vim'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'ap/vim-css-color'
 Bundle 'sjl/gundo.vim'
-" Bundle 'msanders/snipmate.vim'
 Bundle 'vim-scripts/Rename2'
-" Bundle 'vim-scripts/ZoomWin'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-markdown'
+Bundle 'altercation/vim-colors-solarized'
 " vim-scripts repos
 " non github repos
 
@@ -92,7 +91,7 @@ set novisualbell
 syntax enable
 
 " Set colorscheme
-colorscheme desert
+colorscheme solarized
 
 " Encoding
 set encoding=utf8
