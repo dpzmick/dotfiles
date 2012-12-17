@@ -24,13 +24,13 @@ Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-surround'
 Bundle 'majutsushi/tagbar'
 Bundle 'fholgado/minibufexpl.vim'
-Bundle 'Lokaltog/powerline'
 Bundle 'ap/vim-css-color'
 Bundle 'sjl/gundo.vim'
 Bundle 'vim-scripts/Rename2'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
+Bundle 'millermedeiros/vim-statline'
 " vim-scripts repos
 " non github repos
 
@@ -39,7 +39,7 @@ filetype plugin indent on     " required!
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" don't try and be compatible
+"" don't try and be compatible
 set nocompatible
 
 " automatically read a file when changed
@@ -119,13 +119,6 @@ set autoindent
 
 " always display the status line, even if only one window is displayed
 set laststatus=2
-
-"""""""""""
-" powerline
-"""""""""""
-set guifont=Menlo\ for\ Powerline
-let g:Powerline_symbols = 'fancy'
-
 
 map <up> <nop>
 map <down> <nop>
