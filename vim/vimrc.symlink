@@ -91,6 +91,7 @@ set novisualbell
 syntax enable
 
 " Set colorscheme
+set background=dark
 colorscheme solarized
 
 " Encoding
