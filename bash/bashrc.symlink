@@ -23,6 +23,10 @@ export PATH=/usr/local/share/python:/usr/local/share/npm/bin:$PATH
 export EDITOR=/usr/bin/vim
 
 # Colors
+if [ "$TERM" == "screen" ]; then
+    TERM=xterm-256color
+fi
+
 source ~/.bash_colors
 if [ -n "$SSH_CLIENT" ]; then
     text="\[$txtred\]\h"
