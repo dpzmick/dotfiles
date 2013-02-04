@@ -1,3 +1,4 @@
 *.swp
 .DS_Store
 vim/vim.symlink/bundle/*
+cmus/cmus.symlink/post-fm-pass
