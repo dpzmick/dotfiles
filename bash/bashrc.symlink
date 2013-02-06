@@ -55,3 +55,8 @@ alias t='todo.sh'
 
 export PYTHONPATH=$(brew --prefix)/lib/python2.7/site-packages:$PYTHONPATH
 export ANDROID_SDK_ROOT=/usr/local/Cellar/android-sdk/r20.0.1
+
+# This loads RVM into a shell session. 
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" 
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting

@@ -31,6 +31,7 @@ Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'millermedeiros/vim-statline'
+Bundle 'm2ym/rsense'
 " vim-scripts repos
 " non github repos
 
