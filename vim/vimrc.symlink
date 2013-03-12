@@ -1,5 +1,6 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " David Zmick
+" started with this: http://amix.dk/vim/vimrc.html
 " and working my way to what I want
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -18,7 +19,7 @@ Bundle 'gmarik/vundle'
 " original repos on github
 Bundle 'pangloss/vim-javascript'
 Bundle 'scrooloose/nerdtree'
-Bundle 'kien/ctrlp.vim'
+Bundle 'wincent/Command-T'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-surround'
@@ -26,12 +27,14 @@ Bundle 'majutsushi/tagbar'
 Bundle 'fholgado/minibufexpl.vim'
 Bundle 'ap/vim-css-color'
 Bundle 'sjl/gundo.vim'
-Bundle 'vim-scripts/Rename2'
+" Bundle 'vim-scripts/Rename2'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'millermedeiros/vim-statline'
 Bundle 'm2ym/rsense'
+Bundle 'airblade/vim-gitgutter'
+Bundle 'tpope/vim-fugitive'
 " vim-scripts repos
 " non github repos
 
@@ -57,6 +60,9 @@ set showcmd
 
 " always show line numbers
 set number
+
+" Make the SignColumn not look obnoxious (use same color as line numbers)
+highlight clear SignColumn
 
 " always show a ruler
 set ruler
@@ -84,6 +90,9 @@ set showmatch
 " don't be annoying
 set noerrorbells
 set novisualbell
+
+" Something about autocomplete.
+let g:rsenseUseOmniFunc = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Syntax, Colors, and Fonts

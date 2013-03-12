@@ -46,10 +46,6 @@ alias hs='history | grep -i'
 # functions
 function cdl { cd $1; ls;}
 
-# todotxt
-export TODOTXT_DEFAULT_ACTION=ls
-alias t='todo.sh'
-
 # for python/homebrew
 # http://docs.mopidy.com/en/latest/installation/gstreamer/#installing-gstreamer-on-os-x
 
@@ -58,5 +54,10 @@ export ANDROID_SDK_ROOT=/usr/local/Cellar/android-sdk/r20.0.1
 
 # This loads RVM into a shell session. 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" 
-
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+# deal with python virtualenv and virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh
+export PIP_VIRTUALENV_BASE=$WORKON_HOME
+export PIP_RESPECT_VIRTUALENV=true
