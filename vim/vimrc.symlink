@@ -19,7 +19,8 @@ Bundle 'gmarik/vundle'
 " original repos on github
 Bundle 'pangloss/vim-javascript'
 Bundle 'scrooloose/nerdtree'
-Bundle 'wincent/Command-T'
+Bundle 'kien/ctrlp.vim'
+Bundle 'terryma/vim-multiple-cursors'
 Bundle 'ervandew/supertab'
 Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-surround'
@@ -35,6 +36,7 @@ Bundle 'millermedeiros/vim-statline'
 Bundle 'm2ym/rsense'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'tpope/vim-fugitive'
+Bundle 'adinapoli/vim-markmultiple'
 " vim-scripts repos
 " non github repos
 
@@ -60,9 +62,6 @@ set showcmd
 
 " always show line numbers
 set number
-
-" Make the SignColumn not look obnoxious (use same color as line numbers)
-highlight clear SignColumn
 
 " always show a ruler
 set ruler
@@ -103,6 +102,9 @@ syntax enable
 " Set colorscheme
 set background=dark
 colorscheme solarized
+
+" Make the SignColumn not look obnoxious (use same color as line numbers)
+highlight clear SignColumn
 
 " Encoding
 set encoding=utf8
