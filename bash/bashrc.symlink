@@ -4,6 +4,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 ~/.banner
+fortune
 
 # history
 shopt -s histappend

@@ -1,3 +1,0 @@
-#brew install macvim
-brew install figlet
-brew install todo-txt
