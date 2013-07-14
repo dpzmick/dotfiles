@@ -16,10 +16,10 @@ bind up:${modal-keys}:toggle       resize +0   -10%
 bind down:${modal-keys}:toggle     resize +0   +10%
 
 # TODO: make modal modifiers work
-bind right:ctrl,${modal-keys}:toggle    resize -10% +0 bottom-right
-bind left:ctrl,${modal-keys}:toggle     resize +10% +0 bottom-right
-bind up:ctrl,${modal-keys}:toggle       resize +0   +10% bottom-right
-bind down:ctrl,${modal-keys}:toggle     resize +0   -10% bottom-right
+bind right:ctrl,${modal-keys}:toggle    resize -5% +0 bottom-right
+bind left:ctrl,${modal-keys}:toggle     resize +5% +0 bottom-right
+bind up:ctrl,${modal-keys}:toggle       resize +0   +5% bottom-right
+bind down:ctrl,${modal-keys}:toggle     resize +0   -5% bottom-right
 
 # Window Hints
 bind h:${modal-keys} hint jfkdhglsnvbcmxzurieytieowpq
