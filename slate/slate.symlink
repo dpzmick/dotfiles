@@ -4,6 +4,10 @@ config defaultToCurrentScreen true
 config nudgePercentOf screenSize
 config resizePercentOf screenSize
 config modalEscapeKey esc
+config windowHintsIgnoreHiddenWindows false
+config windowHintsShowIcons true
+config windowHintsSpread true
+
 
 # keybinding sets
 alias modal-keys    space,alt
