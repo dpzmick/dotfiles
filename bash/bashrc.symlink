@@ -20,7 +20,7 @@ shopt -s cdspell
 
 #setup environment variables
 export PATH=~/dotfiles/bin:/usr/local/sbin:/usr/local/bin:$PATH
-export PATH=/usr/local/share/python:/usr/local/share/npm/bin:$PATH
+export PATH=/usr/local/share/npm/bin:$PATH
 export EDITOR=/usr/bin/vim
 
 # Colors
@@ -65,3 +65,8 @@ PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
+
+# bash completion with homebrew
+if [ -f `brew --prefix`/etc/bash_completion ]; then
+    . `brew --prefix`/etc/bash_completion
+fi
