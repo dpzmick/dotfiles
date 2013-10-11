@@ -73,3 +73,6 @@ fi
 
 # PGI compulers
 export PATH=/opt/pgi/osx86-64/2013/bin:/opt/pgi/osx86-64/2013/mpi/openmpi/bin:$PATH;
+
+# get mvim to play nicely with clipboard inside of tmux
+alias mvim="reattach-to-user-namespace mvim"
