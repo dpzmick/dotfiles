@@ -70,3 +70,6 @@ export PATH="/usr/local/heroku/bin:$PATH"
 if [ -f `brew --prefix`/etc/bash_completion ]; then
     . `brew --prefix`/etc/bash_completion
 fi
+
+# PGI compulers
+export PATH=/opt/pgi/osx86-64/2013/bin:/opt/pgi/osx86-64/2013/mpi/openmpi/bin:$PATH;
