@@ -96,11 +96,13 @@ set novisualbell
 " Something about autocomplete.
 let g:rsenseUseOmniFunc = 1
 
+" use the mouse
+set mouse=a
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Programming Language Specific Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let fotran_free_source=1
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Syntax, Colors, and Fonts
@@ -110,6 +112,13 @@ syntax enable
 
 " Set colorscheme
 set background=dark
+
+" make solarized look right on terminal
+let g:solarized_termcolors = 256
+let g:solarized_termtrans = 1
+let g:solarized_visibility = "high"
+let g:solarized_contrast = "high"
+
 colorscheme solarized
 
 " Make the SignColumn not look obnoxious (use same color as line numbers)
