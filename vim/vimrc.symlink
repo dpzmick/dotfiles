@@ -143,7 +143,9 @@ set smarttab
 
 " Lets use 80 character lines
 set textwidth=80
-set colorcolumn=+1 " and show a pretty line
+if has("colorcolumn")
+    set colorcolumn=+1 " and show a pretty line
+endif
 
 " smart + auto indent
 set smartindent

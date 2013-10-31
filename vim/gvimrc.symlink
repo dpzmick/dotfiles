@@ -1,8 +1,13 @@
 if has("gui_macvim")
     " Make macvim transparent
     " set transparency=15
+    " hide toolbar and scroll bar
+    set guioptions-=r
+    set guioptions-=L
 endif
-
-" hide toolbar and scroll bar
-set guioptions-=r
-set guioptions-=L
+if has("gui_running")
+    set guioptions-=m
+    set guioptions-=T
+    set guioptions-=r
+    set guioptions-=L
+endif
