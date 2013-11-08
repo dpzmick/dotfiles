@@ -20,9 +20,8 @@ Bundle 'gmarik/vundle'
 Bundle 'pangloss/vim-javascript'
 Bundle 'scrooloose/nerdtree'
 Bundle 'kien/ctrlp.vim'
-"Bundle 'terryma/vim-multiple-cursors'
 Bundle 'ervandew/supertab'
-Bundle 'tpope/vim-endwise'
+"Bundle 'tpope/vim-endwise'
 "Bundle 'tpope/vim-surround'
 Bundle 'majutsushi/tagbar'
 Bundle 'fholgado/minibufexpl.vim'
@@ -39,11 +38,11 @@ Bundle 'terryma/vim-multiple-cursors'
 "Bundle 'tpope/vim-fugitive'
 "Bundle 'adinapoli/vim-markmultiple'
 Bundle 'groenewege/vim-less'
-Bundle 'Glench/Vim-Jinja2-Syntax'
+"Bundle 'Glench/Vim-Jinja2-Syntax'
 "Bundle 'vim-scripts/python.vim'
 " vim-scripts repos
-Bundle "mips.vim"
-Bundle 'jpythonfold.vim'
+"Bundle 'mips.vim'
+"Bundle 'jpythonfold.vim'
 " non github repos
 
 filetype plugin indent on     " required!
