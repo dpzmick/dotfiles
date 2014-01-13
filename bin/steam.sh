@@ -1,5 +1,5 @@
 # http://forums.steampowered.com/forums/showthread.php?t=1268621
-hdiutil attach -mountpoint /.0000 /Users/dz0004455/Desktop/Steam.sparseimage
+hdiutil attach -mountpoint /.0000 /Users/dz0004455/Desktop/no_backup/Steam.sparseimage
 
 ln -s /.0000/Steam ~/Library/Application\ Support/
 ln -s /.0000/Steam\ Content ~/Documents/

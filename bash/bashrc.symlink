@@ -43,36 +43,37 @@ alias ll='ls -l'
 alias l='ls'
 alias g='grep'
 alias hs='history | grep -i'
+alias mvim="reattach-to-user-namespace mvim"
+# uiuc
+alias ewsC="ssh -C zmick2@remlnx.ews.illinois.edu"
+alias ewsXX="ssh -C -X zmick2@remlnx.ews.illinois.edu"
+alias ews="ssh zmick2@remlnx.ews.illinois.edu"
+alias ewsX="ssh -X zmick2@remlnx.ews.illinois.edu"
+function cs225 { cd ~/programming/cs225/zmick2/$1; }
+function cs398 { cd ~/programming/cs398/zmick2/$1; }
 
 # functions
-function cdl { cd $1; ls;}
-
-# for python/homebrew
-# http://docs.mopidy.com/en/latest/installation/gstreamer/#installing-gstreamer-on-os-x
+#function cdl { cd $1; ls;}
 
 export PYTHONPATH=$(brew --prefix)/lib/python2.7/site-packages:$PYTHONPATH
 export ANDROID_SDK_ROOT=/usr/local/Cellar/android-sdk/r20.0.1
-
-# This loads RVM into a shell session. 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" 
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
-# deal with python virtualenv and virtualenvwrapper
-#export WORKON_HOME=$HOME/.virtualenvs
-#source /usr/local/bin/virtualenvwrapper.sh
-#export PIP_VIRTUALENV_BASE=$WORKON_HOME
-#export PIP_RESPECT_VIRTUALENV=true
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
 # bash completion with homebrew
-if [ -f `brew --prefix`/etc/bash_completion ]; then
-    . `brew --prefix`/etc/bash_completion
+if [ -f /usr/local/etc/bash_completion ]; then
+    . /usr/local/etc/bash_completion
 fi
 
 # PGI compulers
-export PATH=/opt/pgi/osx86-64/2013/bin:/opt/pgi/osx86-64/2013/mpi/openmpi/bin:$PATH;
+#export PATH=/opt/pgi/osx86-64/2013/bin:/opt/pgi/osx86-64/2013/mpi/openmpi/bin:$PATH;
 
-# get mvim to play nicely with clipboard inside of tmux
-alias mvim="reattach-to-user-namespace mvim"
+# rbenv stuff
+eval "$(rbenv init -)"
+export RBENV_ROOT=/usr/local/var/rbenv
+
+# good aliases for git
+alias wow='git status'
+alias such='git'
+alias very='git'
