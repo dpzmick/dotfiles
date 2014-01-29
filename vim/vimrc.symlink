@@ -43,6 +43,7 @@ Bundle 'groenewege/vim-less'
 " vim-scripts repos
 "Bundle 'mips.vim'
 "Bundle 'jpythonfold.vim'
+Bundle 'vim-scripts/maude.vim'
 " non github repos
 
 filetype plugin indent on     " required!
