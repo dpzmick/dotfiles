@@ -50,7 +50,7 @@ alias ewsXX="ssh -C -X zmick2@remlnx.ews.illinois.edu"
 alias ews="ssh zmick2@remlnx.ews.illinois.edu"
 alias ewsX="ssh -X zmick2@remlnx.ews.illinois.edu"
 function cs225 { cd ~/programming/cs225/zmick2/$1; }
-function cs398 { cd ~/programming/cs398/zmick2/$1; }
+function cs373 { cd ~/programming/cs373/zmick2/$1; }
 
 # functions
 #function cdl { cd $1; ls;}
