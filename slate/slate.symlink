@@ -13,23 +13,11 @@ config windowHintsSpread true
 alias modal-keys    space,alt
 alias wmmods        ctrl,alt,cmd
 
-# Resize Bindings
-bind right:${modal-keys}:toggle    resize +5% +0
-bind left:${modal-keys}:toggle     resize -5% +0
-bind up:${modal-keys}:toggle       resize +0   -5%
-bind down:${modal-keys}:toggle     resize +0   +5%
-
-# TODO: make modal modifiers work
-#bind right:ctrl,${modal-keys}:toggle    resize -5% +0 bottom-right
-#bind left:ctrl,${modal-keys}:toggle     resize +5% +0 bottom-right
-#bind up:ctrl,${modal-keys}:toggle       resize +0   +5% bottom-right
-#bind down:ctrl,${modal-keys}:toggle     resize +0   -5% bottom-right
-
 # Window Hints
 bind h:${modal-keys} hint jfkdhglsnvbcmxzurieytieowpq
 
 # Divvy-style grid
-bind g:${modal-keys} grid 1280x800:8,5 1680x1050:16,9
+bind g:${modal-keys} grid 1280x800:8,5 1680x1050:6,6
 
 # Super cool bindings
 alias full        move   screenOriginX;screenOriginY                screenSizeX;screenSizeY
