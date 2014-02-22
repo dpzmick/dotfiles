@@ -1,3 +1,0 @@
-# remeber to install sublime
-# hide desktop icons
-defaults write com.apple.finder CreateDesktop -bool false
