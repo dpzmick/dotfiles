@@ -4,6 +4,8 @@ if has("gui_macvim")
     " hide toolbar and scroll bar
     set guioptions-=r
     set guioptions-=L
+    " set the font
+    set guifont=Meslo\ LG\ M\ for\ Powerline:h11
 endif
 if has("gui_running")
     set guioptions-=m

@@ -12,7 +12,7 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 " let Vundle manage Vundle
-" required! 
+" required!
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
@@ -23,20 +23,14 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'ervandew/supertab'
 Bundle 'majutsushi/tagbar'
 Bundle 'fholgado/minibufexpl.vim'
-Bundle 'ap/vim-css-color'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'millermedeiros/vim-statline'
-Bundle 'm2ym/rsense'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'groenewege/vim-less'
-Bundle 'FredKSchott/CoVim'
+Bundle 'bling/vim-airline'
 " vim-scripts repos
 Bundle 'vim-scripts/maude.vim'
 " non github repos
-Bundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
 
 filetype plugin indent on     " required!
 
@@ -49,6 +43,12 @@ set nocompatible
 " automatically read a file when changed
 set autoread
 
+" keep an "undo file"
+set undofile
+
+" keeps buffers open but hidden when not in use
+set hidden
+
 " spelling
 setlocal spell spelllang=en_us
 
@@ -59,7 +59,9 @@ setlocal spell spelllang=en_us
 set showcmd
 
 " always show line numbers
-set number
+" set number
+" show relative line numbers
+set relativenumber
 
 " always show a ruler
 set ruler
@@ -94,6 +96,19 @@ let g:rsenseUseOmniFunc = 1
 " use the mouse
 set mouse=a
 
+" keep cursor in the middle of the screen
+set scrolloff=5
+
+" use wild menu
+set wildmenu
+set wildmode=list:longest
+
+" highlight the current line
+set cursorline
+
+" scroll faster I think
+set ttyfast
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Programming Language Specific Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -121,7 +136,6 @@ highlight clear SignColumn
 
 " Encoding
 set encoding=utf8
-set fileformats="unix,dos"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Tabs and Indentation
@@ -136,18 +150,18 @@ set smarttab
 
 " Lets use 80 character lines
 set textwidth=80
-if has("colorcolumn")
-    set colorcolumn=+1 " and show a pretty line
-endif
+set colorcolumn=+1 " and show a pretty line
 
 " smart + auto indent
 set smartindent
 set autoindent
 
+"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Status line
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:airline_powerline_fonts=1
+
 " always display the status line, even if only one window is displayed
 set laststatus=2
-
-map <up> <nop>
-map <down> <nop>
-map <left> <nop>
-map <right> <nop>
