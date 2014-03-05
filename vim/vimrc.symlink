@@ -28,6 +28,7 @@ Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'jeffkreeftmeijer/vim-numbertoggle'
+Bundle 'sjl/gundo.vim'
 " vim-scripts repos
 Bundle 'vim-scripts/maude.vim'
 " non github repos
