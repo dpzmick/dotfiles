@@ -131,12 +131,12 @@ if has('statusline')
         let &stl=""
         " mode (changes color)
         let &stl.="%1*\ %{Mode()} %0*"
+        " modified / unmodified (purple)
+        let &stl.="%(%6* %{&modified ? 'modified':''} %)%0*"
         " session name
         " let &stl.="%5* %{g:neatstatus_session} %0*"
         " file path
         let &stl.=" %<%F "
-        " modified / unmodified (purple)
-        let &stl.="%(%6* %{&modified ? 'modified':''} %)%0*"
         " read only, modified, modifiable flags in brackets
         " let &stl.="%([%R%M]%) "
 
