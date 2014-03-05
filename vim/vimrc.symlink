@@ -27,7 +27,7 @@ Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'bling/vim-airline'
+Bundle 'jeffkreeftmeijer/vim-numbertoggle'
 " vim-scripts repos
 Bundle 'vim-scripts/maude.vim'
 " non github repos
@@ -43,8 +43,11 @@ set nocompatible
 " automatically read a file when changed
 set autoread
 
-" keep an "undo file"
-if exists("&undofile")
+" Keep undo history across sessions, by storing in file.
+" Only works all the time.
+if has('persistent_undo')
+    silent !mkdir ~/.vim/backups > /dev/null 2>&1
+    set undodir=~/.vim/backups
     set undofile
 endif
 
@@ -59,14 +62,6 @@ setlocal spell spelllang=en_us
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " show incomplete commands
 set showcmd
-
-" show relative line numbers
-if exists("&relativenumber")
-    set relativenumber
-else
-    " always show line numbers
-    set number
-endif
 
 " always show a ruler
 set ruler
@@ -108,11 +103,13 @@ set scrolloff=5
 set wildmenu
 set wildmode=list:longest
 
-" highlight the current line
-set cursorline
-
-" scroll faster I think
-set ttyfast
+" show relative line numbers
+if exists("&relativenumber")
+    set relativenumber
+else
+    " always show line numbers
+    set number
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Programming Language Specific Settings
@@ -163,12 +160,7 @@ endif
 set smartindent
 set autoindent
 
-"
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Status line
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:airline_powerline_fonts=1
-
-" always display the status line, even if only one window is displayed
-set laststatus=2
+so ~/.vim/custom/status.vim
