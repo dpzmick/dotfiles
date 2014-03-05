@@ -26,7 +26,8 @@ Bundle 'fholgado/minibufexpl.vim'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'airblade/vim-gitgutter'
+"Bundle 'airblade/vim-gitgutter'
+Bundle 'mhinz/vim-signify'
 Bundle 'jeffkreeftmeijer/vim-numbertoggle'
 Bundle 'sjl/gundo.vim'
 " vim-scripts repos
@@ -135,7 +136,9 @@ let g:solarized_contrast = "high"
 colorscheme solarized
 
 " Make the SignColumn not look obnoxious (use same color as line numbers)
+" at least on the terminal
 highlight clear SignColumn
+highlight SignColumn ctermbg=235
 
 " Encoding
 set encoding=utf8
