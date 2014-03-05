@@ -44,7 +44,7 @@ set nocompatible
 set autoread
 
 " keep an "undo file"
-if has("undofile")
+if exists("&undofile")
     set undofile
 endif
 
@@ -61,7 +61,7 @@ setlocal spell spelllang=en_us
 set showcmd
 
 " show relative line numbers
-if has("relativenumber")
+if exists("&relativenumber")
     set relativenumber
 else
     " always show line numbers
@@ -155,7 +155,7 @@ set smarttab
 
 " Lets use 80 character lines
 set textwidth=80
-if has("colorcolumn")
+if exists("&colorcolumn")
     set colorcolumn=+1 " and show a pretty line
 endif
 
