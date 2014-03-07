@@ -43,7 +43,7 @@ alias ll='ls -l'
 alias l='ls'
 alias g='grep'
 alias hs='history | grep -i'
-alias mvim="reattach-to-user-namespace mvim"
+# alias mvim="reattach-to-user-namespace mvim"
 # uiuc
 alias ewsC="ssh -C zmick2@remlnx.ews.illinois.edu"
 alias ewsXX="ssh -C -X zmick2@remlnx.ews.illinois.edu"

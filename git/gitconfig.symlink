@@ -1,7 +1,5 @@
 [user]
 	name = David Zmick
 	email = dpzmick@gmail.com
-[push]
-	default = simple
 [credential]
 	helper = osxkeychain
