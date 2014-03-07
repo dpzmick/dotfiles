@@ -3,3 +3,5 @@
 	email = dpzmick@gmail.com
 [credential]
 	helper = osxkeychain
+[push]
+	default = matching
