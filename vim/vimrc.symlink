@@ -188,7 +188,8 @@ nmap <silent> <c-l> :wincmd l<CR>
 " Plugin settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " UltiSnips
-let g:UltiSnipsSnippetsDir="~/.vim/custom/UltiSnips"
+" Can't get this to work, just going to let it use default path
+" let g:UltiSnipsSnippetsDir="~/.vim/custom/UltiSnips"
 
 " Trigger configuration.
 let g:UltiSnipsExpandTrigger="<tab>"
