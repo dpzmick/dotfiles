@@ -30,7 +30,7 @@ Bundle 'mhinz/vim-signify'
 Bundle 'jeffkreeftmeijer/vim-numbertoggle'
 Bundle 'sjl/gundo.vim'
 Bundle 'SirVer/ultisnips'
-"Bundle 'honza/vim-snippets'
+Bundle 'honza/vim-snippets'
 " vim-scripts repos
 Bundle 'vim-scripts/maude.vim'
 " non github repos
@@ -200,5 +200,5 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
-" map keys for snippets
-call UltiSnips#map_keys#MapKeys()
+" map keys for snippets don't need this if using snippets from repo
+" call UltiSnips#map_keys#MapKeys()
