@@ -17,7 +17,6 @@ Bundle 'gmarik/vundle'
 
 " My Bundles here:
 " original repos on github
-Bundle 'pangloss/vim-javascript'
 Bundle 'scrooloose/nerdtree'
 Bundle 'kien/ctrlp.vim'
 Bundle 'ervandew/supertab'
@@ -29,8 +28,16 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'mhinz/vim-signify'
 Bundle 'jeffkreeftmeijer/vim-numbertoggle'
 Bundle 'sjl/gundo.vim'
-Bundle 'SirVer/ultisnips'
-Bundle 'honza/vim-snippets'
+Bundle "MarcWeber/vim-addon-mw-utils"
+Bundle "tomtom/tlib_vim"
+Bundle "garbas/vim-snipmate"
+
+" Optional:
+Bundle "honza/vim-snippets"
+
+"Bundle 'SirVer/ultisnips'
+"Bundle 'honza/vim-snippets'
+" Bundle 'LaTeX-Box-Team/LaTeX-Box'
 " vim-scripts repos
 Bundle 'vim-scripts/maude.vim'
 " non github repos
@@ -192,13 +199,13 @@ nmap <silent> <c-l> :wincmd l<CR>
 " let g:UltiSnipsSnippetsDir="~/.vim/custom/UltiSnips"
 
 " Trigger configuration.
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsListSnippets="<c-l>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
+"let g:UltiSnipsExpandTrigger="<tab>"
+"let g:UltiSnipsListSnippets="<c-l>"
+"let g:UltiSnipsJumpForwardTrigger="<tab>"
+"let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+"
+"" If you want :UltiSnipsEdit to split your window.
+"let g:UltiSnipsEditSplit="vertical"
 
 " map keys for snippets don't need this if using snippets from repo
 " call UltiSnips#map_keys#MapKeys()
