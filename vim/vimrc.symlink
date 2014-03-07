@@ -26,10 +26,11 @@ Bundle 'fholgado/minibufexpl.vim'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
-"Bundle 'airblade/vim-gitgutter'
 Bundle 'mhinz/vim-signify'
 Bundle 'jeffkreeftmeijer/vim-numbertoggle'
 Bundle 'sjl/gundo.vim'
+Bundle 'SirVer/ultisnips'
+"Bundle 'honza/vim-snippets'
 " vim-scripts repos
 Bundle 'vim-scripts/maude.vim'
 " non github repos
@@ -182,3 +183,21 @@ nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugin settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" UltiSnips
+let g:UltiSnipsSnippetsDir="~/.vim/custom/UltiSnips"
+
+" Trigger configuration.
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsListSnippets="<c-l>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
+" map keys for snippets
+call UltiSnips#map_keys#MapKeys()
