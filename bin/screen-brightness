@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Solomon Kell sdkell2@illinois.edu
+# You can do whatever the fuck you want with this idgaf. fuck licenses.
+#
+# This program just modifies the value of the screen brightness for Apple Laptops on arch
+# You must run it as root user or via sudo.
+# As a shortcut you could allow to admin users to run via sudo without password
+# prompt. To do this you must add sudoers file the next contents:
+#
+# After this you can use this script as follows:
+# You can customize the amount of backlight by step by changing the INCREMENT
+# variable as you want it.
+
+# edited by drizzle slighly
+
+BACKLIGHT_FILE=/sys/class/backlight/gmux_backlight/brightness
+BACKLIGHT=$(cat $BACKLIGHT_FILE)
+INCREMENT=4000
+HIGH="110400"
+LOW="1500"
+MID="55950"
+
+if [ $UID -ne 0 ]; then
+    echo "Please run this program as superuser"
+    exit 1
+fi
+
+SET_VALUE=0
+
+case $1 in
+
+    up)
+        TOTAL=`expr $BACKLIGHT + $INCREMENT`
+        if [ $TOTAL -gt $HIGH ]; then
+            exit 1
+        fi
+        SET_VALUE=1
+        ;;
+    down)
+        TOTAL=`expr $BACKLIGHT - $INCREMENT`
+        if [ $TOTAL -lt $LOW ]; then
+            exit 1
+        fi
+        SET_VALUE=1
+        ;;
+    high)
+        TOTAL=$HIGH
+        SET_VALUE=1
+        ;;
+    low)
+        TOTAL=$LOW
+        SET_VALUE=1
+        ;;
+    mid)
+        TOTAL=$MID
+        SET_VALUE=1
+        ;;
+    *)
+        echo "Use: screen-backlight up|down|high|low|mid"
+        ;;
+esac
+
+if [ $SET_VALUE -eq "1" ]; then
+    echo $TOTAL > $BACKLIGHT_FILE
+fi
+
