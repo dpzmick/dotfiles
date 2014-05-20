@@ -16,34 +16,26 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
-" original repos on github
 Bundle 'scrooloose/nerdtree'
 Bundle 'kien/ctrlp.vim'
-Bundle 'ervandew/supertab'
+" Bundle 'ervandew/supertab'
 Bundle 'majutsushi/tagbar'
 Bundle 'fholgado/minibufexpl.vim'
 Bundle 'scrooloose/syntastic'
-Bundle 'tpope/vim-markdown'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'mhinz/vim-signify'
-Bundle 'jeffkreeftmeijer/vim-numbertoggle'
-Bundle 'sjl/gundo.vim'
-Bundle 'LaTeX-Box-Team/LaTeX-Box'
-" for snippets
+Bundle 'ervandew/supertab'
 Bundle "MarcWeber/vim-addon-mw-utils"
 Bundle "tomtom/tlib_vim"
-Bundle "garbas/vim-snipmate"
-Bundle "honza/vim-snippets"
-" vim-scripts repos
-Bundle 'vim-scripts/maude.vim'
-" non github repos
+Bundle 'garbas/vim-snipmate'
+Bundle 'honza/vim-snippets'
 
 filetype plugin indent on     " required!
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" don't try and be compatible
+" don't try and be compatible
 set nocompatible
 
 " automatically read a file when changed
@@ -96,9 +88,6 @@ set showmatch
 set noerrorbells
 set novisualbell
 
-" Something about autocomplete.
-let g:rsenseUseOmniFunc = 1
-
 " use the mouse
 set mouse=a
 
@@ -109,18 +98,7 @@ set scrolloff=5
 set wildmenu
 set wildmode=list:longest
 
-" show relative line numbers
-if exists("&relativenumber")
-    set relativenumber
-else
-    " always show line numbers
-    set number
-endif
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Programming Language Specific Settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let fotran_free_source=1
+set number
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Syntax, Colors, and Fonts
@@ -189,4 +167,12 @@ nmap <silent> <c-l> :wincmd l<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+imap <C-\> <Plug>snipMateNextOrTrigger
+smap <C-\> <Plug>snipMateNextOrTrigger
+
+" TODO figure out snippets
+" TODO figure out fortran
+" TODO figure out haskell
+" TODO figure out latex
+" TODO trailing whitespace notification

@@ -21,6 +21,7 @@ shopt -s cdspell
 #setup environment variables
 export PATH=~/dotfiles/bin:/usr/local/sbin:/usr/local/bin:$PATH
 export PATH=/usr/local/share/npm/bin:$PATH
+export PATH=$HOME/.cabal/bin:$PATH
 export EDITOR=/usr/bin/vim
 
 # Colors
@@ -70,8 +71,8 @@ fi
 #export PATH=/opt/pgi/osx86-64/2013/bin:/opt/pgi/osx86-64/2013/mpi/openmpi/bin:$PATH;
 
 # rbenv stuff
-eval "$(rbenv init -)"
 export RBENV_ROOT=/usr/local/var/rbenv
+eval "$(rbenv init -)"
 
 # good aliases for git
 alias wow='git status'
@@ -89,3 +90,4 @@ syspip(){
 
 export WORKON=~/.virtualenv
 source /usr/local/bin/virtualenvwrapper.sh
+export PATH=~/pebble-dev/PebbleSDK-2.0.2/bin:$PATH
