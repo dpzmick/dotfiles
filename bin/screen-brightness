@@ -16,7 +16,7 @@
 
 BACKLIGHT_FILE=/sys/class/backlight/gmux_backlight/brightness
 BACKLIGHT=$(cat $BACKLIGHT_FILE)
-INCREMENT=4000
+INCREMENT=1000
 HIGH="110400"
 LOW="1500"
 MID="55950"
