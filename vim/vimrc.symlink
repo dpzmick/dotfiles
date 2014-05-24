@@ -131,8 +131,9 @@ colorscheme solarized
 highlight clear SignColumn
 
 " display trailing whitespace
-set list
-set listchars=trail:· " use a unicode symbol!
+"set list
+"set listchars=trail:· " use a unicode symbol!
+" If I do this is messes up tabs TODO fix this
 
 " Encoding
 set encoding=utf8
