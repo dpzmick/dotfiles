@@ -39,7 +39,7 @@ Plugin 'honza/vim-snippets'
 Plugin 'scrooloose/syntastic'
 Plugin 'majutsushi/tagbar'
 Plugin 'tpope/vim-commentary'
-Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'Yggdroot/indentLine'
 Plugin 'tpope/vim-fugitive'
 
 " stuff for haskell
@@ -190,9 +190,6 @@ nmap <silent> <Leader>C :let @/=''<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" indent guide stuff
-let g:indent_guides_guide_size=1
-
 " Snipmate configuration
 imap <C-\> <Plug>snipMateNextOrTrigger
 smap <C-\> <Plug>snipMateNextOrTrigger
