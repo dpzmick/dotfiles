@@ -7,37 +7,50 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nocompatible
 filetype off                   " required!
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " let Vundle manage Vundle
 " required!
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/Vundle.vim'
 
-" My Bundles here:
-Bundle 'scrooloose/nerdtree'
-Bundle 'kien/ctrlp.vim'
-" Bundle 'ervandew/supertab'
-Bundle 'majutsushi/tagbar'
-Bundle 'fholgado/minibufexpl.vim'
-Bundle 'scrooloose/syntastic'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'mhinz/vim-signify'
-Bundle 'ervandew/supertab'
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "tomtom/tlib_vim"
-Bundle 'garbas/vim-snipmate'
-Bundle 'honza/vim-snippets'
+" Generally useful plugins
+Plugin 'scrooloose/nerdtree'
+Plugin 'kien/ctrlp.vim'
+Plugin 'fholgado/minibufexpl.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'mhinz/vim-signify'
+Plugin 'kshenoy/vim-signature'
+Plugin 'itchyny/lightline.vim'
 
+" tab completion
+Plugin 'ervandew/supertab'
+
+" snippets
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
+
+" Generally useful programming plugins
+Plugin 'scrooloose/syntastic'
+Plugin 'majutsushi/tagbar'
+Plugin 'tpope/vim-commentary'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'tpope/vim-fugitive'
+
+" stuff for haskell
+Plugin 'dag/vim2hs'
+
+call vundle#end()
 filetype plugin indent on     " required!
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" don't try and be compatible
-set nocompatible
-
 " automatically read a file when changed
 set autoread
 
@@ -109,18 +122,17 @@ syntax enable
 " Set colorscheme
 set background=dark
 
-" make solarized look right on terminal
-let g:solarized_termcolors = 256
-let g:solarized_termtrans = 1
-let g:solarized_visibility = "high"
-let g:solarized_contrast = "high"
+" if the terminal you are using doesn't support solarized use this
+"let g:solarized_termcolors = 256
 
 colorscheme solarized
 
-" Make the SignColumn not look obnoxious (use same color as line numbers)
-" at least on the terminal
+" Make the SignColumn not look obnoxious
 highlight clear SignColumn
-highlight SignColumn ctermbg=235
+
+" display trailing whitespace
+set list
+set listchars=trail:· " use a unicode symbol!
 
 " Encoding
 set encoding=utf8
@@ -149,6 +161,7 @@ set autoindent
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Status line
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set laststatus=2 "make sure status line always shows up
 so ~/.vim/custom/status.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -157,7 +170,6 @@ so ~/.vim/custom/status.vim
 let mapleader=","
 noremap <Leader>N :NERDTreeToggle<CR>
 noremap <Leader>T :TagbarToggle<CR>
-noremap <Leader>U :GundoToggle<CR>
 
 " Use ctrl-[hjkl] to select the active split!
 nmap <silent> <c-k> :wincmd k<CR>
@@ -165,14 +177,39 @@ nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
 
+" <Leader>w finds the first instance of line with
+nmap <silent> <Leader>w /\s\+$<CR>:let @/=''<CR>
+
+" <Leader>W removes trailing whitespace from all lines that have it
+nmap <silent> <Leader>W :%s/\s\+$//<CR>:let @/=''<CR>
+
+" clear the last search
+nmap <silent> <Leader>C :let @/=''<CR>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" indent guide stuff
+let g:indent_guides_guide_size=1
+
+" Snipmate configuration
 imap <C-\> <Plug>snipMateNextOrTrigger
 smap <C-\> <Plug>snipMateNextOrTrigger
 
-" TODO figure out snippets
+" Haskell stuff
+let g:haskell_conceal_wide = 0 " The little arrow is nice though! :(
+
+" C stuff
+" Make vim-commentary use // for comments instead of using /* */
+autocmd FileType c set commentstring=//\ %s
+
+" syntastic stuff
+" Set the format of the status line to stick in status bar
+let g:syntastic_stl_format = "%e Errors: Line %F"
+
 " TODO figure out fortran
-" TODO figure out haskell
 " TODO figure out latex
-" TODO trailing whitespace notification
+" TODO learn about marks
+" TODO learn better window managment
+" TODO vim-obsession tpope?
+" TODO snipmate is kind of getting phased out by community, do I care?
