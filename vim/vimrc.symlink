@@ -1,4 +1,5 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " David Zmick
 " started with this: http://amix.dk/vim/vimrc.html
 " and working my way to what I want
@@ -47,6 +48,8 @@ Plugin 'dag/vim2hs'
 
 call vundle#end()
 filetype plugin indent on     " required!
+
+source $VIMRUNTIME/ftplugin/man.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
@@ -207,6 +210,7 @@ let g:syntastic_stl_format = "%e Errors: Line %F"
 
 " TODO figure out fortran
 " TODO figure out latex
+let g:tex_conceal="gm"
 " TODO learn about marks
 " TODO learn better window managment
 " TODO vim-obsession tpope?
