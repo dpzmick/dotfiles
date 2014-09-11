@@ -43,6 +43,9 @@ Plugin 'tpope/vim-commentary'
 Plugin 'Yggdroot/indentLine'
 Plugin 'tpope/vim-fugitive'
 
+" python
+Plugin 'davidhalter/jedi-vim'
+
 " stuff for haskell
 Plugin 'dag/vim2hs'
 
