@@ -46,6 +46,9 @@ Plugin 'tpope/vim-fugitive'
 " python
 Plugin 'davidhalter/jedi-vim'
 
+" collab editing
+Plugin 'FredKSchott/CoVim'
+
 " stuff for haskell
 Plugin 'dag/vim2hs'
 
