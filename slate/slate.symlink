@@ -40,3 +40,7 @@ bind 1:${wmmods} ${topleft}
 bind 2:${wmmods} ${topright}
 bind 3:${wmmods} ${bottomleft}
 bind 4:${wmmods} ${bottomright}
+
+# specific key bindings
+bind 1:${modal-keys} focus 'iTerm'
+bind 2:${modal-keys} focus 'Google Chrome'

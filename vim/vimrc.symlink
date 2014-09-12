@@ -1,10 +1,4 @@
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" David Zmick
-" started with this: http://amix.dk/vim/vimrc.html
-" and working my way to what I want
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
+" David Zmick's vimrc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -19,13 +13,18 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 " Generally useful plugins
-Plugin 'scrooloose/nerdtree'
-Plugin 'kien/ctrlp.vim'
-Plugin 'fholgado/minibufexpl.vim'
+" Plugin 'scrooloose/nerdtree'
+" Plugin 'kien/ctrlp.vim'
+" Plugin 'fholgado/minibufexpl.vim'
+Plugin 'Shougo/neomru.vim'
+Plugin 'Shougo/unite.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'mhinz/vim-signify'
 Plugin 'kshenoy/vim-signature'
 Plugin 'itchyny/lightline.vim'
+Plugin 'tpope/vim-surround'
+Plugin 'vim-scripts/a.vim'
+Plugin 'Lokaltog/vim-easymotion'
 
 " tab completion
 Plugin 'ervandew/supertab'
@@ -49,10 +48,11 @@ Plugin 'davidhalter/jedi-vim'
 " stuff for haskell
 Plugin 'dag/vim2hs'
 
+" Integration with tmux
+Plugin 'christoomey/vim-tmux-navigator'
+
 call vundle#end()
 filetype plugin indent on     " required!
-
-source $VIMRUNTIME/ftplugin/man.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
@@ -136,11 +136,6 @@ colorscheme solarized
 " Make the SignColumn not look obnoxious
 highlight clear SignColumn
 
-" display trailing whitespace
-"set list
-"set listchars=trail:· " use a unicode symbol!
-" If I do this is messes up tabs TODO fix this
-
 " Encoding
 set encoding=utf8
 
@@ -184,6 +179,7 @@ nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
 
+" TODO clean these up
 " <Leader>w finds the first instance of line with
 nmap <silent> <Leader>w /\s\+$<CR>:let @/=''<CR>
 
@@ -193,9 +189,17 @@ nmap <silent> <Leader>W :%s/\s\+$//<CR>:let @/=''<CR>
 " clear the last search
 nmap <silent> <Leader>C :let @/=''<CR>
 
+" Make caps lock escape, then to leave edit mode to a control-j
+imap <C-j> <Esc>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Man pages
+source $VIMRUNTIME/ftplugin/man.vim
+" use the fancy man page view on Shift-K instead of the crappy one
+nmap K :Man <cword><CR>
+
 " Snipmate configuration
 imap <C-\> <Plug>snipMateNextOrTrigger
 smap <C-\> <Plug>snipMateNextOrTrigger
@@ -211,10 +215,35 @@ autocmd FileType c set commentstring=//\ %s
 " Set the format of the status line to stick in status bar
 let g:syntastic_stl_format = "%e Errors: Line %F"
 
-" TODO figure out fortran
-" TODO figure out latex
+" jedi-vim
+" let g:jedi#auto_vim_configuration = 0
+" let g:jedi#popup_on_dot = 0
+let g:jedi#use_splits_not_buffers = "top"
+
+" latex
 let g:tex_conceal="gm"
-" TODO learn about marks
+
+" unite.vim
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
+"call unite#custom#source('file_rec/async','sorters','sorter_rank', )
+
+"" replacing unite with ctrl-p
+let g:unite_data_directory='~/.vim/.cache/unite'
+let g:unite_enable_start_insert=1
+let g:unite_source_history_yank_enable=1
+let g:unite_prompt='» '
+let g:unite_split_rule = 'botright'
+if executable('ag')
+    let g:unite_source_grep_command='ag'
+    let g:unite_source_grep_default_opts='--nocolor --nogroup -S -C4'
+    let g:unite_source_grep_recursive_opt=''
+endif
+
+nnoremap <silent> <c-p> :Unite -auto-resize file file_mru file_rec<cr>
+
+nnoremap <silent> <c-o> :Unite -auto-resize buffer<CR>
+
+" TODO figure out fortran
 " TODO learn better window managment
-" TODO vim-obsession tpope?
 " TODO snipmate is kind of getting phased out by community, do I care?
