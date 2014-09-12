@@ -229,7 +229,7 @@ let g:unite_source_history_yank_enable = 1
 let g:unite_split_rule = 'botright'
 
 nnoremap <silent> <c-p> :Unite  -no-split -start-insert file_rec/async<cr>
-nnoremap <silent> <c-o> :Unite  -no-split -start-insert buffer/async<CR>
+nnoremap <silent> <c-o> :Unite  -no-split -start-insert buffer<CR>
 
 nnoremap <silent> <Leader>f :Unite -auto-resize -start-insert file_rec/async -default-action=vsplit<cr>
 nnoremap <silent> <Leader>fh :Unite -auto-resize -start-insert file_rec/async -default-action=split<cr>
