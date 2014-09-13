@@ -38,8 +38,7 @@ $0
 endsnippet
 
 snippet main "main() (main)"
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	${VISUAL}${0}
 	return 0;
 }
@@ -136,6 +135,11 @@ endsnippet
 
 snippet fund "function declaration" b
 ${1:void} ${2:function_name}(${3});
+endsnippet
+
+snippet stdinc "standard includes" b
+#include <stdio.h>
+#include <stdlib.h>
 endsnippet
 
 # vim:ft=snippets:

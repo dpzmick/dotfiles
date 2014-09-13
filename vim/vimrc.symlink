@@ -189,9 +189,9 @@ inoremap jj <Esc>
 " Plugin settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Man pages
-source $VIMRUNTIME/ftplugin/man.vim
+source ~/.vim/ftplugin/man.vim
 " use the fancy man page view on Shift-K instead of the crappy one
-nmap K :Man 3 <cword><CR>
+nmap K :ManPriority <cword><CR>
 
 " Haskell stuff
 let g:haskell_conceal_wide = 0 " The little arrow is nice though! :(
