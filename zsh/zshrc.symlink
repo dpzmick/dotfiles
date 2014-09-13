@@ -44,7 +44,8 @@ zstyle ':completion::complete:*' use-cache on               # completion caching
 zstyle ':completion:*' cache-path ~/.zsh/cache              # cache path
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'   # ignore case
 zstyle ':completion:*' menu select=2                        # menu if nb items > 2
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}       # colorz !
+#zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}       # colorz !
+zstyle -e ':completion:*:default' list-colors 'reply=("${PREFIX:+=(#bi)($PREFIX:t)(?)*==34=34}:${(s.:.)LS_COLORS}")'
 zstyle ':completion:*::::' completer _expand _complete _ignored _approximate # list of completers to use
 
 # sections completion !
@@ -153,10 +154,6 @@ PROMPT+=$'%{$fg[yellow]%}${PWD/$HOME/~} %{$fg[cyan]%})'
 PROMPT+=$'\n$(__git_prompt)%{$fg[cyan]%}$vim_mode%{$reset_color%} '
 
 RPROMPT=$'%{$fg[cyan]%}%t%{$reset_color%}'
-
-# TODO figure out ls colors and stuff
-LS_COLORS='no=00;37:fi=00:di=00;33:ln=04;36:pi=40;33:so=01;35:bd=40;33;01:'
-export LS_COLORS
 
 # load aliases
 source ~/.alias
