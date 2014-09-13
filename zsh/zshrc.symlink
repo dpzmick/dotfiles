@@ -115,7 +115,7 @@ function __git_prompt {
   git rev-parse --git-dir >& /dev/null
   if [[ $? == 0 ]]
   then
-    echo -n "%{$fg[cyan]%}["
+    echo -n "%{$fg[cyan]%}("
     if [[ `git ls-files -u >& /dev/null` == '' ]]
     then
       git diff --quiet >& /dev/null
@@ -136,7 +136,7 @@ function __git_prompt {
     fi
     echo -n `git branch | grep '* ' | sed 's/..//'`
     echo -n $RESET
-    echo -n "%{$fg[cyan]%}]"
+    echo -n "%{$fg[cyan]%})"
   fi
 }
 
@@ -150,7 +150,7 @@ PROMPT+=$'%{$fg[white]%}@%{$fg[green]%}%m '
 # add the hostname and pwd
 PROMPT+=$'%{$fg[yellow]%}${PWD/$HOME/~} %{$fg[cyan]%})'
 # print the $ and reset the color
-PROMPT+=$'\n$(__git_prompt) %{$fg[cyan]%}$vim_mode%{$reset_color%} '
+PROMPT+=$'\n$(__git_prompt)%{$fg[cyan]%}$vim_mode%{$reset_color%} '
 
 RPROMPT=$'%{$fg[cyan]%}%T%{$reset_color%}'
 
