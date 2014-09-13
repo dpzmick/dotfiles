@@ -1,0 +1,6 @@
+# Enviroment variables
+export PATH=~/dotfiles/bin:/usr/local/sbin:/usr/local/bin:$PATH
+export PATH=/usr/local/share/npm/bin:$PATH
+export PATH=$HOME/.cabal/bin:$PATH
+export PATH="$(ruby -e 'puts Gem.user_dir')/bin:$PATH"
+export EDITOR=/usr/bin/vim

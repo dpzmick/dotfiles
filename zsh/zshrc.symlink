@@ -1,0 +1,138 @@
+# load colors
+autoload -U colors zsh-mime-setup
+colors
+
+
+################################################################################
+#                                vim mode stuff                                #
+################################################################################
+# use vim keybindings
+bindkey -v
+
+# some keybindings I'll probably never use
+bindkey '^P' up-history
+bindkey '^N' down-history
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+bindkey '^w' backward-kill-word
+bindkey '^r' history-incremental-search-backward
+bindkey jj vi-cmd-mode # make jj escape
+
+# some stuff to get the prompt nice
+vim_ins_mode="%{$fg[cyan]%}$"
+vim_cmd_mode="%{$fg[cyan]%}>%{$reset_color%}"
+vim_mode=$vim_ins_mode
+
+function zle-keymap-select {
+    vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
+    zle reset-prompt
+}
+zle -N zle-keymap-select
+
+function zle-line-finish {
+    vim_mode=$vim_ins_mode
+}
+zle -N zle-line-finish
+
+################################################################################
+#                                 completions                                  #
+################################################################################
+autoload compinit
+compinit
+
+zstyle ':completion::complete:*' use-cache on               # completion caching, use rehash to clear
+zstyle ':completion:*' cache-path ~/.zsh/cache              # cache path
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'   # ignore case
+zstyle ':completion:*' menu select=2                        # menu if nb items > 2
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}       # colorz !
+zstyle ':completion:*::::' completer _expand _complete _ignored _approximate # list of completers to use
+
+# sections completion !
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*:descriptions' format $'\e[00;34m%d'
+zstyle ':completion:*:messages' format $'\e[00;31m%d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:manuals' separate-sections true
+
+zstyle ':completion:*:processes' command 'ps -au$USER'
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+zstyle ':completion:*:*:kill:*:processes' list-colors "=(#b) #([0-9]#)*=29=34"
+zstyle ':completion:*:*:killall:*' menu yes select
+zstyle ':completion:*:killall:*' force-list always
+zstyle ':completion:*' users $users
+
+# be able to use shift tab
+bindkey '^[[Z' reverse-menu-complete
+
+
+################################################################################
+#                            various other settings                            #
+################################################################################
+# go to directories without typing cd
+setopt autocd
+# correct me
+setopt correct
+# always push directories to dir stack
+setopt auto_pushd
+setopt pushd_ignore_dups        # no duplicates in dir stack
+setopt pushd_silent             # no dir stack after pushd or popd
+setopt pushd_to_home            # `pushd` = `pushd $HOME`
+
+################################################################################
+#                                   history                                    #
+################################################################################
+HISTFILE=~/.zsh_history         # where to store zsh config
+HISTSIZE=1024                   # big history
+SAVEHIST=1024                   # big history
+setopt append_history           # append
+setopt hist_ignore_all_dups     # no duplicate
+setopt hist_ignore_space        # ignore space prefixed commands
+setopt hist_reduce_blanks       # trim blanks
+setopt hist_verify              # show before executing history commands
+setopt inc_append_history       # add commands as they are typed, don't wait until shell exit
+setopt share_history            # share hist between sessions
+setopt bang_hist                # !keyword
+
+# to get things ignored in history we need to do this trick
+for c (ls fg bj jobs exit clear reset) do
+    alias $c=" $c";
+done
+
+################################################################################
+#                                    prompt                                    #
+################################################################################
+# idk something funky
+setopt promptsubst
+setopt promptpercent
+# add the opening brace and username
+PROMPT=$'%{$fg[cyan]%}( %n'
+# add the @ and the hostname
+PROMPT+=$'%{$fg[white]%}@%{$fg[green]%}%m '
+# add the hostname and pwd
+PROMPT+=$'%{$fg[yellow]%}${PWD/$HOME/~} %{$fg[cyan]%})'
+# print the $ and reset the color
+PROMPT+=$'\n%{$fg[cyan]%}$vim_mode%{$reset_color%} '
+
+RPROMPT='%{$fg[cyan]%}%T%{$reset_color%}'
+
+# TODO figure out ls colors and stuff
+LS_COLORS='no=00;37:fi=00:di=00;33:ln=04;36:pi=40;33:so=01;35:bd=40;33;01:'
+export LS_COLORS
+
+# load aliases
+source ~/.alias
+
+# ls when I hit enter on a blank line!
+auto-ls () {
+   if [[ $#BUFFER -eq 0 ]]; then
+       echo ""
+       l
+       zle redisplay
+   else
+       zle .$WIDGET
+   fi
+}
+zle -N accept-line auto-ls
+zle -N other-widget auto-ls
+

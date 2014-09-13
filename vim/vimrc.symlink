@@ -29,10 +29,8 @@ Plugin 'Lokaltog/vim-easymotion'
 Plugin 'ervandew/supertab'
 
 " snippets
-" Plugin 'MarcWeber/vim-addon-mw-utils'
-" Plugin 'tomtom/tlib_vim'
-" Plugin 'garbas/vim-snipmate'
-" Plugin 'honza/vim-snippets'
+Plugin 'SirVer/ultisnips'
+" Plugin 'honza/vim-snippets' " going to use my own snippets
 
 " Generally useful programming plugins
 Plugin 'scrooloose/syntastic'
@@ -185,7 +183,7 @@ nmap <silent> <Leader>W :%s/\s\+$//<CR>:let @/=''<CR>
 nmap <silent> <Leader>C :let @/=''<CR>
 
 " Make caps lock escape, then to leave edit mode to a control-j
-imap <C-j> <Esc>
+inoremap jj <Esc>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
@@ -194,10 +192,6 @@ imap <C-j> <Esc>
 source $VIMRUNTIME/ftplugin/man.vim
 " use the fancy man page view on Shift-K instead of the crappy one
 nmap K :Man <cword><CR>
-
-" Snipmate configuration
-imap <C-\> <Plug>snipMateNextOrTrigger
-smap <C-\> <Plug>snipMateNextOrTrigger
 
 " Haskell stuff
 let g:haskell_conceal_wide = 0 " The little arrow is nice though! :(
@@ -224,7 +218,6 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 "call unite#custom#source('file_rec/async','sorters','sorter_rank', )
 
-"" replacing unite with ctrl-p
 let g:unite_data_directory='~/.vim/.cache/unite'
 let g:unite_source_history_yank_enable = 1
 let g:unite_split_rule = 'botright'
@@ -240,4 +233,12 @@ nnoremap <silent> <leader>T :Unite -vertical outline<cr>
 
 " TODO figure out fortran
 " TODO learn better window managment
-" TODO snipmate is kind of getting phased out by community, do I care?
+"
+
+" Trigger configuration. Do not use <tab> if you use
+let g:UltiSnipsExpandTrigger="<c-f>"
+let g:UltiSnipsJumpForwardTrigger="<c-f>"
+let g:UltiSnipsJumpBackwardTrigger="<c-d>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"

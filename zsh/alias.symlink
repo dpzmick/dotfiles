@@ -1,0 +1,17 @@
+#Aliases
+alias l='ls -G' # this is important, in zshrc we defined ls=' ls' so it can be ignored
+alias la='l -a'
+alias ll='l -l'
+alias las='l -las'
+alias g='grep'
+
+# uiuc
+alias ews="ssh zmick2@remlnx.ews.illinois.edu"
+alias ewsC="ssh -C zmick2@remlnx.ews.illinois.edu"
+alias ewsXX="ssh -C -X zmick2@remlnx.ews.illinois.edu"
+alias ewsX="ssh -X zmick2@remlnx.ews.illinois.edu"
+
+# good aliases for git
+alias wow='git status'
+alias such='git'
+alias very='git'
