@@ -172,5 +172,4 @@ auto-ls () {
    fi
 }
 zle -N accept-line auto-ls
-zle -N other-widget auto-ls
-
+#zle -N other-widget auto-ls
