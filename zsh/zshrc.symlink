@@ -158,15 +158,10 @@ RPROMPT=$'%{$fg[cyan]%}%t%{$reset_color%}'
 # load aliases
 source ~/.alias
 
-# ls when I hit enter on a blank line!
-auto-ls () {
-   if [[ $#BUFFER -eq 0 ]]; then
-       echo ""
-       l
-       zle redisplay
-   else
-       zle .$WIDGET
-   fi
+function empty-buffer-to-ls() {
+    if [[ $#BUFFER == 0 ]]; then
+        BUFFER="l"
+    fi
 }
-zle -N accept-line auto-ls
-#zle -N other-widget auto-ls
+# set special widget, see man zshzle
+zle -N zle-line-finish empty-buffer-to-ls
