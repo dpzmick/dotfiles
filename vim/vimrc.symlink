@@ -199,7 +199,6 @@ let g:haskell_conceal_wide = 0 " The little arrow is nice though! :(
 " C stuff
 " Make vim-commentary use // for comments instead of using /* */
 autocmd FileType c set commentstring=//\ %s
-command -nargs=* Make make <args> | cwindow 3
 
 " syntastic stuff
 " Set the format of the status line to stick in status bar

@@ -68,9 +68,15 @@ endtry
 "  DZs additions  "
 """""""""""""""""""
 func <SID>GetPagePriority(page)
+  if a:page == '<cword>'
+    let page = expand('<cword>')
+  elseif
+    let page = a:page
+  endif
+
   for i in [3,2,1,8,4,5,6,7]
-    if s:FindPage(i, a:page) != 0
-      call s:GetPage(i, a:page)
+    if s:FindPage(i, page) != 0
+      call s:GetPage(i, page)
       return
     endif
   endfor
