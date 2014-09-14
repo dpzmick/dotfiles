@@ -46,6 +46,7 @@ Plugin 'dag/vim2hs'
 
 " Integration with tmux
 Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'tpope/vim-dispatch'
 
 call vundle#end()
 filetype plugin indent on     " required!
@@ -105,6 +106,8 @@ set novisualbell
 
 " use the mouse
 set mouse=a
+" hide the mouse while typing
+set mousehide
 
 " keep cursor in the middle of the screen
 set scrolloff=5
