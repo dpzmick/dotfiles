@@ -3,3 +3,6 @@ export PATH=~/dotfiles/bin:/usr/local/sbin:/usr/local/bin:$PATH
 export PATH=/usr/local/share/npm/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 export EDITOR=/usr/bin/vim
+
+# whatever, just pretend we always have 256 colors
+export TERM=xterm-256color
