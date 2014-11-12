@@ -185,8 +185,8 @@ nmap <silent> <Leader>W :%s/\s\+$//<CR>:let @/=''<CR>
 " clear the last search
 nmap <silent> <Leader>C :let @/=''<CR>
 
-" Make caps lock escape, then to leave edit mode to a control-j
-inoremap jj <Esc>
+" Make jk escape
+inoremap jk <Esc>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
