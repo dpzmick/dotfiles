@@ -18,7 +18,7 @@ The only thing here that is really that interesting is the vim config, the rest
 is just here as a convenience to me.
 
 ## Vim
-This is by no means a complete list, but here are some highlight
+This is by no means a complete list, but here are some highlights:
 
 * syntax checking via syntastic
 * indication of changes in version control (vim-signify)
@@ -33,21 +33,18 @@ This is by no means a complete list, but here are some highlight
 
 * <Ctrl>P opens recursive fuzzy file search on files in current working directory
 * <Ctrl>O opens search on currently opened buffers
-* <Leader>T opens fuzzy search on tags in file (may change to ctrl t)
+* <Ctrl>T opens fuzzy search on tags in file (may change to ctrl t)
 * <Leader>{k,j,h,l} moves between open windows
 * <Leader>w finds first instance of trailing whitespace and moves cursor to it
-* <Leader>W removes all trailing whitespace
-* <Leader>C clears highlighted searches
+* <Leader>W removes all trailing whitespace (TODO leaves stuff highlighted)
+* <Leader>C clears highlighted searches (TODO isn't working)
 * Shift-K tries opens man pages, sections prioritized in the way a programmer probably
   wants them (section 3 first, then 2, and I forgot the order)
 
 leader is set to ,
 
-## bash
-I might switch to zsh soon but I'm happy here at the moment
+## zsh
 
-* fix simple spelling mistakes in cd
-* do some stuff to try to make history more sane
-* change prompt color if on remote host
-* use vi editing mode
-* nothing much else is really that special
+* Hit enter for ls! TODO fix color difference between "ls" and "l"
+* Some things still broken here. Switching between insert and normal mode
+  doesn't always update indicator and sometimes moves the prompt up a line.

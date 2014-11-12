@@ -205,12 +205,13 @@ autocmd FileType c set commentstring=//\ %s
 
 " syntastic stuff
 " Set the format of the status line to stick in status bar
-let g:syntastic_stl_format = "%e Errors: Line %F"
+let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
 
 " jedi-vim
 " let g:jedi#auto_vim_configuration = 0
 " let g:jedi#popup_on_dot = 0
 let g:jedi#use_splits_not_buffers = "top"
+let g:jedi#show_call_signatures = "0"
 
 " latex
 let g:tex_conceal="gm"
@@ -224,14 +225,18 @@ let g:unite_data_directory='~/.vim/.cache/unite'
 let g:unite_source_history_yank_enable = 1
 let g:unite_split_rule = 'botright'
 
+" map control-p to fuzzy search working directory
 nnoremap <silent> <c-p> :Unite  -no-split -start-insert file_rec/async<cr>
+" map control-o to display open buffers
 nnoremap <silent> <c-o> :Unite  -no-split -start-insert buffer<CR>
+"map control-t to open a tag viewer
+nnoremap <silent> <c-t> :Unite -vertical outline<cr>
 
+" i don't remember
 nnoremap <silent> <Leader>f :Unite -auto-resize -start-insert file_rec/async -default-action=vsplit<cr>
 nnoremap <silent> <Leader>fh :Unite -auto-resize -start-insert file_rec/async -default-action=split<cr>
 nnoremap <silent> <leader>y :Unite -no-split -buffer-name=yank history/yank<cr>
 
-nnoremap <silent> <leader>T :Unite -vertical outline<cr>
 
 " TODO figure out fortran
 " TODO learn better window managment

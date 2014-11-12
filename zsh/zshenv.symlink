@@ -6,3 +6,5 @@ export EDITOR=/usr/bin/vim
 
 # whatever, just pretend we always have 256 colors
 export TERM=xterm-256color
+
+source /usr/local/bin/virtualenvwrapper.sh
