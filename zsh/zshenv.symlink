@@ -12,3 +12,6 @@ export ANDROID_HOME=/usr/local/opt/android-sdk
 
 # for ocaml
 eval `opam config env`
+
+# OPAM configuration
+. /Users/dz0004455/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
