@@ -6,10 +6,13 @@ alias las='l -las'
 alias g='grep'
 
 # uiuc
-alias ews="ssh zmick2@remlnx.ews.illinois.edu"
-alias ewsC="ssh -C zmick2@remlnx.ews.illinois.edu"
-alias ewsXX="ssh -C -X zmick2@remlnx.ews.illinois.edu"
-alias ewsX="ssh -X zmick2@remlnx.ews.illinois.edu"
+REM_USER=zmick2
+alias ews="ssh $REM_USER@remlnx.ews.illinois.edu"
+alias ewsC="ssh -C $REM_USER@remlnx.ews.illinois.edu"
+alias ewsXX="ssh -C -X $REM_USER@remlnx.ews.illinois.edu"
+alias ewsX="ssh -X $REM_USER@remlnx.ews.illinois.edu"
+# big machine
+alias ews2="ssh $REM_USER@linux-a2.ews.illinois.edu"
 
 # good aliases for git
 alias wow='git status'
