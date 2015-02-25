@@ -1,75 +1,70 @@
 " David Zmick's vimrc
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Vundle
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
-filetype off                   " required!
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin("~/.vim/bundle/")
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugins
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                 " required!
 
-" let Vundle manage Vundle
-" required!
-Plugin 'gmarik/Vundle.vim'
+call plug#begin("~/.vim/plugged/")
 
 " Generally useful plugins
-Plugin 'Shougo/vimproc.vim'
-Plugin 'Shougo/neomru.vim'
-Plugin 'Shougo/unite.vim'
-Plugin 'Shougo/unite-outline'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'mhinz/vim-signify'
-Plugin 'kshenoy/vim-signature'
-Plugin 'itchyny/lightline.vim'
-Plugin 'tpope/vim-surround'
-Plugin 'vim-scripts/a.vim'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'rking/ag.vim'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'tpope/vim-projectionist'
-" Plugin 'tpope/vim-dispatch'
-Plugin 'christoomey/vim-tmux-runner'
+Plug 'Shougo/vimproc.vim', {'do': 'make'}
+Plug 'Shougo/neomru.vim'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/unite-outline'
+Plug 'altercation/vim-colors-solarized'
+Plug 'mhinz/vim-signify'
+Plug 'kshenoy/vim-signature'
+Plug 'itchyny/lightline.vim'
+Plug 'tpope/vim-surround'
+Plug 'vim-scripts/a.vim'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'rking/ag.vim'
+Plug 'junegunn/vim-easy-align'
+Plug 'tpope/vim-projectionist'
+" Plug 'tpope/vim-dispatch'
+Plug 'christoomey/vim-tmux-runner'
 
 " tab completion
-Plugin 'ervandew/supertab'
+" Plug 'ervandew/supertab'
 
 " snippets
-Plugin 'SirVer/ultisnips'
+Plug 'SirVer/ultisnips'
 
 " Generally useful programming plugins
-Plugin 'scrooloose/syntastic'
-" Plugin 'benekastah/neomake'
-Plugin 'tpope/vim-commentary'
-Plugin 'Yggdroot/indentLine'
-Plugin 'tpope/vim-fugitive'
-Plugin 'Raimondi/delimitMate'
-Plugin 'bronson/vim-trailing-whitespace'
+Plug 'scrooloose/syntastic'
+Plug 'tpope/vim-commentary'
+Plug 'Yggdroot/indentLine'
+Plug 'tpope/vim-fugitive'
+Plug 'Raimondi/delimitMate'
+Plug 'bronson/vim-trailing-whitespace'
 
 " python
-Plugin 'davidhalter/jedi-vim'
+" Plug 'davidhalter/jedi-vim', {'for': 'python'}
 
 " stuff for haskell
-Plugin 'dag/vim2hs'
+Plug 'dag/vim2hs'
 
 " for lisp (ugh)
-Plugin 'amdt/vim-niji'
+Plug 'amdt/vim-niji'
 
 " for c
-Plugin 'bruno-/vim-man'
+Plug 'bruno-/vim-man'
 
 " for js
-Plugin 'jelera/vim-javascript-syntax'
-Plugin 'pangloss/vim-javascript'
+Plug 'jelera/vim-javascript-syntax'
+Plug 'pangloss/vim-javascript'
 
 " Integration with tmux
-Plugin 'christoomey/vim-tmux-navigator'
+Plug 'christoomey/vim-tmux-navigator'
 
-call vundle#end()
+" autocomplete
+Plug 'Valloric/YouCompleteMe', {'do': './install.sh --clang-completer'}
 
-" ocaml merlin
-" set rtp+=/Users/dz0004455/.vim/ocamlmer/
+call plug#end()
 
-filetype plugin indent on     " required!
+filetype plugin indent on
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
@@ -84,6 +79,11 @@ if has('persistent_undo')
     set undodir=~/.vim/backups
     set undofile
 endif
+
+" store all swap files in home
+silent !mkdir ~/.vim/swaps > /dev/null 2>&1
+set swapfile
+set dir=~/.vim/swaps
 
 " keeps buffers open but hidden when not in use
 set hidden
@@ -190,14 +190,13 @@ so ~/.vim/custom/status.vim
 " Custom Keybindings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader=","
+
 " Use ctrl-[hjkl] to select the active split!
 nmap <silent> <c-k> :wincmd k<CR>
-
 nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
 
-" TODO clean these up
 " <Leader>W removes trailing whitespace from all lines that have it
 nmap <silent> <Leader>W :FixWhitespace<CR>
 
@@ -278,3 +277,12 @@ endfunction
 
 autocmd FileType scheme map <F9> :call RunRacketVTR()<CR>
 map <F10> :VtrSendLinesToRunner<CR>
+
+let g:ycm_global_ycm_extra_conf = '~/.vim/custom/.ycm_extra_conf.py'
+
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+    \| exe "normal! g'\"" | endif
+endif

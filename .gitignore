@@ -1,6 +1,5 @@
 *.swp
 .DS_Store
-vim/vim.symlink/bundle/*
 vim/vim.symlink/backups/*
 vim/vim.symlink/.VimballRecord
 vim/vim.symlink/.cache/
