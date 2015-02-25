@@ -5,8 +5,8 @@
 set nocompatible
 filetype off                   " required!
 
-set rtp+=~/.nvim/bundle/Vundle.vim
-call vundle#begin("~/.nvim/bundle/")
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin("~/.vim/bundle/")
 
 " let Vundle manage Vundle
 " required!
@@ -80,8 +80,8 @@ set autoread
 " Keep undo history across sessions, by storing in file.
 " Only works all the time.
 if has('persistent_undo')
-    silent !mkdir ~/.nvim/backups > /dev/null 2>&1
-    set undodir=~/.nvim/backups
+    silent !mkdir ~/.vim/backups > /dev/null 2>&1
+    set undodir=~/.vim/backups
     set undofile
 endif
 
@@ -184,7 +184,7 @@ set autoindent
 " Status line
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set laststatus=2 "make sure status line always shows up
-so ~/.nvim/custom/status.vim
+so ~/.vim/custom/status.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom Keybindings
@@ -242,7 +242,7 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 "call unite#custom#source('file_rec/async','sorters','sorter_rank', )
 
-let g:unite_data_directory             = '~/.nvim/.cache/unite'
+let g:unite_data_directory             = '~/.vim/.cache/unite'
 let g:unite_source_history_yank_enable = 1
 let g:unite_split_rule                 = 'botright'
 
