@@ -1,7 +1,9 @@
 *.swp
+*.pyc
 .DS_Store
 vim/vim.symlink/backups/*
 vim/vim.symlink/.VimballRecord
 vim/vim.symlink/.cache/
 vim/vim.symlink/.netrwhist
 vim/vim.symlink/spell/
+vim/vim.symlink/plugged/

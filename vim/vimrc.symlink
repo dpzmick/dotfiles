@@ -4,8 +4,6 @@ set nocompatible
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugins
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                 " required!
-
 call plug#begin("~/.vim/plugged/")
 
 " Generally useful plugins
@@ -192,10 +190,10 @@ so ~/.vim/custom/status.vim
 let mapleader=","
 
 " Use ctrl-[hjkl] to select the active split!
-nmap <silent> <c-k> :wincmd k<CR>
-nmap <silent> <c-j> :wincmd j<CR>
-nmap <silent> <c-h> :wincmd h<CR>
-nmap <silent> <c-l> :wincmd l<CR>
+" nmap <silent> <c-k> :wincmd k<CR>
+" nmap <silent> <c-j> :wincmd j<CR>
+" nmap <silent> <c-h> :wincmd h<CR>
+" nmap <silent> <c-l> :wincmd l<CR>
 
 " <Leader>W removes trailing whitespace from all lines that have it
 nmap <silent> <Leader>W :FixWhitespace<CR>
@@ -286,3 +284,5 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
     \| exe "normal! g'\"" | endif
 endif
+
+let g:tmux_navigator_save_on_switch = 1
