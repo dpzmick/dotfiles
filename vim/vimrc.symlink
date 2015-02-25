@@ -1,4 +1,6 @@
-" David Zmick's vimrc
+" David Zmick's vimrc (dpzmick)
+" Do whatever you want with this
+
 set nocompatible
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -23,9 +25,6 @@ Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-projectionist'
 " Plug 'tpope/vim-dispatch'
 Plug 'christoomey/vim-tmux-runner'
-
-" tab completion
-" Plug 'ervandew/supertab'
 
 " snippets
 Plug 'SirVer/ultisnips'
@@ -63,11 +62,11 @@ Plug 'Valloric/YouCompleteMe', {'do': './install.sh --clang-completer'}
 
 call plug#end()
 
-filetype plugin indent on
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+filetype plugin indent on
+
 " automatically read a file when changed
 set autoread
 
@@ -116,9 +115,6 @@ set magic
 
 " show matching brackets
 set showmatch
-
-" time in milliseconds to flash match (default 5)
-" set mat=5
 
 " don't be annoying
 set noerrorbells
@@ -190,12 +186,6 @@ so ~/.vim/custom/status.vim
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader=","
 
-" Use ctrl-[hjkl] to select the active split!
-" nmap <silent> <c-k> :wincmd k<CR>
-" nmap <silent> <c-j> :wincmd j<CR>
-" nmap <silent> <c-h> :wincmd h<CR>
-" nmap <silent> <c-l> :wincmd l<CR>
-
 " <Leader>W removes trailing whitespace from all lines that have it
 nmap <silent> <Leader>W :FixWhitespace<CR>
 
@@ -219,9 +209,6 @@ let g:haskell_conceal_wide = 0 " The little arrow is nice though! :(
 " Make vim-commentary use // for comments instead of using /* */
 autocmd FileType c set commentstring=//\ %s
 
-" Lisp/Scheme
-autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
-
 " syntastic stuff
 " Set the format of the status line to stick in status bar
 let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
@@ -229,8 +216,8 @@ let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
 " jedi-vim
 " let g:jedi#auto_vim_configuration = 0
 " let g:jedi#popup_on_dot = 0
-let g:jedi#use_splits_not_buffers = "top"
-let g:jedi#show_call_signatures   = "0"
+" let g:jedi#use_splits_not_buffers = "top"
+" let g:jedi#show_call_signatures   = "0"
 
 " latex
 let g:tex_conceal="gm"
@@ -268,6 +255,24 @@ nmap ** :Ag <c-r>=expand("<cword>")<cr><cr>
 " hit enter in visual mode to easy align
 vmap <Enter> <Plug>(EasyAlign)
 
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" tmux navigator, saves the file when you switch out of vim
+let g:tmux_navigator_save_on_switch = 1
+
+" json vim thinks it gets to conceal quotes, thats stupid
+let g:vim_json_syntax_conceal = 0
+
+" YouCompleteMe
+" Sets the ycm_extra_conf file (right now is just a file for C)
+" TODO set autocmd for different default global you conf files
+let g:ycm_global_ycm_extra_conf = '~/.vim/custom/.ycm_extra_conf.py'
+
+" Lisp/Scheme
+autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
+
 " runs racket on the current file, enters the current file
 function RunRacketVTR()
     let cmd = 'racket -il xrepl -e ''(enter\! "' . expand('%') . '")'''
@@ -276,16 +281,3 @@ endfunction
 
 autocmd FileType scheme map <F9> :call RunRacketVTR()<CR>
 map <F10> :VtrSendLinesToRunner<CR>
-
-let g:ycm_global_ycm_extra_conf = '~/.vim/custom/.ycm_extra_conf.py'
-
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-    \| exe "normal! g'\"" | endif
-endif
-
-let g:tmux_navigator_save_on_switch = 1
-
-let g:vim_json_syntax_conceal = 0
