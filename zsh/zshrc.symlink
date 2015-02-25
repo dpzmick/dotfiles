@@ -15,7 +15,7 @@ bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
 bindkey '^r' history-incremental-search-backward
-bindkey jj vi-cmd-mode # make jj escape
+bindkey jk vi-cmd-mode # make jk escape
 
 # some stuff to get the prompt nice
 vim_ins_mode="%{$fg[cyan]%}$"

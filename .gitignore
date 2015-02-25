@@ -1,4 +1,9 @@
 *.swp
 .DS_Store
-vim/vim.symlink/bundle/*
+nvim/nvim.symlink/bundle/*
+nvim/nvim.symlink/backups/*
 cmus/cmus.symlink/post-fm-pass
+nvim/nvim.symlink/.VimballRecord
+nvim/nvim.symlink/.cache/
+nvim/nvim.symlink/.netrwhist
+nvim/nvim.symlink/spell/
