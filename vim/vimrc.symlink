@@ -44,11 +44,18 @@ Plugin 'davidhalter/jedi-vim'
 " stuff for haskell
 Plugin 'dag/vim2hs'
 
+" for lisp (ugh)
+Plugin 'amdt/vim-niji'
+
 " Integration with tmux
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'tpope/vim-dispatch'
 
 call vundle#end()
+
+" ocaml merlin
+set rtp+=/Users/dz0004455/.vim/ocamlmer/
+
 filetype plugin indent on     " required!
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -203,6 +210,10 @@ let g:haskell_conceal_wide = 0 " The little arrow is nice though! :(
 " Make vim-commentary use // for comments instead of using /* */
 autocmd FileType c set commentstring=//\ %s
 
+" Lisp/Scheme
+autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
+autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
+
 " syntastic stuff
 " Set the format of the status line to stick in status bar
 let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
@@ -233,16 +244,9 @@ nnoremap <silent> <c-o> :Unite  -no-split -start-insert buffer<CR>
 nnoremap <silent> <c-t> :Unite -vertical outline<cr>
 
 " i don't remember
-nnoremap <silent> <Leader>f :Unite -auto-resize -start-insert file_rec/async -default-action=vsplit<cr>
-nnoremap <silent> <Leader>fh :Unite -auto-resize -start-insert file_rec/async -default-action=split<cr>
 nnoremap <silent> <leader>y :Unite -no-split -buffer-name=yank history/yank<cr>
 
-
-" TODO figure out fortran
-" TODO learn better window managment
-"
-
-" Trigger configuration. Do not use <tab> if you use
+" Trigger configuration.
 let g:UltiSnipsExpandTrigger="<c-f>"
 let g:UltiSnipsJumpForwardTrigger="<c-f>"
 let g:UltiSnipsJumpBackwardTrigger="<c-d>"
