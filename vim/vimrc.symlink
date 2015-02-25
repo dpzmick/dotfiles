@@ -51,8 +51,9 @@ Plug 'amdt/vim-niji'
 Plug 'bruno-/vim-man'
 
 " for js
-Plug 'jelera/vim-javascript-syntax'
 Plug 'pangloss/vim-javascript'
+Plug 'elzr/vim-json'
+Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
 
 " Integration with tmux
 Plug 'christoomey/vim-tmux-navigator'
@@ -286,3 +287,5 @@ if has("autocmd")
 endif
 
 let g:tmux_navigator_save_on_switch = 1
+
+let g:vim_json_syntax_conceal = 0
