@@ -22,9 +22,10 @@ Plug 'vim-scripts/a.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'rking/ag.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'tpope/vim-projectionist'
-" Plug 'tpope/vim-dispatch'
+" Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-dispatch'
 Plug 'christoomey/vim-tmux-runner'
+Plug 'benekastah/neomake'
 
 " snippets
 Plug 'SirVer/ultisnips'
@@ -38,7 +39,8 @@ Plug 'Raimondi/delimitMate'
 Plug 'bronson/vim-trailing-whitespace'
 
 " python
-" Plug 'davidhalter/jedi-vim', {'for': 'python'}
+Plug 'davidhalter/jedi-vim', {'for': 'python'}
+Plug 'ervandew/supertab', {'for': 'python'}
 
 " stuff for haskell
 Plug 'dag/vim2hs'
@@ -53,6 +55,8 @@ Plug 'bruno-/vim-man'
 Plug 'pangloss/vim-javascript'
 Plug 'elzr/vim-json'
 Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
+Plug 'othree/html5.vim'
+Plug 'facebook/vim-flow'
 
 " Integration with tmux
 Plug 'christoomey/vim-tmux-navigator'
@@ -61,6 +65,13 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'Valloric/YouCompleteMe', {'do': './install.sh --clang-completer'}
 
 call plug#end()
+
+" for ocaml merlin
+let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+execute "set rtp+=" . g:opamshare . "/merlin/vim"
+
+" Also run the following line in vim to index the documentation:
+execute "helptags " . g:opamshare . "/merlin/vim/doc"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
@@ -194,7 +205,7 @@ nmap <silent> <Leader>C :noh<CR>
 
 " Make jk escape
 inoremap jk <Esc>
-vnoremap jk <Esc>
+" vnoremap jk <Esc>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
@@ -238,6 +249,9 @@ nnoremap <silent> <c-o> :Unite  -no-split -start-insert buffer<CR>
 "map control-t to open a tag viewer
 nnoremap <silent> <c-t> :Unite -vertical outline<cr>
 
+call unite#custom#source('file_rec/async', 'ignore_pattern', 'node_modules/')
+call unite#custom#source('file_rec/async', 'ignore_pattern', '_build/')
+
 " Trigger configuration.
 let g:UltiSnipsExpandTrigger       = "<c-f>"
 let g:UltiSnipsJumpForwardTrigger  = "<c-f>"
@@ -269,15 +283,22 @@ let g:vim_json_syntax_conceal = 0
 " Sets the ycm_extra_conf file (right now is just a file for C)
 " TODO set autocmd for different default global you conf files
 let g:ycm_global_ycm_extra_conf = '~/.vim/custom/.ycm_extra_conf.py'
+autocmd filetype cpp :let g:ycm_global_ycm_extra_conf = "~/.vim/custom/.ycm_extra_conf_cpp.py"
 
 " Lisp/Scheme
 autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
 
 " runs racket on the current file, enters the current file
+" kind of (a lot) a hack
 function RunRacketVTR()
     let cmd = 'racket -il xrepl -e ''(enter\! "' . expand('%') . '")'''
+    :VtrKillRunner
+    :VtrOpenRunner
     exec 'VtrSendCommandToRunner' . ' ' . cmd
 endfunction
 
 autocmd FileType scheme map <F9> :call RunRacketVTR()<CR>
 map <F10> :VtrSendLinesToRunner<CR>
+
+autocmd FileType ocaml map <Leader>t :MerlinTypeOf<CR>
+autocmd FileType javascript map <Leader>t :FlowType<CR>

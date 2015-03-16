@@ -1,0 +1,4 @@
+#!/bin/bash
+oldpath=/home/cs423/$1
+newpath=/Users/dz0004455/programming/cs423/sync/$1
+ssh cs423@sp15-cs423-g20.cs.illinois.edu "cd ~/$1 && make"  2>&1 | sed -e "s|$oldpath|$newpath|g"
