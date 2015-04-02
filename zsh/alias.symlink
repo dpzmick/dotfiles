@@ -17,3 +17,6 @@ alias ewsX="ssh -X $REM_USER@$EWS_HOST"
 alias wow='git status'
 alias such='git'
 alias very='git'
+
+# do an npm-exec that behaves like bundle-exec
+alias npm-exec='nocorrect PATH=$(npm bin):$PATH'
