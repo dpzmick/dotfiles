@@ -46,7 +46,7 @@ Plug 'ervandew/supertab', {'for': 'python'}
 Plug 'dag/vim2hs'
 
 " for lisp (ugh)
-Plug 'amdt/vim-niji'
+" Plug 'amdt/vim-niji'
 
 " for c
 Plug 'bruno-/vim-man'
@@ -63,6 +63,9 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " autocomplete
 Plug 'Valloric/YouCompleteMe', {'do': './install.sh --clang-completer'}
+
+" elixir
+Plug 'elixir-lang/vim-elixir'
 
 call plug#end()
 
@@ -226,9 +229,10 @@ let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
 
 " jedi-vim
 " let g:jedi#auto_vim_configuration = 0
-" let g:jedi#popup_on_dot = 0
+let g:jedi#popup_on_dot = 0
 " let g:jedi#use_splits_not_buffers = "top"
-" let g:jedi#show_call_signatures   = "0"
+let g:jedi#show_call_signatures = "0"
+let g:jedi#completions_enable = 0
 
 " latex
 let g:tex_conceal="gm"
@@ -302,3 +306,6 @@ autocmd FileType ocaml call unite#custom#source('file_rec/async', 'ignore_patter
 
 autocmd FileType javascript map <Leader>t :FlowType<CR>
 autocmd FileType javascript call unite#custom#source('file_rec/async', 'ignore_pattern', 'node_modules/')
+
+let loaded_matchparen = 1
+asdad

@@ -1,0 +1,79 @@
+; require the new emacs 24 package manager
+(require 'package)
+
+; list the repositories containing them
+(setq package-archives '(("elpa" . "http://tromey.com/elpa/")
+                         ("melpa" . "http://melpa.org/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")))
+
+; list the packages you want
+(setq package-list '(evil quack geiser rainbow-delimiters solarized-theme
+			  exec-path-from-shell flycheck company key-chord helm indent-guide
+			  diff-hl))
+
+; activate all the packages (in particular autoloads)
+(package-initialize)
+
+; fetch the list of packages available
+(package-refresh-contents)
+
+; install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
+
+; turn things on
+(evil-mode 1)
+(key-chord-mode 1)
+(require 'helm-config)
+
+; load solarized
+(load-theme 'solarized-dark t)
+
+; hide gui crap I don't want to see
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+
+(setq tab-always-indent 'complete)
+
+(when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize))
+
+(key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
+(define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+(define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+(define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+(define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+(global-set-key (kbd "C-x C-p") 'helm-find-files)
+(global-set-key (kbd "C-x C-o") 'helm-buffers-list)
+
+; turn on line numbers
+(global-linum-mode t)
+
+; adds a solid line seperator between numbers and text
+(setq linum-format "%4d \u2502 ")
+
+; save undo history between sessions
+(setq undo-tree-auto-save-history t)
+
+(indent-guide-global-mode)
+
+; enable diff on changed lines
+(require 'diff-hl)
+(global-diff-hl-mode t)
+
+(define-key evil-visual-state-map "gc" 'comment-dwim)
+
+; custom status bar
+; surround
+; easy-align
+; easy-motion
+; snippets
+; syntax-checking
+; backup file location
+
+; cleanup this file and stuff
