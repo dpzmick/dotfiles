@@ -20,12 +20,12 @@ Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-surround'
 Plug 'vim-scripts/a.vim'
 Plug 'Lokaltog/vim-easymotion'
-" Plug 'rking/ag.vim'
+Plug 'rking/ag.vim'
 Plug 'junegunn/vim-easy-align'
 " Plug 'tpope/vim-projectionist'
-Plug 'tpope/vim-dispatch'
-Plug 'christoomey/vim-tmux-runner'
-Plug 'benekastah/neomake'
+" Plug 'tpope/vim-dispatch'
+" Plug 'christoomey/vim-tmux-runner'
+" Plug 'benekastah/neomake'
 
 " snippets
 Plug 'SirVer/ultisnips'
@@ -46,7 +46,8 @@ Plug 'ervandew/supertab', {'for': 'python'}
 Plug 'dag/vim2hs'
 
 " for lisp (ugh)
-" Plug 'amdt/vim-niji'
+Plug 'luochen1990/rainbow'
+Plug 'wlangstroth/vim-racket'
 
 " for c
 Plug 'bruno-/vim-man'
@@ -63,9 +64,6 @@ Plug 'digitaltoad/vim-jade'
 
 " autocomplete
 Plug 'Valloric/YouCompleteMe', {'do': './install.sh --clang-completer'}
-
-" elixir
-Plug 'elixir-lang/vim-elixir'
 
 call plug#end()
 
@@ -333,3 +331,5 @@ else
     map <C-k> <C-w>k
     map <C-l> <C-w>l
 endif
+
+let g:rainbow_active = 1
