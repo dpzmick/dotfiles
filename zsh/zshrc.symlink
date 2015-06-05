@@ -23,6 +23,8 @@ vim_cmd_mode="%{$fg[cyan]%}>%{$reset_color%}"
 vim_mode=$vim_ins_mode
 
 function zle-keymap-select {
+    setopt localoptions no_ksharrays
+    [[ "${@[2]-}" == opp ]] && return
     vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
     zle reset-prompt
 }

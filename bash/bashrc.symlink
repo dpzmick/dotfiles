@@ -95,3 +95,6 @@ syspip(){
 export WORKON=~/.virtualenv
 source /usr/local/bin/virtualenvwrapper.sh
 export PATH=~/pebble-dev/PebbleSDK-2.0.2/bin:$PATH
+
+export NVM_DIR="/Users/dz0004455/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
