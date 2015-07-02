@@ -1,7 +1,7 @@
 [user]
 	name = David Zmick
-	email = dpzmick@gmail.com
+	email = dpzmick@us.ibm.com
 [credential]
-	helper = osxkeychain
+	helper = /usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
 [push]
 	default = matching

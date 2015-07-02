@@ -22,7 +22,7 @@ Plug 'vim-scripts/a.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'rking/ag.vim'
 Plug 'junegunn/vim-easy-align'
-" Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-projectionist'
 " Plug 'tpope/vim-dispatch'
 " Plug 'christoomey/vim-tmux-runner'
 " Plug 'benekastah/neomake'
@@ -71,13 +71,6 @@ Plug 'dpzmick/vim-dvtm-navigator'
 Plug 'Valloric/YouCompleteMe', {'do': './install.sh --clang-completer'}
 
 call plug#end()
-
-" for ocaml merlin
-let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
-execute "set rtp+=" . g:opamshare . "/merlin/vim"
-
-" Also run the following line in vim to index the documentation:
-execute "helptags " . g:opamshare . "/merlin/vim/doc"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
