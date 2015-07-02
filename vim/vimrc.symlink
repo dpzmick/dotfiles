@@ -43,7 +43,9 @@ Plug 'davidhalter/jedi-vim', {'for': 'python'}
 Plug 'ervandew/supertab', {'for': 'python'}
 
 " stuff for haskell
-Plug 'dag/vim2hs'
+Plug 'eagletmt/ghcmod-vim'
+Plug 'int3/vim-extradite'
+Plug 'eagletmt/neco-ghc'
 
 " for lisp (ugh)
 Plug 'luochen1990/rainbow'
@@ -61,6 +63,9 @@ Plug 'digitaltoad/vim-jade'
 
 " Integration with tmux
 " Plug 'christoomey/vim-tmux-navigator'
+
+" Integration with dvtm
+Plug 'dpzmick/vim-dvtm-navigator'
 
 " autocomplete
 Plug 'Valloric/YouCompleteMe', {'do': './install.sh --clang-completer'}
@@ -311,25 +316,12 @@ set listchars=tab:→\ ,trail:·
 nmap <silent> <Leader>L :set list<CR>
 nmap <silent> <Leader>LO :set nolist<CR>
 
-if exists('$DVTM') && exists('$DVTM_CMD_FIFO')
-    function! DvtmOrSplitSwitch(wincmd, dvtmcmd)
-        let previous_winnr = winnr()
-        silent! execute "wincmd " . a:wincmd
-        if previous_winnr == winnr()
-            call system( "echo " . a:dvtmcmd . " > " . $DVTM_CMD_FIFO )
-            redraw!
-        endif
-    endfunction
-
-    nnoremap <silent> <C-h> :call DvtmOrSplitSwitch('h', 'focusleft')<cr>
-    nnoremap <silent> <C-j> :call DvtmOrSplitSwitch('j', 'focusdown')<cr>
-    nnoremap <silent> <C-k> :call DvtmOrSplitSwitch('k', 'focusup')<cr>
-    nnoremap <silent> <C-l> :call DvtmOrSplitSwitch('l', 'focusright')<cr>
-else
-    map <C-h> <C-w>h
-    map <C-j> <C-w>j
-    map <C-k> <C-w>k
-    map <C-l> <C-w>l
-endif
+" use dvtm plugin
+nnoremap <silent> <C-h> :DvtmNavigateLeft<cr>
+nnoremap <silent> <C-j> :DvtmNavigateDown<cr>
+nnoremap <silent> <C-k> :DvtmNavigateUp<cr>
+nnoremap <silent> <C-l> :DvtmNavigateRight<cr>
 
 let g:rainbow_active = 1
+
+let g:syntastic_javascript_checkers = ['eslint']
