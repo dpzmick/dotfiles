@@ -1,16 +1,31 @@
 ; require the new emacs 24 package manager
 (require 'package)
 
-; list the repositories containing them
+; list the repositories to use in package.el
 (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
                          ("melpa" . "http://melpa.org/packages/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")))
 
-; list the packages you want
-(setq package-list '(evil quack geiser rainbow-delimiters solarized-theme
-			  exec-path-from-shell flycheck company key-chord helm indent-guide
-			  diff-hl))
+; set the list of packages
+(setq package-list '(
+                     ; editor enhancments
+                     ; vim mode
+                     evil
+                     ; make cool keybindigns (jk for escape)
+                     key-chord
+                     indent-guide
+                     ; solarized-theme
+		     color-theme-solarized
+                     ; set $PATH to OS X shell $PATH on startup
+                     exec-path-from-shell
+
+                     ; generally useful programming plugins
+                     ; shows lines changed in version control
+		     git-gutter
+		     ; on-the-fly syntax checking
+		     flycheck
+                    ))
 
 ; activate all the packages (in particular autoloads)
 (package-initialize)
@@ -23,33 +38,25 @@
   (unless (package-installed-p package)
     (package-install package)))
 
-; turn things on
-(evil-mode 1)
-(key-chord-mode 1)
-(require 'helm-config)
-
-; load solarized
-(load-theme 'solarized-dark t)
-
-; hide gui crap I don't want to see
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-
-(setq tab-always-indent 'complete)
-
+; run exec-path-from-shell if on OS X
 (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize))
 
-(key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
-(define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
-(define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
-(define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
-(define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+; turn things on
+(evil-mode 1)
+(key-chord-mode 1)
 
-(add-hook 'after-init-hook 'global-company-mode)
+; load solarized
+(set-terminal-parameter nil 'background-mode 'dark)
+(load-theme 'solarized t)
+; tell solarized that the terminal is also solarized
+; (setq solarized-use-terminal-theme t)
 
-(global-set-key (kbd "C-x C-p") 'helm-find-files)
-(global-set-key (kbd "C-x C-o") 'helm-buffers-list)
+; hide the scroll bar
+(scroll-bar-mode -1)
+
+; hide the toolbar
+(tool-bar-mode -1)
 
 ; turn on line numbers
 (global-linum-mode t)
@@ -58,14 +65,53 @@
 (setq linum-format "%4d \u2502 ")
 
 ; save undo history between sessions
-(setq undo-tree-auto-save-history t)
+; (setq undo-tree-auto-save-history t)
 
+;; put all the backups in the same directory
+(setq backup-directory-alist '(("." . "~/emacs-backups")))
+
+; tabs
+; TODO
+(setq tab-always-indent 'complete)
+
+; always show matching paren
+(show-paren-mode t)
+
+; plugins
+; use js2-mode for json files
+(add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
+
+; turn on flycheck
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+; disable jshint since we prefer eslint
+(setq-default flycheck-disabled-checkers
+	      (append flycheck-disabled-checkers '(javascript-jshint)))
+
+; turn on indent guides for everything
 (indent-guide-global-mode)
 
-; enable diff on changed lines
-(require 'diff-hl)
-(global-diff-hl-mode t)
+;; enable git-gutter
+(require 'git-gutter)
+(global-git-gutter-mode t)
+;; use git-gutter.el and linum-mode
+(git-gutter:linum-setup)
 
+; keybindings
+; make sure Control-U moves me up a page like it should
+(define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
+
+; use jk for escape
+(key-chord-define evil-insert-state-map  "jk" 'evil-normal-state)
+
+; window navigation
+(define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+(define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+(define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+(define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+
+; make gc toggle comments in evil mode
+; comment-dwim = comment do what I mean
 (define-key evil-visual-state-map "gc" 'comment-dwim)
 
 ; custom status bar
@@ -75,5 +121,3 @@
 ; snippets
 ; syntax-checking
 ; backup file location
-
-; cleanup this file and stuff
