@@ -8,30 +8,37 @@ set nocompatible
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin("~/.vim/plugged/")
 
-" Generally useful plugins
+Plug 'altercation/vim-colors-solarized'
+" show marks
+Plug 'kshenoy/vim-signature'
+" status bar
+Plug 'itchyny/lightline.vim'
+
+" organize and search
+Plug 'tpope/vim-projectionist'
+Plug 'rking/ag.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make'}
 Plug 'Shougo/neomru.vim'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/unite-outline'
-Plug 'altercation/vim-colors-solarized'
+
+" vcs
 Plug 'mhinz/vim-signify'
-Plug 'kshenoy/vim-signature'
-Plug 'itchyny/lightline.vim'
-Plug 'tpope/vim-surround'
-Plug 'vim-scripts/a.vim'
-Plug 'Lokaltog/vim-easymotion'
-Plug 'rking/ag.vim'
+Plug 'tpope/vim-fugitive'
+
+" text editing
 Plug 'junegunn/vim-easy-align'
-Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-commentary'
+
+" motion
+Plug 'Lokaltog/vim-easymotion'
 
 " snippets
 Plug 'SirVer/ultisnips'
 
 " Generally useful programming plugins
 Plug 'scrooloose/syntastic'
-Plug 'tpope/vim-commentary'
 Plug 'Yggdroot/indentLine'
-Plug 'tpope/vim-fugitive'
 Plug 'Raimondi/delimitMate'
 Plug 'bronson/vim-trailing-whitespace'
 
@@ -39,30 +46,30 @@ Plug 'bronson/vim-trailing-whitespace'
 Plug 'davidhalter/jedi-vim', {'for': 'python'}
 Plug 'ervandew/supertab', {'for': 'python'}
 
-" stuff for haskell
-Plug 'eagletmt/ghcmod-vim'
-Plug 'int3/vim-extradite'
-Plug 'eagletmt/neco-ghc'
-
-" for lisp (ugh)
-Plug 'luochen1990/rainbow'
-Plug 'wlangstroth/vim-racket'
+" clojure
+Plug 'guns/vim-clojure-static', {'for': 'clojure'}
+Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+Plug 'tpope/vim-salve', {'for': 'clojure'}
+Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
+Plug 'luochen1990/rainbow', {'for': 'clojure'}
 
 " for c
 Plug 'bruno-/vim-man'
+
+" for c, flex, bison
+Plug 'justinmk/vim-syntax-extra'
 
 " for js
 Plug 'pangloss/vim-javascript'
 Plug 'elzr/vim-json'
 Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
-Plug 'othree/html5.vim'
-Plug 'digitaltoad/vim-jade'
 
 " Integration with dvtm
 Plug 'dpzmick/vim-dvtm-navigator'
 
 " autocomplete
-Plug 'Valloric/YouCompleteMe', {'do': './install.sh --clang-completer'}
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
+Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
 
 call plug#end()
 
@@ -203,10 +210,6 @@ nmap <silent> <Leader>C :noh<CR>
 inoremap jk <Esc>
 " vnoremap jk <Esc>
 
-" Man.vim
-autocmd FileType C   map K <Plug>(Man)
-autocmd FileType C++ map K <Plug>(Man)
-
 " ** will call Ag to find all the occurances in directory
 nmap ** :Ag <c-r>=expand("<cword>")<cr><cr>
 
@@ -218,8 +221,6 @@ nnoremap <silent> <C-h> :DvtmNavigateLeft<cr>
 nnoremap <silent> <C-j> :DvtmNavigateDown<cr>
 nnoremap <silent> <C-k> :DvtmNavigateUp<cr>
 nnoremap <silent> <C-l> :DvtmNavigateRight<cr>
-
-autocmd FileType ocaml map <Leader>t :MerlinTypeOf<CR>
 
 " tricks for showing whitespace
 set listchars=tab:→\ ,trail:·
@@ -237,16 +238,15 @@ let g:unite_data_directory             = '~/.vim/.cache/unite'
 let g:unite_source_history_yank_enable = 1
 let g:unite_split_rule                 = 'botright'
 
-" map control-p to fuzzy search working directory
-nnoremap <silent> <c-p> :Unite  -no-split -start-insert file_rec/async<cr>
-" map control-o to display open buffers
-nnoremap <silent> <c-o> :Unite  -no-split -start-insert buffer<CR>
-" map control-t to open a tag viewer
-nnoremap <silent> <c-t> :Unite -vertical outline<cr>
+" map <leader>p to fuzzy search working directory
+nnoremap <silent> <Leader>p :Unite  -no-split -start-insert file_rec/async<cr>
+" map leader-o to display open buffers
+nnoremap <silent> <Leader>o :Unite  -no-split -start-insert buffer<CR>
+" map leader-t to open a tag viewer
+nnoremap <silent> <leader>t :Unite -vertical outline<cr>
 
 " ignore things in unite fuzzy finder
 autocmd FileType javascript call unite#custom#source('file_rec/async', 'ignore_pattern', 'node_modules/')
-autocmd FileType ocaml call unite#custom#source('file_rec/async', 'ignore_pattern', '_build/')
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
@@ -257,7 +257,6 @@ let g:jedi#popup_on_dot = 0
 " let g:jedi#use_splits_not_buffers = "top"
 let g:jedi#show_call_signatures = "0"
 let g:jedi#completions_enable = 0
-
 
 " Trigger configuration.
 let g:UltiSnipsExpandTrigger       = "<c-f>"
@@ -271,6 +270,7 @@ let g:UltiSnipsEditSplit="vertical"
 " Sets the ycm_extra_conf file (right now is just a file for C)
 " TODO set autocmd for different default global you conf files
 let g:ycm_global_ycm_extra_conf = '~/.vim/custom/.ycm_extra_conf.py'
+let g:ycm_semantic_triggers = {'haskell' : ['.']}
 autocmd filetype cpp :let g:ycm_global_ycm_extra_conf = "~/.vim/custom/.ycm_extra_conf_cpp.py"
 
 " always match parens
@@ -290,6 +290,7 @@ let g:tex_conceal="gm"
 
 " Make vim-commentary use // for comments instead of using /* */
 autocmd FileType c set commentstring=//\ %s
+autocmd FileType c++ set commentstring=//\ %s
 
 " Set the format of the status line to stick in status bar
 let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
