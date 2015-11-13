@@ -1,20 +1,7 @@
 # Enviroment variables
 export PATH=~/dotfiles/bin:/usr/local/sbin:/usr/local/bin:$PATH
-export PATH=/usr/local/share/npm/bin:$PATH
-export PATH=$HOME/.cabal/bin:$PATH
-export EDITOR=/usr/local/bin/nvim
+#export PATH=/usr/local/share/npm/bin:$PATH
+export EDITOR=/usr/bin/vim
 
 # whatever, just pretend we always have 256 colors
 export TERM=xterm-256color
-
-source /usr/local/bin/virtualenvwrapper.sh
-export ANDROID_HOME=/usr/local/opt/android-sdk
-
-# for ocaml
-eval `opam config env`
-
-# OPAM configuration
-. /Users/dz0004455/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-
-# haskell
-export PATH=~/.stack/programs/x86_64-osx/ghc-7.8.4/bin/:$PATH
