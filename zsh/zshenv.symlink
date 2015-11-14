@@ -5,3 +5,6 @@ export EDITOR=/usr/bin/vim
 
 # whatever, just pretend we always have 256 colors
 export TERM=xterm-256color
+
+# fixes the java issue in xmonad
+export _JAVA_AWT_WM_NONREPARENTING=1
