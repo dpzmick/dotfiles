@@ -1,4 +1,5 @@
 #Aliases
+alias ls="ls --color=yes"
 alias l='ls -G' # this is important, in zshrc we defined ls=' ls' so it can be ignored
 alias la='l -a'
 alias ll='l -l'
