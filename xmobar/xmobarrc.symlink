@@ -4,9 +4,9 @@ Config {
      font =         "xft:Bitstream Vera Sans Mono:size=9:bold:antialias=true"
    , bgColor =      "black"
    , fgColor =      "#646464"
-   , position =     TopW L 90
+   , position =     TopW L 95
    , border =       BottomB
-   , borderColor =  "#646464"
+   , borderColor =  "#000000"
 
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text

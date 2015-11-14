@@ -1,1 +1,0 @@
-rsync -a cs423@sp15-cs423-g20.cs.illinois.edu:/home/cs423/$1/ ~/programming/cs423/sync/$1/
