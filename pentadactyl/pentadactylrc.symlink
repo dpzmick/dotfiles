@@ -1,6 +1,0 @@
-set showtabline=never
-set hintkeys="fjghdkslarituvnb"
-colorscheme solarized-dark
-map -b j 5j
-map -b k 5k
-inoremap jk <Esc>
