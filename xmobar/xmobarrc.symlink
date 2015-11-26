@@ -38,7 +38,7 @@ Config {
    , commands =
 
         -- weather monitor
-        [ Run Weather "KCMI" [ "--template", "<skyCondition> | <fc=#4682B4><tempF></fc>°C | <fc=#4682B4><rh></fc>%"
+        [ Run Weather "KCMI" [ "--template", "<skyCondition> | <fc=#4682B4><tempF></fc>°F | <fc=#4682B4><rh></fc>%"
                              ] 36000
 
         -- network activity monitor (dynamic interface resolution)
