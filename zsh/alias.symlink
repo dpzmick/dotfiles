@@ -21,3 +21,7 @@ alias very='git'
 
 # do an npm-exec that behaves like bundle-exec
 alias npm-exec='nocorrect PATH=$(npm bin):$PATH'
+
+# make star trek sounds
+# https://ubuntuincident.wordpress.com/2012/01/06/playing-star-trek-background-noise-with-a-linux-command/
+alias engage="play -n -c1 synth whitenoise lowpass -1 120 lowpass -1 120 lowpass -1 120 gain +14"
