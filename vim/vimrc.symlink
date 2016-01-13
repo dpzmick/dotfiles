@@ -21,6 +21,9 @@ Plug 'Shougo/vimproc.vim', {'do': 'make'}
 Plug 'Shougo/neomru.vim'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/unite-outline'
+Plug 'kopischke/unite-spell-suggest'
+
+" Plug 'thinca/vim-ref'
 
 " vcs
 Plug 'mhinz/vim-signify'
@@ -47,29 +50,37 @@ Plug 'davidhalter/jedi-vim', {'for': 'python'}
 Plug 'ervandew/supertab', {'for': 'python'}
 
 " clojure
+" TODO extra bindings for clojure?
 Plug 'guns/vim-clojure-static', {'for': 'clojure'}
 Plug 'tpope/vim-fireplace', {'for': 'clojure'}
 Plug 'tpope/vim-salve', {'for': 'clojure'}
-Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
+" Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
 Plug 'luochen1990/rainbow', {'for': 'clojure'}
 
-" for c
-Plug 'bruno-/vim-man'
+" for c/c++
+" TODO extra bindings for C
+" Plug 'bruno-/vim-man'
+Plug 'Rip-Rip/clang_complete', {'do': 'make'}
 
 " for c, flex, bison
 Plug 'justinmk/vim-syntax-extra'
-
-" for js
-Plug 'pangloss/vim-javascript'
-Plug 'elzr/vim-json'
-Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
 
 " Integration with dvtm
 Plug 'dpzmick/vim-dvtm-navigator'
 
 " autocomplete
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
-Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
+" Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
+" Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
+Plug 'Shougo/deoplete.nvim'
+Plug 'Shougo/neco-syntax'
+Plug 'Shougo/neco-vim'
+Plug 'Shougo/echodoc.vim'
+
+" latex
+" Plug 'LaTeX-Box-Team/LaTeX-Box'
+
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-notes'
 
 call plug#end()
 
@@ -103,6 +114,12 @@ setlocal spell spelllang=en_us
 
 " have Vim jump to the last position when reopening a file
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" use the system clipboard by default
+set clipboard=unnamed,unnamedplus
+
+" update the terminal title
+set title
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " UI
@@ -176,6 +193,10 @@ set shiftwidth=4
 set tabstop=4
 set expandtab
 
+" except when editing C/C++ files
+au FileType c setl shiftwidth=2 tabstop=2
+au FileType cpp setl shiftwidth=2 tabstop=2
+
 " but try to be smart about tabs
 set smarttab
 
@@ -195,37 +216,6 @@ set autoindent
 set laststatus=2 "make sure status line always shows up
 so ~/.vim/custom/status.vim
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Custom Keybindings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let mapleader=","
-
-" <Leader>W removes trailing whitespace from all lines that have it
-nmap <silent> <Leader>W :FixWhitespace<CR>
-
-" clear the last search
-nmap <silent> <Leader>C :noh<CR>
-
-" Make jk escape
-inoremap jk <Esc>
-" vnoremap jk <Esc>
-
-" ** will call Ag to find all the occurances in directory
-nmap ** :Ag <c-r>=expand("<cword>")<cr><cr>
-
-" hit enter in visual mode to easy align
-vmap <Enter> <Plug>(EasyAlign)
-
-" use dvtm plugin
-nnoremap <silent> <C-h> :DvtmNavigateLeft<cr>
-nnoremap <silent> <C-j> :DvtmNavigateDown<cr>
-nnoremap <silent> <C-k> :DvtmNavigateUp<cr>
-nnoremap <silent> <C-l> :DvtmNavigateRight<cr>
-
-" tricks for showing whitespace
-set listchars=tab:→\ ,trail:·
-nmap <silent> <Leader>L :set list<CR>
-nmap <silent> <Leader>LO :set nolist<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " unite.vim
@@ -238,12 +228,10 @@ let g:unite_data_directory             = '~/.vim/.cache/unite'
 let g:unite_source_history_yank_enable = 1
 let g:unite_split_rule                 = 'botright'
 
-" map <leader>p to fuzzy search working directory
-nnoremap <silent> <Leader>p :Unite  -no-split -start-insert file_rec/async<cr>
-" map leader-o to display open buffers
-nnoremap <silent> <Leader>o :Unite  -no-split -start-insert buffer<CR>
-" map leader-t to open a tag viewer
-nnoremap <silent> <leader>t :Unite -vertical outline<cr>
+command UnitePWD      :Unite -no-split -start-insert file_rec/async
+command UniteBuffers  :Unite -no-split -start-insert buffer
+command UniteTags     :Unite -vertical outline
+command UniteSpelling :Unite -start-insert -no-split -select=0 spell_suggest
 
 " ignore things in unite fuzzy finder
 autocmd FileType javascript call unite#custom#source('file_rec/async', 'ignore_pattern', 'node_modules/')
@@ -268,10 +256,8 @@ let g:UltiSnipsEditSplit="vertical"
 
 " YouCompleteMe
 " Sets the ycm_extra_conf file (right now is just a file for C)
-" TODO set autocmd for different default global you conf files
 let g:ycm_global_ycm_extra_conf = '~/.vim/custom/.ycm_extra_conf.py'
 let g:ycm_semantic_triggers = {'haskell' : ['.']}
-autocmd filetype cpp :let g:ycm_global_ycm_extra_conf = "~/.vim/custom/.ycm_extra_conf_cpp.py"
 
 " always match parens
 let loaded_matchparen = 1
@@ -295,3 +281,86 @@ autocmd FileType c++ set commentstring=//\ %s
 " Set the format of the status line to stick in status bar
 let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
 let g:syntastic_javascript_checkers = ['eslint']
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Keybindings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" the beginnings of some spacemacs-style bindings
+" set leader to "space"
+let mapleader=" "
+let maplocalleader=","
+
+" Make jk escape
+inoremap jk <Esc>
+" vnoremap jk <Esc>
+
+" navigating buffers
+" TODO add some commands to make gists from a buffer
+nnoremap <silent> <Leader><Tab> :b#<cr>
+nnoremap <silent> <Leader>bb    :UniteBuffers<cr>
+nnoremap <silent> <Leader>bd    :bdelete<cr>
+nnoremap <silent> <Leader>bR    :edit<cr>
+nnoremap <silent> <Leader>bw    :FixWhitespace<CR>
+
+" commands on filesystem
+" TODO rename current file
+" TODO evaluate other file bindings, like move, copy, etc
+nnoremap <silent> <Leader>ff  :UnitePWD<cr>
+nnoremap <silent> <Leader>fve :edit ~/.vimrc<cr>
+
+" searching commands
+" maybe should make a function that prompts for some actual input here
+command -nargs=1 ReplaceHighlightedConfirm :%s//<args>/gc
+
+nnoremap <silent> <Leader>sc :noh<cr>
+nnoremap <silent> <Leader>sr :ReplaceHighlightedConfirm<space>
+nnoremap <silent> <Leader>sw :Unite grep:.:<c-r>=expand("<cword>")<cr>
+
+" spelling
+nnoremap <silent> <Leader>Sc :UniteSpelling<cr>
+
+" easy motion
+map <Leader>e <Plug>(easymotion-prefix)
+
+" non-leader bindings
+" ** will call Ag to find all the occurrences in directory
+nmap ** :Ag <c-r>=expand("<cword>")<cr><cr>
+
+" hit enter in visual mode to easy align
+vmap <Enter> <Plug>(EasyAlign)
+
+" use dvtm plugin
+nnoremap <silent> <C-h> :DvtmNavigateLeft<cr>
+nnoremap <silent> <C-j> :DvtmNavigateDown<cr>
+nnoremap <silent> <C-k> :DvtmNavigateUp<cr>
+nnoremap <silent> <C-l> :DvtmNavigateRight<cr>
+
+" " tricks for showing whitespace
+" set listchars=tab:→\ ,trail:·
+" nmap <silent> <Leader>L :set list<CR>
+" nmap <silent> <Leader>LO :set nolist<CR>
+let g:clang_use_library = 1
+let g:clang_library_path = '/usr/lib/llvm-3.6/lib/libclang.so.1'
+let g:syntastic_cpp_config_file = '.clang_complete'
+let g:syntastic_c_config_file = '.clang_complete'
+
+let g:clang_complete_auto = 0
+let g:clang_auto_select = 0
+let g:clang_default_keymappings = 0
+let g:clang_snippets=1
+let g:clang_conceal_snippets=1
+let g:clang_snippets_engine='ultisnips'
+
+let g:deoplete#enable_at_startup = 1
+
+" TODO add ultisnips without breaking things
+" let g:deoplete#sources = {}
+" let g:deoplete#sources._   = ['buffer', 'file', 'ultisnips', 'omni', 'syntax']
+" let g:deoplete#sources.c   = ['ultisnips', 'clang_complete', 'buffer']
+" let g:deoplete#sources.cpp = ['ultisnips', 'clang_complete', 'buffer']
+" let g:deoplete#sources.vim = ['ultisnips', 'vim', 'buffer']
+
+" use tab to forward cycle deoplete
+inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" use tab to backward cycle deoplete
+inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
