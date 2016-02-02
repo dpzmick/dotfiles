@@ -166,3 +166,9 @@ function empty-buffer-to-ls() {
 }
 # set special widget, see man zshzle
 zle -N zle-line-finish empty-buffer-to-ls
+
+export NVM_DIR="/home/dpzmick/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# OPAM configuration
+. /home/dpzmick/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
