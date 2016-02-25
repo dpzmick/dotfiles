@@ -39,7 +39,7 @@ zle -N zle-line-finish
 #                                 completions                                  #
 ################################################################################
 autoload compinit
-compinit
+compinit -C
 
 zstyle ':completion::complete:*' use-cache on               # completion caching, use rehash to clear
 zstyle ':completion:*' cache-path ~/.zsh/cache              # cache path

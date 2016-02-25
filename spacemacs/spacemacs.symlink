@@ -96,8 +96,8 @@
 
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 13
+   dotspacemacs-default-font '("Ubuntu Mono"
+                               :size 14
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -227,20 +227,31 @@
   "Initialization function for user code.
    It is called immediately after `dotspacemacs/init'.  You are free to put any
    user code."
+  ;; Don't change size of org-mode headlines (but keep other size-changes)
+  (setq solarized-scale-org-headlines nil)
+
+  ;; Avoid all font-size changes
+  (setq solarized-height-minus-1 1)
+  (setq solarized-height-plus-1 1)
+  (setq solarized-height-plus-2 1)
+  (setq solarized-height-plus-3 1)
+  (setq solarized-height-plus-4 1)
   )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code. This function is called at the very end
- of Spacemacs initialization after layers configuration. You are free to put any
- user code."
+   of Spacemacs initialization after layers configuration. You are free to put any
+   user code."
 
-  ;; use "jk" for escape
-  (require 'key-chord)
-  (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  (setq-default evil-escape-delay 0.5)
+  (setq evil-escape-key-sequence "jk")
 
   ;; TODO maybe move this to a clojure specific file
   (setq clojure-enable-fancify-symbols t)
+
+  ;; some sort of clang thing
+  (setq-default dotspacemacs-configuration-layers
+                '((c-c++ :variables c-c++-enable-clang-support t)))
 
   ;; modes to enable all the time
   (setq show-trailing-whitespace t)
@@ -252,9 +263,20 @@
   ;; TODO this screws with spacemacs whitespace mode
   (setq whitespace-style '(face lines-tail))
 
-  ;; line line lengths for various file types
+  ;; default line length
   (line-length 80)
 
+  ;; custom lengths for different file types
+  (add-to-list 'LaTeX-mode-hook (lambda () (line-length 100)))
+
+  ;; force auctex to use monospace fonts
+  ;; why this isn't the default is a mystery to me
+  (setq font-latex-fontify-script nil)
+  (setq font-latex-fontify-sectioning 'color)
+                                        ; modify Beamer as well
+  ;; (custom-set-faces
+  ;;  '(font-latex-slide-title-face ((t (:inherit font-lock-type-face)))))
+  ;; (font-latex-update-sectioning-faces)
   )
 
 (defun line-length (chars)
