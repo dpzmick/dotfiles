@@ -56,16 +56,7 @@ Plug 'dpzmick/vim-dvtm-navigator'
 " Plug 'christoomey/vim-tmux-navigator'
 
 " autocomplete
-if has('nvim')
-    Plug 'Shougo/deoplete.nvim'
-else
-    Plug 'Shougo/neocomplete.vim'
-endif
-
-" languages
-Plug 'Shougo/neco-syntax' " use syntax file for completion
-Plug 'Shougo/neco-vim'    " vim source shougo
-Plug 'Rip-Rip/clang_complete', {'do': 'make'}
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
 
 call plug#end()
 
