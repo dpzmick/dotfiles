@@ -9,8 +9,10 @@ set nocompatible
 call plug#begin("~/.vim/plugged/")
 
 Plug 'altercation/vim-colors-solarized'
+
 " show marks
 Plug 'kshenoy/vim-signature'
+
 " status bar
 Plug 'itchyny/lightline.vim'
 
@@ -28,6 +30,7 @@ Plug 'tpope/vim-fugitive'
 " text editing
 Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
+Plug 'dhruvasagar/vim-table-mode'
 
 " motion
 Plug 'Lokaltog/vim-easymotion'
@@ -48,16 +51,28 @@ Plug 'tpope/vim-salve', {'for': 'clojure'}
 " Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
 Plug 'luochen1990/rainbow', {'for': 'clojure'}
 
+" haskell
+Plug 'dag/vim2hs'
+Plug 'eagletmt/neco-ghc'
+Plug 'bitc/hdevtools'
+" Plug 'lambdatoast/elm.vim'
+
+Plug 'rust-lang/rust.vim'
+
 " for c, flex, bison
 Plug 'justinmk/vim-syntax-extra'
 
 " Integration with dvtm
-Plug 'dpzmick/vim-dvtm-navigator'
-" Plug 'christoomey/vim-tmux-navigator'
+" Plug 'dpzmick/vim-dvtm-navigator'
+Plug 'christoomey/vim-tmux-navigator'
 
 " autocomplete
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+
+if has('nvim')
+    Plug 'floobits/floobits-neovim'
+endif
 
 call plug#end()
 
@@ -162,6 +177,10 @@ highlight clear SignColumn
 " Encoding
 set encoding=utf8
 
+" conceal sucks
+set conceallevel=0
+au FileType * setl conceallevel=0
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Tabs and Indentation
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -192,7 +211,6 @@ set autoindent
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set laststatus=2 "make sure status line always shows up
 so ~/.vim/custom/status.vim
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " unite.vim
@@ -237,31 +255,16 @@ let g:rainbow_active = 1
 " tell delimitmate to always add newlines
 let delimitMate_expand_cr=1
 
-" json vim thinks it gets to conceal quotes, thats stupid
-let g:vim_json_syntax_conceal = 0
-
-" latex
-let g:tex_conceal=""
-
 " Make vim-commentary use // for comments instead of using /* */
 autocmd FileType c set commentstring=//\ %s
 autocmd FileType c++ set commentstring=//\ %s
 
+autocmd FileType rnoweb set lbr
+autocmd FileType rnoweb set tw=0
+
 " Set the format of the status line to stick in status bar
 let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
 let g:syntastic_javascript_checkers = ['eslint']
-
-" clang complete options
-let g:clang_use_library = 1
-let g:clang_library_path = '/usr/lib/llvm-3.6/lib/libclang.so.1'
-let g:syntastic_cpp_config_file = '.clang_complete'
-let g:syntastic_c_config_file = '.clang_complete'
-
-let g:clang_complete_auto = 0
-let g:clang_auto_select = 0
-let g:clang_default_keymappings = 0
-let g:clang_omnicppcomplete_compliance = 0
-let g:clang_snippets=0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Keybindings
@@ -280,42 +283,25 @@ inoremap jk <Esc>
 nnoremap <silent> <Leader><Tab> :b#<cr>
 nnoremap <silent> <Leader>bb    :UniteBuffers<cr>
 nnoremap <silent> <Leader>bd    :bdelete<cr>
-nnoremap <silent> <Leader>bR    :edit<cr>
 nnoremap <silent> <Leader>bw    :FixWhitespace<CR>
 
 " commands on filesystem
-" TODO rename current file
-" TODO evaluate other file bindings, like move, copy, etc
 nnoremap <silent> <Leader>ff  :UnitePWD<cr>
-nnoremap <silent> <Leader>fve :edit ~/.vimrc<cr>
 
 " searching commands
-" maybe should make a function that prompts for some actual input here
-command -nargs=1 ReplaceHighlightedConfirm :%s//<args>/gc
-
 nnoremap <silent> <Leader>sc :noh<cr>
-nnoremap <silent> <Leader>sr :ReplaceHighlightedConfirm<space>
-nnoremap <silent> <Leader>sw :Unite grep:.:<c-r>=expand("<cword>")<cr>
-
-" spelling
-nnoremap <silent> <Leader>Sc :UniteSpelling<cr>
-
-" easy motion
-nnoremap <silent> <Leader>e <Plug>(easymotion-prefix)
-
-" non-leader bindings
-" ** will call Ag to find all the occurrences in directory
-nmap ** :Ag <c-r>=expand("<cword>")<cr><cr>
 
 " hit enter in visual mode to easy align
 vmap <Enter> <Plug>(EasyAlign)
 
 " use dvtm plugin
-nnoremap <silent> <C-h> :DvtmNavigateLeft<cr>
-nnoremap <silent> <C-j> :DvtmNavigateDown<cr>
-nnoremap <silent> <C-k> :DvtmNavigateUp<cr>
-nnoremap <silent> <C-l> :DvtmNavigateRight<cr>
+" nnoremap <silent> <C-h> :DvtmNavigateLeft<cr>
+" nnoremap <silent> <C-j> :DvtmNavigateDown<cr>
+" nnoremap <silent> <C-k> :DvtmNavigateUp<cr>
+" nnoremap <silent> <C-l> :DvtmNavigateRight<cr>
 
 if exists(':tnoremap')
-    tnoremap <esc><esc> <c-n><c-\>
+    tnoremap jk <c-\><c-n>
 endif
+
+let g:ycm_rust_src_path = '~/builds/rust'
