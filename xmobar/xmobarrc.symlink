@@ -3,7 +3,7 @@ Config {
    -- appearance
      font =         "xft:Ubuntu Mono:size=10:bold:antialias=true"
    , bgColor =      "#002b36"
-   , fgColor =      "##586e75"
+   , fgColor =      "#586e75"
    , position =     TopW L 95
    , border =       BottomB
    , borderColor =  "#000000"
