@@ -32,7 +32,8 @@ main = do
         , layoutHook = avoidStruts $ layoutHook defaultConfig
         , logHook = dynamicLogWithPP xmobarPP
                         { ppOutput = hPutStrLn xmproc
-                        , ppTitle = xmobarColor "green" "" . shorten 50
+                        , ppTitle = xmobarColor "#2aa198" "" . shorten 50
+                        , ppCurrent = \s -> xmobarColor "#b58900" "" ("["++s++"]")
                         }
         -- something about fullscreen in chrome
         , handleEventHook = fullscreenEventHook
