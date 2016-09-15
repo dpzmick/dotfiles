@@ -70,6 +70,8 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 
+Plug 'elixir-lang/vim-elixir'
+
 if has('nvim')
     Plug 'floobits/floobits-neovim'
 endif
