@@ -2,8 +2,8 @@ Config {
 
    -- appearance
      font =         "xft:Ubuntu Mono:size=10:bold:antialias=true"
-   , bgColor =      "black"
-   , fgColor =      "#646464"
+   , bgColor =      "#002b36"
+   , fgColor =      "#586e75"
    , position =     TopW L 95
    , border =       BottomB
    , borderColor =  "#000000"
@@ -48,52 +48,52 @@ Config {
         , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
                              , "--Low"      , "50"         -- units: %
                              , "--High"     , "85"         -- units: %
-                             , "--low"      , "darkgreen"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkred"
+                             , "--low"      , "#859900"
+                             , "--normal"   , "#cb4b16"
+                             , "--high"     , "#dc322f"
                              ] 10
 
         -- cpu core temperature monitor
         , Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C"
                              , "--Low"      , "70"        -- units: °C
                              , "--High"     , "80"        -- units: °C
-                             , "--low"      , "darkgreen"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkred"
+                             , "--low"      , "#859900"
+                             , "--normal"   , "#cb4b16"
+                             , "--high"     , "#dc322f"
                              ] 50
 
         -- memory usage monitor
         , Run Memory         [ "--template" ,"Mem: <usedratio>%"
                              , "--Low"      , "20"        -- units: %
                              , "--High"     , "90"        -- units: %
-                             , "--low"      , "darkgreen"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkred"
+                             , "--low"      , "#859900"
+                             , "--normal"   , "#cb4b16"
+                             , "--high"     , "#dc322f"
                              ] 10
 
         -- battery monitor
         , Run Battery        [ "--template" , "Batt: <acstatus>"
                              , "--Low"      , "10"        -- units: %
                              , "--High"     , "80"        -- units: %
-                             , "--low"      , "darkred"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkgreen"
+                             , "--low"      , "#dc322f"
+                             , "--normal"   , "#cb4b16"
+                             , "--high"     , "#859900"
 
                              , "--" -- battery specific options
                                        -- discharging status
                                        , "-o"   , "<left>% (<timeleft>)"
                                        -- AC "on" status
-                                       , "-O"   , "<fc=#dAA520>Charging</fc>"
+                                       , "-O"   , "<fc=#6c71c4>Charging</fc>"
                                        -- charged status
-                                       , "-i"   , "<fc=#006000>Charged</fc>"
+                                       , "-i"   , "<fc=#859900>Charged</fc>"
                              ] 50
 
         -- time and date indicator
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
-        , Run Date           "<fc=#ABABAB>%F (%a) %I:%M</fc>" "date" 10
+        , Run Date           "<fc=#b58900>%F (%a) %I:%M</fc>" "date" 10
 
         , Run CpuFreq ["-t", "Freq:<cpu0>|<cpu1>GHz", "-L", "0", "-H", "3",
-                       "-l", "darkgreen", "-n", "darkorange", "-h", "darkred"
+                       "-l", "#859900", "-n", "#cb4b16", "-h", "#dc322f"
                        ] 50
 
         , Run StdinReader

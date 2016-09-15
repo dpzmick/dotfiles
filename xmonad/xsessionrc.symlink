@@ -11,6 +11,6 @@ setxkbmap -option ctrl:nocaps
 dropbox start
 /opt/extras.ubuntu.com/touchpad-indicator/bin/touchpad-indicator &
 nm-applet &
-trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x000000 --width 5 --height 19 &
+trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x002b36 --width 5 --height 19 &
 
 redshift &
