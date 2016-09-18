@@ -49,6 +49,7 @@ main = do
         , ("<XF86AudioLowerVolume>"  , spawn "amixer -D pulse sset Master 5%-")
         , ("<Print>"                 , spawn "sleep 0.2; take-screenshot.sh")
 
+        , ("M-p"                     , spawn "dmenu_run -nb '#002B36' -nf '#93a1a1' -sb '#93a1a1' -sf '#002b36'")
         , ("M-b", sendMessage ToggleStruts)
 
         -- app launchers
