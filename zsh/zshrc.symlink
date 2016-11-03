@@ -7,6 +7,7 @@ colors
 ################################################################################
 # use vim keybindings
 bindkey -v
+bindkey jk vi-cmd-mode # make jk escape
 
 # some keybindings I'll probably never use
 bindkey '^P' up-history
@@ -15,7 +16,6 @@ bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
 bindkey '^r' history-incremental-search-backward
-bindkey jk vi-cmd-mode # make jk escape
 
 # some stuff to get the prompt nice
 vim_ins_mode="%{$fg[cyan]%}$"
@@ -110,14 +110,13 @@ alias time='time -p ' # -p for POSIX output
 ################################################################################
 # some git thing I found on the internet
 function __git_prompt {
-  local DIRTY="%{$fg[yellow]%}"
-  local CLEAN="%{$fg[green]%}"
-  local UNMERGED="%{$fg[red]%}"
+  local DIRTY="%{$fg[yellow]%} git:"
+  local CLEAN="%{$fg[green]%} git:"
+  local UNMERGED="%{$fg[red]%} git:"
   local RESET="%{$terminfo[sgr0]%}"
   git rev-parse --git-dir >& /dev/null
   if [[ $? == 0 ]]
   then
-    echo -n "%{$fg[cyan]%}("
     if [[ `git ls-files -u >& /dev/null` == '' ]]
     then
       git diff --quiet >& /dev/null
@@ -138,23 +137,17 @@ function __git_prompt {
     fi
     echo -n `git branch | grep '* ' | sed 's/..//'`
     echo -n $RESET
-    echo -n "%{$fg[cyan]%})"
   fi
 }
 
 # idk something funky
 setopt promptsubst
 setopt promptpercent
-# add the opening brace and username
-PROMPT=$'%{$fg[cyan]%}( %n'
-# add the @ and the hostname
-PROMPT+=$'%{$fg[white]%}@%{$fg[green]%}%m '
-# add the hostname and pwd
-PROMPT+=$'%{$fg[yellow]%}${PWD/$HOME/~} %{$fg[cyan]%})'
+# add the opening brace
+PROMPT=$'%{$fg[cyan]%}[ %{$fg[magenta]%}%T%{$fg[yellow]%}$(__git_prompt) %{$fg[magenta]%}%m:'
+PROMPT+=$'%{$fg[yellow]%}${PWD/$HOME/~}%{$fg[cyan]%} ]'
 # print the $ and reset the color
-PROMPT+=$'\n$(__git_prompt)%{$fg[cyan]%}$vim_mode%{$reset_color%} '
-
-RPROMPT=$'%{$fg[cyan]%}%t%{$reset_color%}'
+PROMPT+=$'\n%{$fg[cyan]%}$vim_mode%{$reset_color%} '
 
 # load aliases
 source ~/.alias
@@ -178,3 +171,5 @@ source '/home/dpzmick/google-cloud-sdk/path.zsh.inc'
 
 # The next line enables shell command completion for gcloud.
 source '/home/dpzmick/google-cloud-sdk/completion.zsh.inc'
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -82,3 +82,9 @@ bind c new-window -c "#{pane_current_path}"
 
 # speed up excape key
 set -sg escape-time 0
+bind-key -r "<" swap-window -t -1
+bind-key -r ">" swap-window -t +1
+bind-key -r H resize-pane -L "$pane_resize"
+bind-key -r J resize-pane -D "$pane_resize"
+bind-key -r K resize-pane -U "$pane_resize"
+bind-key -r L resize-pane -R "$pane_resize"

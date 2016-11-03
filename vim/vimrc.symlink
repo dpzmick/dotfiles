@@ -9,6 +9,7 @@ set nocompatible
 call plug#begin("~/.vim/plugged/")
 
 Plug 'altercation/vim-colors-solarized'
+Plug 'jnurmine/Zenburn'
 
 " show marks
 Plug 'kshenoy/vim-signature'
@@ -17,11 +18,9 @@ Plug 'kshenoy/vim-signature'
 Plug 'itchyny/lightline.vim'
 
 " organize and search
-Plug 'rking/ag.vim'
-Plug 'Shougo/vimproc.vim', {'do': 'make'}
-Plug 'Shougo/neomru.vim'
-Plug 'Shougo/unite.vim'
-Plug 'Shougo/unite-outline'
+" Plug 'rking/ag.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 " vcs
 Plug 'mhinz/vim-signify'
@@ -34,47 +33,39 @@ Plug 'dhruvasagar/vim-table-mode'
 
 " motion
 Plug 'Lokaltog/vim-easymotion'
+Plug 'vim-scripts/matchit.zip'
+Plug 'matze/vim-move'
 
 " snippets
 Plug 'SirVer/ultisnips'
 
 " Generally useful programming plugins
-Plug 'scrooloose/syntastic'
+" Plug 'scrooloose/syntastic'
 Plug 'Yggdroot/indentLine'
 Plug 'Raimondi/delimitMate'
 Plug 'bronson/vim-trailing-whitespace'
+Plug 'sheerun/vim-polyglot'
 
 " clojure
-Plug 'guns/vim-clojure-static', {'for': 'clojure'}
-Plug 'tpope/vim-fireplace', {'for': 'clojure'}
-Plug 'tpope/vim-salve', {'for': 'clojure'}
+" Plug 'guns/vim-clojure-static', {'for': 'clojure'}
+" Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+" Plug 'tpope/vim-salve', {'for': 'clojure'}
 " Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
-Plug 'luochen1990/rainbow', {'for': 'clojure'}
+" Plug 'luochen1990/rainbow', {'for': 'clojure'}
 
 " haskell
-Plug 'dag/vim2hs'
-Plug 'eagletmt/neco-ghc'
-Plug 'bitc/hdevtools'
+" Plug 'dag/vim2hs'
+" Plug 'eagletmt/neco-ghc'
+" Plug 'bitc/hdevtools'
 " Plug 'lambdatoast/elm.vim'
-
-Plug 'rust-lang/rust.vim'
-
-" for c, flex, bison
-Plug 'justinmk/vim-syntax-extra'
 
 " Integration with dvtm
 " Plug 'dpzmick/vim-dvtm-navigator'
 Plug 'christoomey/vim-tmux-navigator'
 
 " autocomplete
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --rust-completer'}
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
-
-Plug 'elixir-lang/vim-elixir'
-
-if has('nvim')
-    Plug 'floobits/floobits-neovim'
-endif
 
 call plug#end()
 
@@ -169,7 +160,7 @@ syntax enable
 set background=dark
 
 " if the terminal you are using doesn't support solarized use this
-"let g:solarized_termcolors = 256
+" let g:solarized_termcolors = 256
 
 colorscheme solarized
 
@@ -215,22 +206,9 @@ set laststatus=2 "make sure status line always shows up
 so ~/.vim/custom/status.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" unite.vim
+" fzf
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-"call unite#custom#source('file_rec/async','sorters','sorter_rank', )
-
-let g:unite_data_directory             = '~/.vim/.cache/unite'
-let g:unite_source_history_yank_enable = 1
-let g:unite_split_rule                 = 'botright'
-
-command UnitePWD      :Unite -wipe -no-split -start-insert file_rec/async
-command UniteBuffers  :Unite -wipe -no-split -start-insert buffer
-command UniteTags     :Unite -wipe -vertical outline
-
-" ignore things in unite fuzzy finder
-autocmd FileType javascript call unite#custom#source('file_rec/async', 'ignore_pattern', 'node_modules/')
+let g:fzf_layout = { 'window': 'enew' }
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
@@ -251,22 +229,21 @@ let g:ycm_semantic_triggers = {'haskell' : ['.']}
 " always match parens
 let loaded_matchparen = 1
 
-" always use rainbow parens
-let g:rainbow_active = 1
-
 " tell delimitmate to always add newlines
 let delimitMate_expand_cr=1
 
 " Make vim-commentary use // for comments instead of using /* */
 autocmd FileType c set commentstring=//\ %s
-autocmd FileType c++ set commentstring=//\ %s
+autocmd FileType cpp set commentstring=//\ %s
 
 autocmd FileType rnoweb set lbr
 autocmd FileType rnoweb set tw=0
 
 " Set the format of the status line to stick in status bar
-let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
-let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
+" let g:syntastic_javascript_checkers = ['eslint']
+
+let g:move_key_modifier = 'C'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Keybindings
@@ -283,15 +260,22 @@ inoremap jk <Esc>
 " navigating buffers
 " TODO add some commands to make gists from a buffer
 nnoremap <silent> <Leader><Tab> :b#<cr>
-nnoremap <silent> <Leader>bb    :UniteBuffers<cr>
+nnoremap <silent> <Leader>bb    :Buffers<cr>
 nnoremap <silent> <Leader>bd    :bdelete<cr>
 nnoremap <silent> <Leader>bw    :FixWhitespace<CR>
 
 " commands on filesystem
-nnoremap <silent> <Leader>ff  :UnitePWD<cr>
+nnoremap <silent> <Leader>ff  :Files<cr>
 
 " searching commands
 nnoremap <silent> <Leader>sc :noh<cr>
+nnoremap <silent> <Leader>sa :Ag<cr>
+
+" commands for the filetype
+nnoremap <silent> <Leader>mt :BTags<cr>
+nnoremap <silent> <Leader>md :YcmCompleter GetDoc<cr>
+
+" window commands
 
 " hit enter in visual mode to easy align
 vmap <Enter> <Plug>(EasyAlign)
@@ -306,4 +290,4 @@ if exists(':tnoremap')
     tnoremap jk <c-\><c-n>
 endif
 
-let g:ycm_rust_src_path = '~/builds/rust'
+let g:ycm_rust_src_path = $RUST_SRC_PATH
