@@ -11,7 +11,7 @@ Config {
    -- layout
    , sepChar =  "%"   -- delineator between plugin names and straight text
    , alignSep = "}{"  -- separator between left-right alignment
-   , template = "%StdinReader% }{ %KCMI% | %memory% | %multicpu% | %cpufreq% | %coretemp% | %dynnetwork% | %battery% | %date%"
+   , template = "%StdinReader% }{ %memory% | %multicpu% | %cpufreq% | %coretemp% | %date%"
 
    -- general behavior
    , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -35,17 +35,10 @@ Config {
    --   The --template option controls how the plugin is displayed. Text
    --   color can be set by enclosing in <fc></fc> tags. For more details
    --   see http://projects.haskell.org/xmobar/#system-monitor-plugins.
-   , commands =
-
-        -- weather monitor
-        [ Run Weather "KCMI" [ "--template", "<skyCondition> | <fc=#4682B4><tempF></fc>°F | <fc=#4682B4><rh></fc>%"
-                             ] 36000
-
-        -- network activity monitor (dynamic interface resolution)
-        , Run DynNetwork     [ "--template" , "<dev>" ] 10
+   , commands = [
 
         -- cpu activity monitor
-        , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
+        Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%|<total2>%|<total3>%|<total4>%|<total5>%|<total6>%|<total7>%"
                              , "--Low"      , "50"         -- units: %
                              , "--High"     , "85"         -- units: %
                              , "--low"      , "#859900"
@@ -54,7 +47,7 @@ Config {
                              ] 10
 
         -- cpu core temperature monitor
-        , Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C"
+        , Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C|<core2>°C|<core3>°C"
                              , "--Low"      , "70"        -- units: °C
                              , "--High"     , "80"        -- units: °C
                              , "--low"      , "#859900"
@@ -71,29 +64,13 @@ Config {
                              , "--high"     , "#dc322f"
                              ] 10
 
-        -- battery monitor
-        , Run Battery        [ "--template" , "Batt: <acstatus>"
-                             , "--Low"      , "10"        -- units: %
-                             , "--High"     , "80"        -- units: %
-                             , "--low"      , "#dc322f"
-                             , "--normal"   , "#cb4b16"
-                             , "--high"     , "#859900"
-
-                             , "--" -- battery specific options
-                                       -- discharging status
-                                       , "-o"   , "<left>% (<timeleft>)"
-                                       -- AC "on" status
-                                       , "-O"   , "<fc=#6c71c4>Charging</fc>"
-                                       -- charged status
-                                       , "-i"   , "<fc=#859900>Charged</fc>"
-                             ] 50
-
         -- time and date indicator
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
         , Run Date           "<fc=#b58900>%F (%a) %I:%M</fc>" "date" 10
 
-        , Run CpuFreq ["-t", "Freq:<cpu0>|<cpu1>GHz", "-L", "0", "-H", "3",
-                       "-l", "#859900", "-n", "#cb4b16", "-h", "#dc322f"
+        , Run CpuFreq ["-t", "Freq:<cpu0>|<cpu1>|<cpu2>|<cpu3>|<cpu4>|<cpu5>|<cpu6>|<cpu7>GHz", "-L", "0", "-H", "3",
+                       "-l", "#859900", "-n", "#cb4b16", "-h", "#dc322f",
+                       "-M", "4"
                        ] 50
 
         , Run StdinReader
