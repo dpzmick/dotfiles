@@ -144,7 +144,7 @@ function __git_prompt {
 setopt promptsubst
 setopt promptpercent
 # add the opening brace
-PROMPT=$'%{$fg[cyan]%}[ %{$fg[magenta]%}%T%{$fg[yellow]%}$(__git_prompt) %{$fg[magenta]%}%m:'
+PROMPT=$'%{$fg[cyan]%}[ %T$(__git_prompt) %{$fg[green]%}%m:'
 PROMPT+=$'%{$fg[yellow]%}${PWD/$HOME/~}%{$fg[cyan]%} ]'
 # print the $ and reset the color
 PROMPT+=$'\n%{$fg[cyan]%}$vim_mode%{$reset_color%} '

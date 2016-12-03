@@ -28,14 +28,14 @@ function! MyFugitive()
     return exists('*fugitive#head') ? fugitive#head() : ''
 endfunction
 
-augroup AutoSyntastic
-    autocmd!
-    autocmd BufWritePost *.c,*.cpp call s:syntastic()
-augroup END
-function! s:syntastic()
-    SyntasticCheck
-    call lightline#update()
-endfunction
+" augroup AutoSyntastic
+"     autocmd!
+"     autocmd BufWritePost *.c,*.cpp call s:syntastic()
+" augroup END
+" function! s:syntastic()
+"     SyntasticCheck
+"     call lightline#update()
+" endfunction
 
 function! StatuslineWhitespace()
     if search('\s\+$', 'nw') != 0 && mode() == 'n'

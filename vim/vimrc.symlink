@@ -37,7 +37,7 @@ Plug 'vim-scripts/matchit.zip'
 Plug 'matze/vim-move'
 
 " snippets
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 
 " Generally useful programming plugins
 " Plug 'scrooloose/syntastic'
@@ -45,6 +45,8 @@ Plug 'Yggdroot/indentLine'
 Plug 'Raimondi/delimitMate'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'sheerun/vim-polyglot'
+
+Plug 'metakirby5/codi.vim'
 
 " clojure
 " Plug 'guns/vim-clojure-static', {'for': 'clojure'}
@@ -64,8 +66,11 @@ Plug 'sheerun/vim-polyglot'
 Plug 'christoomey/vim-tmux-navigator'
 
 " autocomplete
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --rust-completer'}
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --racer-completer'}
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable', 'on': 'YcmGenerateConfig'}
+
+Plug 'jceb/vim-orgmode'
+Plug 'tpope/vim-speeddating'
 
 call plug#end()
 
@@ -158,6 +163,11 @@ syntax enable
 
 " Set colorscheme
 set background=dark
+
+hi CursorLineNR cterm=bold
+augroup CLNRSet
+    autocmd! ColorScheme * hi CursorLineNR cterm=bold
+augroup END
 
 " if the terminal you are using doesn't support solarized use this
 " let g:solarized_termcolors = 256
