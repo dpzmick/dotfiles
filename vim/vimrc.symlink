@@ -253,51 +253,7 @@ autocmd FileType rnoweb set tw=0
 " let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
 " let g:syntastic_javascript_checkers = ['eslint']
 
-let g:move_key_modifier = 'C'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Keybindings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" the beginnings of some spacemacs-style bindings
-" set leader to "space"
-let mapleader=" "
-let maplocalleader=","
-
-" Make jk escape
-inoremap jk <Esc>
-" vnoremap jk <Esc>
-
-" navigating buffers
-" TODO add some commands to make gists from a buffer
-nnoremap <silent> <Leader><Tab> :b#<cr>
-nnoremap <silent> <Leader>bb    :Buffers<cr>
-nnoremap <silent> <Leader>bd    :bdelete<cr>
-nnoremap <silent> <Leader>bw    :FixWhitespace<CR>
-
-" commands on filesystem
-nnoremap <silent> <Leader>ff  :Files<cr>
-
-" searching commands
-nnoremap <silent> <Leader>sc :noh<cr>
-nnoremap <silent> <Leader>sa :Ag<cr>
-
-" commands for the filetype
-nnoremap <silent> <Leader>mt :BTags<cr>
-nnoremap <silent> <Leader>md :YcmCompleter GetDoc<cr>
-
-" window commands
-
-" hit enter in visual mode to easy align
-vmap <Enter> <Plug>(EasyAlign)
-
-" use dvtm plugin
-" nnoremap <silent> <C-h> :DvtmNavigateLeft<cr>
-" nnoremap <silent> <C-j> :DvtmNavigateDown<cr>
-" nnoremap <silent> <C-k> :DvtmNavigateUp<cr>
-" nnoremap <silent> <C-l> :DvtmNavigateRight<cr>
-
-if exists(':tnoremap')
-    tnoremap jk <c-\><c-n>
-endif
-
 let g:ycm_rust_src_path = $RUST_SRC_PATH
+
+so ~/.vim/custom/bindings.vim
+
