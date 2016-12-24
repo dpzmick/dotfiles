@@ -1,5 +1,5 @@
 let g:lightline = {
-    \ 'colorscheme': 'solarized',
+    \ 'colorscheme': 'seoul256',
     \ 'inactive' : {
     \   'left'  : [ [ 'filename' ] ],
     \   'right' : [ ]
@@ -9,17 +9,13 @@ let g:lightline = {
     \               [ 'fugitive', 'readonly', 'filename', 'modified' ] ],
     \   'right' : [ [ 'percent', 'lineinfo' ],
     \               [ 'fileformat', 'fileencoding', 'filetype' ],
-    \               [ 'syntastic', 'whitespace' ] ]
-    \ },
-    \ 'component_expand' : {
-    \   'syntastic' : 'SyntasticStatuslineFlag'
-    \ },
-    \ 'component_type' : {
-    \   'syntastic' : 'error'
+    \               [ 'tagbar' ] ]
     \ },
     \ 'component_function' : {
-    \   'fugitive': 'MyFugitive',
-    \   'whitespace' : 'StatuslineWhitespace'
+    \   'fugitive': 'MyFugitive'
+    \ },
+    \ 'component': {
+    \   'tagbar': '%{tagbar#currenttag("%s", "")}',
     \ }
 \ }
 
@@ -27,15 +23,6 @@ let g:lightline = {
 function! MyFugitive()
     return exists('*fugitive#head') ? fugitive#head() : ''
 endfunction
-
-" augroup AutoSyntastic
-"     autocmd!
-"     autocmd BufWritePost *.c,*.cpp call s:syntastic()
-" augroup END
-" function! s:syntastic()
-"     SyntasticCheck
-"     call lightline#update()
-" endfunction
 
 function! StatuslineWhitespace()
     if search('\s\+$', 'nw') != 0 && mode() == 'n'

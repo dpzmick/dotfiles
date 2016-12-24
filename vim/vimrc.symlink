@@ -8,8 +8,9 @@ set nocompatible
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin("~/.vim/plugged/")
 
-Plug 'altercation/vim-colors-solarized'
-Plug 'jnurmine/Zenburn'
+" Plug 'altercation/vim-colors-solarized'
+" Plug 'jnurmine/Zenburn'
+Plug 'chriskempson/base16-vim'
 
 " show marks
 Plug 'kshenoy/vim-signature'
@@ -18,7 +19,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'itchyny/lightline.vim'
 
 " organize and search
-" Plug 'rking/ag.vim'
+Plug 'rking/ag.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
@@ -35,6 +36,7 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'vim-scripts/matchit.zip'
 Plug 'matze/vim-move'
+" Plug 'bkad/CamelCaseMotion'
 
 " snippets
 " Plug 'SirVer/ultisnips'
@@ -46,8 +48,7 @@ Plug 'Raimondi/delimitMate'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'sheerun/vim-polyglot'
 Plug 'plasticboy/vim-markdown'
-
-Plug 'metakirby5/codi.vim'
+Plug 'majutsushi/tagbar'
 
 " clojure
 " Plug 'guns/vim-clojure-static', {'for': 'clojure'}
@@ -66,15 +67,14 @@ Plug 'metakirby5/codi.vim'
 " Plug 'dpzmick/vim-dvtm-navigator'
 Plug 'christoomey/vim-tmux-navigator'
 
+Plug 'tpope/vim-scriptease'
+
 " autocomplete
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --racer-completer'}
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable', 'on': 'YcmGenerateConfig'}
 
-Plug 'jceb/vim-orgmode'
-Plug 'tpope/vim-speeddating'
-Plug 'rhysd/nyaovim-popup-tooltip'
-Plug 'bkad/CamelCaseMotion'
-Plug 'majutsushi/tagbar'
+" Plug 'jceb/vim-orgmode'
+" Plug 'tpope/vim-speeddating'
 
 call plug#end()
 
@@ -176,10 +176,11 @@ augroup END
 " if the terminal you are using doesn't support solarized use this
 " let g:solarized_termcolors = 256
 
-colorscheme solarized
+" colorscheme solarized
+" colorscheme zenburn
 
 " Make the SignColumn not look obnoxious
-highlight clear SignColumn
+" highlight clear SignColumn
 
 " Encoding
 set encoding=utf8
@@ -264,3 +265,8 @@ so ~/.vim/custom/bindings.vim
 
 let g:markdown_github_languages = ['rust']
 let g:vim_markdown_fenced_languages = ['rust']
+
+if filereadable(expand("~/.vimrc_background"))
+    let base16colorspace=256
+    source ~/.vimrc_background
+endif
