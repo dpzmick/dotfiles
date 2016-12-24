@@ -6,11 +6,11 @@ let maplocalleader=","
 
 inoremap jk <Esc>
 nnoremap <silent> <Leader><Tab> :b#<cr>
-nnoremap <silent> <Leader>bb    :UniteBuffers<cr>
+nnoremap <silent> <Leader>bb    :FzfBuffers<cr>
 nnoremap <silent> <Leader>bd    :bdelete<cr>
 nnoremap <silent> <Leader>bw    :FixWhitespace<cr>
 
-nnoremap <silent> <Leader>ff  :UnitePWD<cr>
+nnoremap <silent> <Leader>ff  :FzfFiles<cr>
 
 nnoremap <silent> <Leader>sc :noh<cr>
 nnoremap <silent> <Leader>ss :Ack! <cword><cr>
@@ -26,7 +26,8 @@ nnoremap <Leader>ws :spl<cr>
 nnoremap <Leader>wS :vsp<cr>
 nnoremap <Leader>wq :q<cr>
 
-nnoremap <C-]> :YcmCompleter GoTo<cr>
+autocmd FileType c   nnoremap <C-]> :YcmCompleter GoTo<cr>
+autocmd FileType cpp nnoremap <C-]> :YcmCompleter GoTo<cr>
 
 " hit enter in visual mode to easy align
 vmap <Enter> <Plug>(EasyAlign)
@@ -42,3 +43,12 @@ if exists(':tnoremap')
 endif
 
 let g:move_key_modifier = 'C'
+
+map <silent> w <Plug>CamelCaseMotion_w
+map <silent> b <Plug>CamelCaseMotion_b
+map <silent> e <Plug>CamelCaseMotion_e
+map <silent> ge <Plug>CamelCaseMotion_ge
+sunmap w
+sunmap b
+sunmap e
+sunmap ge

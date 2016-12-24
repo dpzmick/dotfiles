@@ -45,6 +45,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'Raimondi/delimitMate'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'sheerun/vim-polyglot'
+Plug 'plasticboy/vim-markdown'
 
 Plug 'metakirby5/codi.vim'
 
@@ -71,6 +72,9 @@ Plug 'rdnetto/YCM-Generator', { 'branch': 'stable', 'on': 'YcmGenerateConfig'}
 
 Plug 'jceb/vim-orgmode'
 Plug 'tpope/vim-speeddating'
+Plug 'rhysd/nyaovim-popup-tooltip'
+Plug 'bkad/CamelCaseMotion'
+Plug 'majutsushi/tagbar'
 
 call plug#end()
 
@@ -182,7 +186,7 @@ set encoding=utf8
 
 " conceal sucks
 set conceallevel=0
-au FileType * setl conceallevel=0
+au FileType * set conceallevel=0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Tabs and Indentation
@@ -219,6 +223,7 @@ so ~/.vim/custom/status.vim
 " fzf
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:fzf_layout = { 'window': 'enew' }
+let g:fzf_command_prefix = 'Fzf'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
@@ -257,3 +262,5 @@ let g:ycm_rust_src_path = $RUST_SRC_PATH
 
 so ~/.vim/custom/bindings.vim
 
+let g:markdown_github_languages = ['rust']
+let g:vim_markdown_fenced_languages = ['rust']
