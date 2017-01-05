@@ -8,9 +8,13 @@ set nocompatible
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin("~/.vim/plugged/")
 
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'jnurmine/Zenburn'
+" appearance
+Plug 'altercation/vim-colors-solarized'
+Plug 'jnurmine/Zenburn'
 Plug 'chriskempson/base16-vim'
+Plug 'morhetz/gruvbox'
+Plug 'itchyny/vim-cursorword'
+Plug 'osyo-manga/vim-over'
 
 " show marks
 Plug 'kshenoy/vim-signature'
@@ -19,12 +23,13 @@ Plug 'kshenoy/vim-signature'
 Plug 'itchyny/lightline.vim'
 
 " organize and search
-Plug 'rking/ag.vim'
+Plug 'mhinz/vim-grepper'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 " vcs
-Plug 'mhinz/vim-signify'
+" Plug 'mhinz/vim-signify'
+Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
 " text editing
@@ -36,7 +41,7 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'vim-scripts/matchit.zip'
 Plug 'matze/vim-move'
-" Plug 'bkad/CamelCaseMotion'
+Plug 'chaoren/vim-wordmotion'
 
 " snippets
 " Plug 'SirVer/ultisnips'
@@ -63,18 +68,12 @@ Plug 'majutsushi/tagbar'
 " Plug 'bitc/hdevtools'
 " Plug 'lambdatoast/elm.vim'
 
-" Integration with dvtm
 " Plug 'dpzmick/vim-dvtm-navigator'
 Plug 'christoomey/vim-tmux-navigator'
-
-Plug 'tpope/vim-scriptease'
 
 " autocomplete
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --racer-completer'}
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable', 'on': 'YcmGenerateConfig'}
-
-" Plug 'jceb/vim-orgmode'
-" Plug 'tpope/vim-speeddating'
 
 call plug#end()
 
@@ -168,26 +167,19 @@ syntax enable
 " Set colorscheme
 set background=dark
 
-hi CursorLineNR cterm=bold
-augroup CLNRSet
-    autocmd! ColorScheme * hi CursorLineNR cterm=bold
-augroup END
-
-" if the terminal you are using doesn't support solarized use this
-" let g:solarized_termcolors = 256
-
 " colorscheme solarized
 " colorscheme zenburn
 
 " Make the SignColumn not look obnoxious
-" highlight clear SignColumn
+highlight clear SignColumn
+
+if filereadable(expand("~/.vimrc_background"))
+    let base16colorspace=256
+    source ~/.vimrc_background
+endif
 
 " Encoding
 set encoding=utf8
-
-" conceal sucks
-set conceallevel=0
-au FileType * set conceallevel=0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Tabs and Indentation
@@ -255,18 +247,25 @@ autocmd FileType cpp set commentstring=//\ %s
 autocmd FileType rnoweb set lbr
 autocmd FileType rnoweb set tw=0
 
-" Set the format of the status line to stick in status bar
-" let g:syntastic_stl_format = "%E{E:%e %fe}%B{ }%W{W:%w %fw}"
-" let g:syntastic_javascript_checkers = ['eslint']
-
 let g:ycm_rust_src_path = $RUST_SRC_PATH
 
-so ~/.vim/custom/bindings.vim
+" some markdown stuff
+au FileType markdown set wrap
+au FileType markdown set lbr
+au FileType markdown set tw=0
 
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_frontmatter = 1
 let g:markdown_github_languages = ['rust']
 let g:vim_markdown_fenced_languages = ['rust']
 
-if filereadable(expand("~/.vimrc_background"))
-    let base16colorspace=256
-    source ~/.vimrc_background
-endif
+let g:grepper               = {}
+let g:grepper.tools         = ['ag', 'rg', 'git']
+let g:grepper.next_tool     = '<leader>g'
+let g:grepper.open          = 1
+let g:grepper.jump          = 0
+let g:grepper.simple_prompt = 1
+let g:grepper.highlight     = 1
+"let g:grepper.quickfix      = 0
+
+so ~/.vim/custom/bindings.vim

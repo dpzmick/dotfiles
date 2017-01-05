@@ -13,7 +13,7 @@ nnoremap <silent> <Leader>bw    :FixWhitespace<cr>
 nnoremap <silent> <Leader>ff  :FzfFiles<cr>
 
 nnoremap <silent> <Leader>sc :noh<cr>
-nnoremap <silent> <Leader>ss :Ack! <cword><cr>
+nnoremap <silent> <Leader>so :OverCommandLine <cr>
 
 nnoremap <silent> <Leader>gb :Gblame<cr>
 nnoremap <silent> <Leader>gs :Gstatus<cr>
@@ -41,3 +41,6 @@ if exists(':tnoremap')
 endif
 
 let g:move_key_modifier = 'C'
+
+nmap gs  <plug>(GrepperOperator)
+xmap gs  <plug>(GrepperOperator)
