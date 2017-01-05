@@ -17,8 +17,6 @@ nnoremap <silent> <Leader>ss :Ack! <cword><cr>
 
 nnoremap <silent> <Leader>gb :Gblame<cr>
 nnoremap <silent> <Leader>gs :Gstatus<cr>
-nnoremap <silent> <Leader>gp :Gpull<cr>
-nnoremap <silent> <Leader>gu :Gpush<cr>
 nnoremap <silent> <Leader>gc :Gcommit<cr>
 nnoremap <silent> <Leader>gw :Gwrite<cr>
 
@@ -43,12 +41,3 @@ if exists(':tnoremap')
 endif
 
 let g:move_key_modifier = 'C'
-
-" map <silent> w <Plug>CamelCaseMotion_w
-" map <silent> b <Plug>CamelCaseMotion_b
-" map <silent> e <Plug>CamelCaseMotion_e
-" map <silent> ge <Plug>CamelCaseMotion_ge
-" sunmap w
-" sunmap b
-" sunmap e
-" sunmap ge
