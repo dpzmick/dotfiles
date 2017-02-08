@@ -10,6 +10,6 @@ setxkbmap -option ctrl:nocaps
 # start some tray apps
 dropbox start
 nm-applet &
-trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x002b36 --width 5 --height 19 &
+trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x002b36 --width 5 --height 17 &
 
 redshift &
