@@ -45,4 +45,5 @@ main = do
 
         -- app launchers
         , ("M-<Print>"               , spawn "google-chrome")
+        , ("C-S-<Return>"              , spawn "gnome-terminal -- ssh -Y worf.local")
         ]

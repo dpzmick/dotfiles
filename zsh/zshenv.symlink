@@ -10,4 +10,7 @@ export TERM=xterm-256color
 export _JAVA_AWT_WM_NONREPARENTING=1
 source $HOME/.cargo/env
 
-#export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+
+export QSYS_ROOTDIR="/home/dpzmick/altera/15.0/quartus/sopc_builder/bin"
+export ALTERAOCLSDKROOT="/home/dpzmick/altera/15.0/hld"
