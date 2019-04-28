@@ -9,28 +9,12 @@
 
 ; set the list of packages
 (setq package-list '(
-                     ; editor enhancments
-                     ; vim mode
-                     evil
-                     ; make cool keybindigns (jk for escape)
-                     key-chord
-                     indent-guide
-                     ; solarized-theme
-		     color-theme-solarized
-                     ; set $PATH to OS X shell $PATH on startup
-                     exec-path-from-shell
+    indent-guide
+    evil
+    key-chord
+))
 
-                     ; generally useful programming plugins
-                     ; shows lines changed in version control
-		     git-gutter
-		     ; on-the-fly syntax checking
-		     flycheck
-                    ))
-
-; activate all the packages (in particular autoloads)
-(package-initialize)
-
-; fetch the list of packages available
+(package-initialize) ;; initialize package manager
 (package-refresh-contents)
 
 ; install the missing packages
@@ -38,19 +22,9 @@
   (unless (package-installed-p package)
     (package-install package)))
 
-; run exec-path-from-shell if on OS X
-(when (memq window-system '(mac ns))
-    (exec-path-from-shell-initialize))
-
 ; turn things on
 (evil-mode 1)
 (key-chord-mode 1)
-
-; load solarized
-(set-terminal-parameter nil 'background-mode 'dark)
-(load-theme 'solarized t)
-; tell solarized that the terminal is also solarized
-; (setq solarized-use-terminal-theme t)
 
 ; hide the scroll bar
 (scroll-bar-mode -1)
@@ -64,9 +38,6 @@
 ; adds a solid line seperator between numbers and text
 (setq linum-format "%4d \u2502 ")
 
-; save undo history between sessions
-; (setq undo-tree-auto-save-history t)
-
 ;; put all the backups in the same directory
 (setq backup-directory-alist '(("." . "~/emacs-backups")))
 
@@ -77,28 +48,12 @@
 ; always show matching paren
 (show-paren-mode t)
 
-; plugins
-; use js2-mode for json files
-(add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
-
-; turn on flycheck
-(require 'flycheck)
-(add-hook 'after-init-hook #'global-flycheck-mode)
-; disable jshint since we prefer eslint
-(setq-default flycheck-disabled-checkers
-	      (append flycheck-disabled-checkers '(javascript-jshint)))
-
 ; turn on indent guides for everything
 (indent-guide-global-mode)
 
-;; enable git-gutter
-(require 'git-gutter)
-(global-git-gutter-mode t)
-;; use git-gutter.el and linum-mode
-(git-gutter:linum-setup)
-
 ; keybindings
 ; make sure Control-U moves me up a page like it should
+; is there any reason not to do this?
 (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
 
 ; use jk for escape

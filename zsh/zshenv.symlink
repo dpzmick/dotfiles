@@ -10,4 +10,4 @@ export TERM=xterm-256color
 export _JAVA_AWT_WM_NONREPARENTING=1
 source $HOME/.cargo/env
 
-#export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"

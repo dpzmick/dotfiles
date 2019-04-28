@@ -8,6 +8,9 @@ import XMonad.Hooks.SetWMName
 import XMonad.Layout
 import XMonad.Util.EZConfig(additionalKeysP)
 import XMonad.Util.Run(spawnPipe)
+import XMonad.Layout.ThreeColumns
+
+myLayout = ThreeColMid 1 (3/100) (1/2)
 
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar /home/dpzmick/.xmobarrc"
@@ -23,12 +26,12 @@ main = do
 
         , manageHook = manageDocks <+> manageHook def
 
-        , layoutHook = avoidStruts (layoutHook def)
+        , layoutHook = avoidStruts (layoutHook def ||| myLayout)
 
         , handleEventHook = handleEventHook def <+> docksEventHook <+> fullscreenEventHook
 
         -- colors
-        , borderWidth        = 1
+        , borderWidth        = 3
         , focusedBorderColor = "#d33682" -- 'magenta' from solarized
         , normalBorderColor  = "#073642" -- 'base02' from solarized
         }
@@ -40,7 +43,7 @@ main = do
         , ("<XF86AudioLowerVolume>"  , spawn "amixer -D pulse sset Master 5%-")
         , ("<Print>"                 , spawn "sleep 0.2; take-screenshot.sh")
 
-        , ("M-p"                     , spawn "dmenu_run -nb '#002B36' -nf '#93a1a1' -sb '#93a1a1' -sf '#002b36'")
+        , ("M-p"                     , spawn "dmenu_run -fn 'xft:Ubuntu Mono:size=7:antialias=true' -nb '#002B36' -nf '#93a1a1' -sb '#93a1a1' -sf '#002b36'")
         , ("M-b", sendMessage ToggleStruts)
 
         -- app launchers

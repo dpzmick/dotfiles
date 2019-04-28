@@ -17,7 +17,7 @@ setxkbmap -option ctrl:nocaps
 xinput set-prop 11 283 1
 
 # start some tray apps
-dropbox start
+# dropbox start
 
 # Start a wicd client so that we can get desktop notifications
 wicd-client &
@@ -31,3 +31,4 @@ redshift &
 xsetroot -cursor_name left_ptr
 
 exec xmonad
+#exec fluxbox

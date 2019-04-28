@@ -1,7 +1,7 @@
 Config {
 
    -- appearance
-     font =         "xft:Ubuntu Mono:size=10:bold:antialias=true"
+     font =         "xft:Ubuntu Mono:size=7:antialias=true"
    , bgColor =      "#002b36"
    , fgColor =      "#586e75"
    , position =     TopW L 95
