@@ -14,7 +14,7 @@ myLayout = ThreeColMid 1 (3/100) (1/2)
 
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar /home/dpzmick/.xmobarrc"
-    xmonad $ def
+    xmonad $ ewmh def
         { terminal = "gnome-terminal"
 
         -- something about logging through xmobar
@@ -37,8 +37,8 @@ main = do
         }
 
         `additionalKeysP`
-        [ ("<XF86MonBrightnessDown>" , spawn "xbacklight -10")
-        , ("<XF86MonBrightnessUp>"   , spawn "xbacklight +10")
+        [ ("<XF86MonBrightnessDown>" , spawn "xbacklight -1")
+        , ("<XF86MonBrightnessUp>"   , spawn "xbacklight +1")
         , ("<XF86AudioRaiseVolume>"  , spawn "amixer -D pulse sset Master 5%+")
         , ("<XF86AudioLowerVolume>"  , spawn "amixer -D pulse sset Master 5%-")
         , ("<Print>"                 , spawn "sleep 0.2; take-screenshot.sh")
@@ -48,4 +48,5 @@ main = do
 
         -- app launchers
         , ("M-<Print>"               , spawn "google-chrome")
+        , ("C-S-<Return>"              , spawn "gnome-terminal -- ssh -Y worf.local")
         ]

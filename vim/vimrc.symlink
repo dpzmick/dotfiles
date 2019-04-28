@@ -57,17 +57,18 @@ Plug 'sheerun/vim-polyglot'
 Plug 'majutsushi/tagbar'
 
 " clojure
-" Plug 'guns/vim-clojure-static', {'for': 'clojure'}
-" Plug 'tpope/vim-fireplace', {'for': 'clojure'}
-" Plug 'tpope/vim-salve', {'for': 'clojure'}
+Plug 'guns/vim-clojure-static', {'for': 'clojure'}
+Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+Plug 'tpope/vim-salve', {'for': 'clojure'}
 " Plug 'vim-scripts/paredit.vim', {'for': 'clojure'}
-" Plug 'luochen1990/rainbow', {'for': 'clojure'}
+Plug 'luochen1990/rainbow', {'for': 'clojure'}
 
 " haskell
 " Plug 'dag/vim2hs'
 " Plug 'eagletmt/neco-ghc'
 " Plug 'bitc/hdevtools'
 " Plug 'lambdatoast/elm.vim'
+Plug 'idris-hackers/idris-vim'
 
 " Plug 'dpzmick/vim-dvtm-navigator'
 Plug 'christoomey/vim-tmux-navigator'
@@ -274,3 +275,6 @@ let g:grepper.highlight     = 1
 "let g:grepper.quickfix      = 0
 
 so ~/.vim/custom/bindings.vim
+
+hi clear SpellBad
+hi clear SpellCap
