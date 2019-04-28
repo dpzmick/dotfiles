@@ -16,7 +16,6 @@ call plug#begin("~/.vim/plugged/")
 " appearance
 Plug 'chriskempson/base16-vim', { 'do': function('FixupBase16') }
 Plug 'itchyny/vim-cursorword'
-Plug 'osyo-manga/vim-over'
 
 " show marks
 Plug 'kshenoy/vim-signature'
@@ -54,7 +53,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'Raimondi/delimitMate'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'sheerun/vim-polyglot'
-Plug 'plasticboy/vim-markdown'
+" Plug 'plasticboy/vim-markdown'
 Plug 'majutsushi/tagbar'
 
 " clojure
@@ -73,10 +72,11 @@ Plug 'idris-hackers/idris-vim'
 
 " Plug 'dpzmick/vim-dvtm-navigator'
 Plug 'christoomey/vim-tmux-navigator'
+" Plug 'ivanov/vim-ipython'
 
 " autocomplete
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --racer-completer'}
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable', 'on': 'YcmGenerateConfig'}
+" Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --racer-completer'}
+" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable', 'on': 'YcmGenerateConfig'}
 
 call plug#end()
 
@@ -181,6 +181,9 @@ if filereadable(expand("~/.vimrc_background"))
     source ~/.vimrc_background
 endif
 
+hi clear SpellBad
+hi SpellBad cterm=underline
+
 " Encoding
 set encoding=utf8
 
@@ -225,17 +228,17 @@ let g:fzf_command_prefix = 'Fzf'
 " Plugin settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Trigger configuration.
-let g:UltiSnipsExpandTrigger       = "<c-f>"
-let g:UltiSnipsJumpForwardTrigger  = "<c-f>"
-let g:UltiSnipsJumpBackwardTrigger = "<c-d>"
+" let g:UltiSnipsExpandTrigger       = "<c-f>"
+" let g:UltiSnipsJumpForwardTrigger  = "<c-f>"
+" let g:UltiSnipsJumpBackwardTrigger = "<c-d>"
 
 " If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
+" let g:UltiSnipsEditSplit="vertical"
 
 " YouCompleteMe
 " Sets the ycm_extra_conf file (right now is just a file for C)
-let g:ycm_global_ycm_extra_conf = '~/.vim/custom/.ycm_extra_conf.py'
-let g:ycm_semantic_triggers = {'haskell' : ['.']}
+" let g:ycm_global_ycm_extra_conf = '~/.vim/custom/.ycm_extra_conf.py'
+" let g:ycm_semantic_triggers = {'haskell' : ['.']}
 
 " always match parens
 let loaded_matchparen = 1
