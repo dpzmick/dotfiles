@@ -8,10 +8,11 @@ import XMonad.Hooks.SetWMName
 import XMonad.Layout
 import XMonad.Util.EZConfig(additionalKeysP)
 import XMonad.Util.Run(spawnPipe)
+import XMonad.Layout.ThreeColumns
 
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar /home/dpzmick/.xmobarrc"
-    xmonad $ def
+    xmonad $ ewmh def
         { terminal = "gnome-terminal"
 
         -- something about logging through xmobar
@@ -23,7 +24,7 @@ main = do
 
         , manageHook = manageDocks <+> manageHook def
 
-        , layoutHook = avoidStruts (layoutHook def)
+        , layoutHook = avoidStruts (layoutHook def ||| (ThreeColMid 1 (3/100) (1/2)))
 
         , handleEventHook = handleEventHook def <+> docksEventHook <+> fullscreenEventHook
 
@@ -34,8 +35,8 @@ main = do
         }
 
         `additionalKeysP`
-        [ ("<XF86MonBrightnessDown>" , spawn "xbacklight -10")
-        , ("<XF86MonBrightnessUp>"   , spawn "xbacklight +10")
+        [ ("<XF86MonBrightnessDown>" , spawn "xbacklight -1")
+        , ("<XF86MonBrightnessUp>"   , spawn "xbacklight +1")
         , ("<XF86AudioRaiseVolume>"  , spawn "amixer -D pulse sset Master 5%+")
         , ("<XF86AudioLowerVolume>"  , spawn "amixer -D pulse sset Master 5%-")
         , ("<Print>"                 , spawn "sleep 0.2; take-screenshot.sh")

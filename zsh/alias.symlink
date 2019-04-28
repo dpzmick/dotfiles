@@ -6,24 +6,16 @@ alias ll='l -l'
 alias las='l -las'
 alias g='grep'
 
-# uiuc
-REM_USER=zmick2
-EWS_HOST=linux-a1.ews.illinois.edu
-alias ews="ssh $REM_USER@$EWS_HOST"
-alias ewsC="ssh -C $REM_USER@$EWS_HOST"
-alias ewsXX="ssh -C -X $REM_USER@$EWS_HOST"
-alias ewsX="ssh -X $REM_USER@$EWS_HOST"
-
 # good aliases for git
 alias wow='git status'
 alias such='git'
 alias very='git'
 
-# do an npm-exec that behaves like bundle-exec
-alias npm-exec='nocorrect PATH=$(npm bin):$PATH'
-
 # make star trek sounds
 # https://ubuntuincident.wordpress.com/2012/01/06/playing-star-trek-background-noise-with-a-linux-command/
 alias engage="play -n -c1 synth whitenoise lowpass -1 120 lowpass -1 120 lowpass -1 120 gain +14"
 
-alias vm="ssh $REM_USER@sp16-cs241-001.cs.illinois.edu"
+function bconnect()
+{
+    bluetoothctl power on && bluetoothctl devices | fzf | awk '{print $2}' | xargs -I{} bluetoothctl connect {}
+}
