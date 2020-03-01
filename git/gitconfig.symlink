@@ -1,0 +1,22 @@
+[user]
+	name = David Zmick
+	email = david@dpzmick.com
+
+[push]
+	default = current
+
+[alias]
+    lol = log --pretty=format:"%h%x09%an%x09%ad%x09%s" --graph --decorate
+    lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+
+[color]
+    branch = auto
+    diff = auto
+    interactive = auto
+    status = auto
+
+[diff]
+	tool = vimdiff
+
+[difftool]
+	prompt = false
