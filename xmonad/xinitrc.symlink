@@ -1,10 +1,10 @@
 # get the right env
-. ~/.zshenv
+. ~/.zshenv || true
 
 # activate dbus for the session
 . /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 
-jack_control start
+#jack_control start
 
 # set capslock to ctrl
 setxkbmap -option ctrl:nocaps
@@ -13,17 +13,19 @@ setxkbmap -option ctrl:nocaps
 xinput set-prop 11 283 1
 
 # Start a wicd client so that we can get desktop notifications
-wicd-client &
-
 redshift-gtk &
 
 # TODO, figure out how to do proper desktop notifications
-trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x002b36 --width 5 --height 19 &
+#trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --alpha 0 --tint 0x002b36 --width 5 --height 19 &
 
-xsetroot -cursor_name left_ptr
+#xsetroot -cursor_name left_ptr
 
 # waited until later to do this so jack had time to start up
-pulseaudio -D
-exec xmonad
+#pulseaudio -k || pulseaudio -D
+xrdb -merge ~/.Xresources
+#xrandr --dpi 144
+#exec xmonad
 #exec awesome
 #exec fluxbox
+#exec cinnamon
+exec i3
