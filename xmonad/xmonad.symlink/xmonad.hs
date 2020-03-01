@@ -16,6 +16,7 @@ main = do
     xmproc <- spawnPipe "/usr/bin/xmobar /home/dpzmick/.xmobarrc"
     xmonad $ ewmh def
         { terminal = "gnome-terminal"
+        , modMask = mod4Mask
 
         -- something about logging through xmobar
         , logHook = dynamicLogWithPP xmobarPP

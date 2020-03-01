@@ -5,7 +5,6 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
-;; ---- setup package manager
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -20,166 +19,261 @@
   (load bootstrap-file nil 'nomessage))
 
 (straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
+
+;; emacs lisp programming packages
+(use-package ht)
+(use-package mustache)
 
 (use-package base16-theme
-  :straight t
-  ;;:init
-  ;;(setq base16-theme-256-color-source "base16-shell")
+  :init
+  (setq base16-theme-256-color-source "base16-shell")
   :config
-  (load-theme 'base16-phd)) ;; FIXME get this from base16-shell
+  (load-theme 'base16-tomorrow-night) ;; FIXME get this from base16-shell
 
+  ;; make line numbers not look terrible
+  (set-face-inverse-video 'line-number-current-line nil)
+  (set-face-foreground 'line-number-current-line "orange")
+  (set-face-background 'line-number-current-line "color-18")
+
+  ;; and the comment delimiters, because for some reason the default
+  ;; is to make these invisible
+  (set-face-foreground 'font-lock-comment-delimiter-face "brightblack"))
+
+(use-package which-key
+  :config
+  (which-key-mode))
+
+;; almost everything needs to load after evil
 (use-package evil
-  :straight t
   :init
   (setq evil-want-C-u-scroll t)   ;; I want this, what do I lose?
   (setq evil-want-C-i-jump nil)   ;; disable C-i jump so I can use TAB key for things
-                                  ;; FIXME but I really want C-i jumps since I use that shit
   (setq evil-want-keybinding nil) ;; docs for evil-collection say to do this
+  (setq evil-toggle-key "M-SPC")
   :config
 
   ;; bind the jumping around keys to meta
+  ;; since I want to be able to use tab in a terminal
   (define-key evil-normal-state-map (kbd "M-i") 'evil-jump-forward)
   (define-key evil-normal-state-map (kbd "M-o") 'evil-jump-backward)
 
-  ;; FIXME S-TAB still doesnt work
+  ;; FIXME S-TAB still doesnt work in terminals, but this is to be
+  ;; expected most likely
 
-  (evil-mode)
+  (evil-mode))
 
-  ;; loaded inline so this will start after org mode *and* after evil
-  (use-package evil-org
-    :straight t
-    :after org
-    :config
-    (add-hook 'org-mode-hook 'evil-org-mode)
-    (add-hook 'evil-org-mode-hook (lambda () (evil-org-set-key-theme)))
-    (require 'evil-org-agenda)
-    (evil-org-agenda-set-keys))
-
-  (use-package evil-magit
-    :straight t
-    :after magit)
-
-  (use-package expand-region
-    :straight t
-    :config
-    (setq expand-region-contract-fast-key "V"
-	  expand-region-reset-fast-key "0")))
+(use-package evil-org
+  :after (org evil)
+  :config
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (add-hook 'evil-org-mode-hook (lambda () (evil-org-set-key-theme)))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 
 (use-package evil-collection
-  :straight t
   :after evil
   :config
-  (evil-collection-init)
-  (add-hook 'org-mode-hook 'evil-org-mode)
-  (add-hook 'evil-org-mode-hook
-	    (lambda () (evil-org-set-key-theme '(navigation
-						 insert
-						 textobjects
-						 additional
-						 calendar)))))
+  (evil-collection-init))
+
+(use-package evil-magit)
 
 (use-package evil-goggles
-  :straight t
+  :after evil
   :config
   (evil-goggles-mode))
 
-(use-package general
-  :straight t
+(use-package evil-commentary
   :after evil
+  :demand t
+  :config
+  (evil-commentary-mode))
+
+(use-package projectile)
+
+(use-package magit)
+
+(use-package helm
+  :demand t
+  :config
+  (helm-mode))
+
+(use-package helm-projectile
+  :after (helm projectile))
+
+(use-package ace-window)
+
+(use-package hydra
+  :demand t
+  :config
+  (defhydra hydra-resize ()
+    ("j" evil-window-decrease-height)
+    ("k" evil-window-increase-height)
+    ("h" evil-window-decrease-width) ;; this is a little wonky
+    ("l" evil-window-increase-width)))
+
+(use-package general
+  :after (evil hydra)
   :config
   (general-evil-setup) ;; make it easier to write mappings that look like vim
 
   ;; map jk to escape
   (general-imap "j" (general-key-dispatch 'self-insert-command
 		     :timeout 0.25
-		     "k" 'evil-normal-state)))
+		     "k" 'evil-normal-state))
+
+  (general-define-key
+   :states '(normal visual emacs)
+   :prefix "SPC"
+   "TAB" '((lambda () (interactive) (mode-line-other-buffer))
+           :which-key "Switch to previous buffer")
+
+   ;; not exactly the same, but close enough
+   "SPC w" '(evil-avy-goto-word-0
+             :which-key "AVY word")
+
+   "SPC f" '(evil-avy-goto-char
+             :which-key "AVY char")
+
+   "SPC j" '(evil-avy-goto-line
+             :which-key "AVY line")
+
+   "RET" '(align
+           :which-key "Align stuff DWIW")
+
+   ;; 'b' prefix for buffer commands
+   "bb" '(helm-projectile-switch-to-buffer
+         :which-key "Switch to another open buffer in project")
+   "bB" '(helm-buffers-list
+         :which-key "Switch to another open buffer")
+   "bd" '(evil-delete-buffer
+          :which-key "Delete buffer")
+   "bw" '(delete-trailing-whitespace
+          :which-key "Remove trailing whitespace")
+
+   ;; 'f' for files
+   "ff" '(helm-projectile-find-file
+          :which-key "Find file in current project")
+
+   ;; 'w' prefix for window management (integrate with tmux?)
+   "ws" '(evil-window-split
+          :which-key "Split horizontal")
+   "wS" '(evil-window-vsplit
+          :which-key "Split vertical")
+   "wq" '(evil-window-delete
+          :which-key "Delete window")
+   "wr" '(evil-window-rotate-downwards
+          :which-key "Rotate windows")
+   ;; FIXME winner mode for rearanging windows?
+   "wR" '((lambda () (interactive) (hydra-resize/body))
+          :which-key "Enter resize hydra")
+   "wA" '(ace-window
+          :which-key "ACE window")
+
+   ;; 'g' prefix for git commands
+   "gb" '(magit-blame
+          :which-key "git blame")
+
+   ;; 'h' (move the help bindings) FIXME put more here
+   "hf" '(describe-function
+          :which-key "describe function")
+   "hv" '(describe-variable
+          :which-key "describe variable")
+   "hm" '(describe-mode
+          :which-key "describe mode")
+   "hb"  '((lambda () (interactive) (general-describe-keybindings))
+           :which-key "Describe general bindings")
+   "hB"  '(describe-bindings
+           :which-key "Describe bindings")
+
+   ;; FIXME something to expand selections, run lisp code, etc
+   ;; FIXME rip off a bunch of spacemacs bindings
+   ))
+
+;; FIXME want C-h C-j C-k C-l movement bindings, but these eat a lot of emacs builtins
+;; this is problematic
 
 (use-package org
   :straight org-plus-contrib
+  ;;:straight (orgmode :repo "git@gitlab.com:dpzmick/orgmode.git")
+  :after (evil general)
   :init
+  (setq org-adapt-indentation nil)
   (setq org-log-done t)
   (setq org-agenda-files (list "~/org/todoist.org" "~/org/home.org"))
   (setq org-mode-actual-width nil)
   :config
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((latex  . t)
      (python . t)
      (shell  . t)
      (C      . t)
-     (dot    . t)))
+     (dot    . t))))
 
-  (use-package org-download
-    :straight t))
-
-(use-package which-key
+(use-package org-ref
   :straight t
+  :after org
   :config
-  (which-key-mode))
+  (setq reftex-default-bibliography '("/nas/org-ref/references.bib"))
+  (setq org-ref-bibliography-notes "/nas/org-ref/notes.org"
+        org-ref-default-bibliography '("/nas/org-ref/references.bib")
+        org-ref-pdf-directory "/nas/org-ref/pdfs"))
 
-(use-package todoist
-  :straight t
-  :init
-  (setq todoist-token "57be0f40b4665f41177a9624a797b61a97335e3e")
-  (setq todoist-show-all t)
-  (setq todoist-backing-buffer "~/org/todoist.org"))
+(use-package htmlize
+  :straight t)
+
+(use-package rust-mode)
+
+(use-package sclang-extensions
+  :config
+  (require 'sclang))
+
+(use-package eglot)
 
 (use-package company
-  :straight t
+  :init
   :config
-  (company-mode)
-  (add-to-list 'company-backends 'company-irony)) ;; FIXME learn to use this
+  (global-company-mode))
 
-(use-package indent-guide
-  :straight t
+;; (use-package company-lsp
+;;   :after (company lsp)
+;;   :config
+;;   (add-to-list 'company-backends 'company-lsp))
+
+(use-package hl-todo ;; FIXME could add some cool keybindings for this
+  :demand t          ;; maybe there's a helm mode for these?
   :config
-  (indent-guide-mode)) ;; FIXME not being loaded
-
-(use-package magit
-  :straight t)
-
-(use-package hl-todo
-  :straight t
-  :config
-  (hl-todo-mode)) ;; FIXME this doesn't appear to be loading
-
-; (use-package helm
-;   :straight t
-;   :config
-;   (helm-mode)) ;; FIXME learn to use this
-
-(use-package flycheck
-  :straight t) ;; FIXME learn to use this
-
-(use-package irony
-  :straight t)
-
-(use-package company-irony
-  :straight t)
-
-(use-package company-irony
-  :straight t)
-
-;(add-to-list 'load-path "/home/dpzmick/builds/emacs-libvterm")
-;(require 'vterm)
-
-;; FIXME paredit?
+  (global-hl-todo-mode))
 
 ;; --- config
+(global-display-line-numbers-mode) ;; always display line numbers
+(electric-pair-mode t)
+
+(defun my-c-mode-hook ()
+  (setq c-backslash-column 80)
+  (setq c-default-style "linux"
+                c-basic-offset 2)
+  (c-set-offset 'case-label '+))
+
+(add-hook 'c-mode-hook 'my-c-mode-hook)
+(add-hook 'cpp-mode-hook 'my-c-mode-hook)
+
+;; FIXME understand this
+(setq-default indent-tabs-mode nil)
+(setq show-trailing-whitespace t) ;; always on
+
+;; tweaks to ui
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
+(xterm-mouse-mode 1)
+
 (setq savehist-file (expand-file-name "savehist" user-emacs-directory))
 (savehist-mode 1) ;; save minibuffer history
+(save-place-mode) ;; save last place in file
 
-;; (set-face-attribute 'default nil :height 200) ;; 20 point font for UI
-
-;; Make latex biger with the bigger font (need to scale these the same way probably)
-;; (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
-
-;; attempt to make it possible to use tab and C-i in terminals
-;; FIXME is this real
-(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
 (setq
  backup-by-copying t ;; deal with symlinks
  backup-directory-alist `(("." . ,(expand-file-name "backups/" user-emacs-directory))))
@@ -187,43 +281,24 @@
 (setq
  auto-save-file-name-transforms `((".*" ,(expand-file-name "autosave/" user-emacs-directory) t)))
 
-;; some helpful functions
-
-(defun toggle-show-trailing-whitespace ()
-  "toggle show trailing whitespace"
-  (interactive)
-  (setq show-trailing-whitespace (not show-trailing-whitespace)))
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
+(require 'mu4e)
+(setq mu4e-maildir (expand-file-name "~/mail"))
+(setq mu4e-drafts-folder "/Drafts")
+(setq mu4e-sent-folder "/Sent")
+(setq mu4e-trash-folder "/Trash")
+(setq mu4e-view-show-images t)
 
 ;; things I want
-;; - auto-open files to the last open location
-;; - fuzzy finder, buffers, current files
-;; - search for code in grep (word under cursor)
-;; - good status bar with git branch and additonal info
-;; - git tools
-;; - easy motion
-;; - persistent undo
-;; - setup leader key bindings (or find a new way to do bindings)
-;; - jump to last open position
 ;; - intelligent autoindent
 ;; - tabs vs spaces
-;; - fix mouse
-;; - easyalign equivilent
-;; - easy code commenter
-;; - good management of splits (or just use tmux and client/server)
 ;; - wrapping and 80 character indicator
-;; - line numbers?
-;; - git changes in gutter (maybe not? that's sort of not useful)
-;; - git-timemachine plugin?
+;; - search for code in grep (word under cursor)
+;; - git tools
+;; - code intelligence that actually works (with tramp, maybe only tramp for org-mode?)
+;; - figure out irc or something
+;; - good status bar with git branch and additonal info
 ;; - learn about emacs-calc or something that will let me do math fast
 ;; - find a solution to my jupyer notebooks problem/graphics stuff in general
 ;;   - having more places to do graphics might be neat
-;; - convert this file to org mode
-;; - maybe abandon this completely and switch to visual-studio-code
-;;   - biggest problem with vscode is that window management is terrible
-;;   - is tmux really any better? I think yes, but it still isn't very good
-;;   - rejoining the session later is a fairly important feature
-;;   - the window management component is much less critical that the
-;;     running processes, open files, etc.
-;; - figure out irc or something
-;; - get org-mode to download remote files so I can TRAMP edit babel files
-;; - code intelligence that actually works (with tramp, maybe only tramp for org-mode?)
+;; - popup asm in emacs
