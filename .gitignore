@@ -1,3 +1,13 @@
 *.swp
 *.pyc
 .DS_Store
+
+# put these here as to not interfere with doom's own gitignore
+emacs/emacs.d.symlink/.lsp-session-v1
+emacs/emacs.d.symlink/autosave/
+emacs/emacs.d.symlink/backups/
+emacs/emacs.d.symlink/custom.el
+emacs/emacs.d.symlink/places
+emacs/emacs.d.symlink/savehist
+emacs/emacs.d.symlink/straight/
+emacs/emacs.d.symlink/transient/

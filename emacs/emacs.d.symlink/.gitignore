@@ -33,12 +33,3 @@ network-security.data
 *.cache-*
 *.log
 .directory
-
-.lsp-session-v1
-autosave/
-backups/
-custom.el
-places
-savehist
-straight/
-transient/
