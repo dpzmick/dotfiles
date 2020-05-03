@@ -57,3 +57,4 @@
 ;; enable some packages
 (package! base16-theme)
 (package! tmux-pane)
+(package! lsp-julia)

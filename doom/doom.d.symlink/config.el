@@ -42,6 +42,10 @@
 ;; following advice here: https://github.com/hlissner/doom-emacs/issues/2855
 (remove-hook 'tty-setup-hook 'doom-init-clipboard-in-tty-emacs-h)
 
+;; don't use a builtin language server for julia lsp
+;; instead, we will provide our own by installing it in julia
+(setq lsp-julia-package-dir nil)
+
 ;; doom disables both of these indicators in goggles, but I like them
 (use-package evil-goggles
   :init

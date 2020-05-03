@@ -23,3 +23,5 @@
   (let
       ((line (buffer-substring (line-beginning-position) (line-end-position))))
     (shell-command (format "tmux send-keys -t 2 '%s\n'" line))))
+
+(use-package lsp-julia)
