@@ -57,4 +57,7 @@
 ;; enable some packages
 (package! base16-theme)
 (package! tmux-pane)
-(package! lsp-julia)
+(package! lsp-julia :recipe (:host github :repo "non-jedi/lsp-julia"))
+
+;; I like eglot a lot better than lsp mode, much simpler
+(package! eglot)

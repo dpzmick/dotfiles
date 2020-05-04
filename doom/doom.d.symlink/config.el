@@ -34,6 +34,9 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
+;; we'll manage our own install of language server in julia
+(setq lsp-julia-package-dir nil)
+
 (setq blink-matching-paren t)
 
 ;; doom installs "clippetty" plugin to share the emacs clipboard with the
@@ -44,7 +47,7 @@
 
 ;; don't use a builtin language server for julia lsp
 ;; instead, we will provide our own by installing it in julia
-(setq lsp-julia-package-dir nil)
+(setq lsp-julia-package-dir nil) ;; FIXME get this working
 
 ;; doom disables both of these indicators in goggles, but I like them
 (use-package evil-goggles
@@ -91,7 +94,10 @@
 
   ;; added by me
   (:prefix "w"
-   :desc "split horizontally" :nv "S" #'split-window-horizontally))
+   :desc "split horizontally" :nv "S" #'split-window-horizontally)
+
+  (:prefix "S"
+   :desc "clear search" :nv "c" #'evil-ex-nohighlight))
 
 ;; default aligment mode
 ;; only does alignment, looking for something that will reindent and align at
@@ -102,7 +108,20 @@
 ;; many modes have rainbows enabled
 (defun disable-rainbows () (rainbow-delimiters-mode -1))
 
+(after! yasnippet
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+
+  (define-key yas-keymap (kbd "C-n") 'yas-next-field)
+  (define-key yas-keymap (kbd "C-p") 'yas-prev-field))
+
 (defun dpzmick-c-mode ()
+  (use-package lsp
+    :init
+    (setq eglot-put-doc-in-help-buffer t
+          eglot-auto-display-help-buffer nil
+          eglot-confirm-server-initiated-edits t))
+  (eglot)
   (disable-rainbows))
 
 (add-hook 'c-mode-hook 'dpzmick-c-mode)
@@ -117,21 +136,10 @@
 
 (add-hook 'julia-mode-hook 'dpzmick-julia-mode)
 
-;; (defun my-c-mode-hook ()
-;;   (setq c-backslash-column 80)
-;;   (setq c-default-style "linux"
-;;                 c-basic-offset 2)
-;;   (c-set-offset 'case-label '+))
-
-;; FIXME evil-org
-;; FIXME org
 ;; FIXME git blame
-;; FIXME show trailing whitespace
 ;; FIXME overlay mode is awesome, use it more
 ;; - maybe find a way to quickly pop-up python repl all the time
 ;; FIXME man pages
-;; FIXME lsp or eglot
-;; FIXME projectile stuff still sucks
 ;; FIXME show matching parens on insert only
 ;; FIXME remember last position in file
 
