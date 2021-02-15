@@ -14,12 +14,12 @@
 ;; FIXME don't hardcode the pane
 (defun dpzmick/run-julia-in-tmux ()
   (interactive)
-  (shell-command (format "tmux send-keys -t 2 'include(\"%s\")\n'"
+  (shell-command (format "tmux send-keys -t 1 'include(\"%s\")\n'"
                          (buffer-file-name))))
 
 ;; FIXME don't hardcode the pane
-(defun run-line-in-tmux ()
+(defun dpzmick/run-julia-line-in-tmux ()
   (interactive)
   (let
       ((line (buffer-substring (line-beginning-position) (line-end-position))))
-    (shell-command (format "tmux send-keys -t 2 '%s\n'" line))))
+    (shell-command (format "tmux send-keys -t 1 '%s\n'" line))))

@@ -29,6 +29,7 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
+(setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -121,7 +122,8 @@
     (setq eglot-put-doc-in-help-buffer t
           eglot-auto-display-help-buffer nil
           eglot-confirm-server-initiated-edits t))
-  (eglot)
+  ;;(eglot)
+  (setq-default c-basic-offset 2)
   (disable-rainbows))
 
 (add-hook 'c-mode-hook 'dpzmick-c-mode)
