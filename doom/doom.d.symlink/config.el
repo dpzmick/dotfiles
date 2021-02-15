@@ -8,6 +8,14 @@
 (setq user-full-name "David Zmick"
       user-mail-address "david@dpzmick.com")
 
+(setq +mu4e-backend 'offlineimap)
+(set-email-account! "dpzmick.com"
+                    '((mu4e-maildir (expand-file-name "~/mail"))
+                      (mu4e-sent-folder . "/Sent")
+                      (mu4e-drafts-folder . "/Drafts")
+                      (mu4e-trash-folder . "/Trash"))
+                    t)
+
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "Source Code Pro" :size 18))
@@ -64,6 +72,9 @@
   (define-key evil-normal-state-map (kbd "M-i") 'evil-jump-forward)
   (define-key evil-normal-state-map (kbd "M-o") 'evil-jump-backward)
   (evil-set-toggle-key "M-!"))
+
+(use-package! swift-mode)
+(use-package! org-present)
 
 (use-package! tmux-pane
   :config
@@ -137,6 +148,21 @@
      :desc "run line" :nv "l" #'dpzmick/run-julia-line-in-tmux)))
 
 (add-hook 'julia-mode-hook 'dpzmick-julia-mode)
+
+;; a bunch of verilog setttings
+(setq verilog-indent-level             2
+      verilog-indent-level-module      2
+      verilog-indent-level-declaration 2
+      verilog-indent-level-behavioral  2
+      verilog-indent-level-directive   2
+      verilog-case-indent              2
+      verilog-tab-always-indent        t
+      verilog-auto-endcomments         t
+      verilog-indent-begin-after-if    t
+      verilog-auto-lineup              'declarations
+      verilog-tool                     "iverilog")
+
+(setq org-ditaa-jar-path "/home/dpzmick/dotfiles/emacs/emacs.d.symlink/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar")
 
 ;; FIXME git blame
 ;; FIXME overlay mode is awesome, use it more
