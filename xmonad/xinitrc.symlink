@@ -7,7 +7,7 @@
 #jack_control start
 
 # set capslock to ctrl
-#setxkbmap -option ctrl:nocaps
+setxkbmap -option ctrl:nocaps
 
 # natural scrolling
 #xinput set-prop 11 283 1
