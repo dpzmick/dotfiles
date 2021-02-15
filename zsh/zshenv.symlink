@@ -12,3 +12,6 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 #source $HOME/.cargo/env
 #export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# opam configuration
+test -r /home/dpzmick/.opam/opam-init/init.zsh && . /home/dpzmick/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true

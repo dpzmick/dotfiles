@@ -137,7 +137,7 @@
        markdown            ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
-       ;;ocaml             ; an objective camel
+       ocaml             ; an objective camel
        (org +gnuplot +jupyter) ; organize your plain life in plain text
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
@@ -161,7 +161,7 @@
        yaml                ; JSON, but readable
 
        :email
-       ;;(mu4e +gmail)
+       mu4e
        ;;notmuch
        ;;(wanderlust +gmail)
 

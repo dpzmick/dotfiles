@@ -15,7 +15,6 @@ call plug#begin("~/.vim/plugged/")
 
 " appearance
 Plug 'chriskempson/base16-vim', { 'do': function('FixupBase16') }
-Plug 'itchyny/vim-cursorword'
 
 " show marks
 Plug 'kshenoy/vim-signature'

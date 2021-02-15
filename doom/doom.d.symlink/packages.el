@@ -61,3 +61,10 @@
 
 ;; I like eglot a lot better than lsp mode, much simpler
 (package! eglot)
+
+;;(package! emacs-jupyter)
+(package! zig-mode)
+(package! tide)
+(package! swift-mode)
+
+(package! org-present)
