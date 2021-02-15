@@ -26,5 +26,4 @@ redshift-gtk &
 #exec xmonad
 #exec awesome
 #exec fluxbox
-#exec cinnamon
 exec i3
