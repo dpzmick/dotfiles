@@ -75,7 +75,6 @@ else
     echo "Backup failed... Sending fail message"
     curl --silent -fsS --retry 3 -X GET ${healthchecks_url}/fail >/dev/null
 fi
-exit ${rc}
 
 # cleanup temp file
 rm ${tmpfile}
