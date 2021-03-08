@@ -57,6 +57,7 @@ cat << EOF > ${tmpfile}
 /.zoom/
 /builds/
 /go/
+/qemu/
 EOF
 
 echo "Sending start message"
