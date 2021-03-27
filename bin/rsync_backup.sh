@@ -37,6 +37,7 @@ cat << EOF > ${tmpfile}
 /.cache/
 /.cargo/
 /.config/
+/.config/google-chrome/
 /.debug/
 /.duplicacy/
 /.emacs.d/
@@ -55,6 +56,7 @@ cat << EOF > ${tmpfile}
 /.winbox/
 /.wine/
 /.zoom/
+/dotfiles/config.symlink/google-chrome/
 /builds/
 /go/
 /qemu/
