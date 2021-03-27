@@ -56,6 +56,7 @@ cat << EOF > ${tmpfile}
 /.wine/
 /.zoom/
 /builds/
+/dotfiles/config.symlink/google-chrome/
 /go/
 /qemu/
 EOF
