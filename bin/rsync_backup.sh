@@ -58,6 +58,7 @@ cat << EOF > ${tmpfile}
 /.zoom/
 /dotfiles/config.symlink/google-chrome/
 /builds/
+/dotfiles/config.symlink/google-chrome/
 /go/
 /qemu/
 EOF
