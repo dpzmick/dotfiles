@@ -56,6 +56,7 @@ cat << EOF > ${tmpfile}
 /.winbox/
 /.wine/
 /.zoom/
+/.Rack/
 /dotfiles/config.symlink/google-chrome/
 /builds/
 /dotfiles/config.symlink/google-chrome/
