@@ -1,29 +1,42 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
+
 ;; -- my functions
-(load! "util.el")
+;; (load! "util.el")
+;;
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
+;; clients, file templates and snippets. It is optional.
 (setq user-full-name "David Zmick"
       user-mail-address "david@dpzmick.com")
 
-(setq +mu4e-backend 'offlineimap)
-(set-email-account! "dpzmick.com"
-                    '((mu4e-maildir (expand-file-name "~/mail"))
-                      (mu4e-sent-folder . "/Sent")
-                      (mu4e-drafts-folder . "/Drafts")
-                      (mu4e-trash-folder . "/Trash"))
-                    t)
-
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
+;; Doom exposes five (optional) variables for controlling fonts in Doom:
+;;
+;; - `doom-font' -- the primary font to use
+;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
+;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;; - `doom-unicode-font' -- for unicode glyphs
+;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
+;;
+;; See 'C-h v doom-font' for documentation and more examples of what they
+;; accept. For example:
+;;
+;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
+;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
 (setq doom-font (font-spec :family "Source Code Pro" :size 18))
+
+;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
+;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
+;; refresh your font settings. If Emacs still can't find your font, it likely
+;; wasn't installed correctly. Font issues are rarely Doom issues!
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq base16-theme-256-color-source "base16-shell")
+(setq base16-theme-256-color-source "colors")
 (setq doom-theme 'base16-tomorrow-night)
 
 ;; make line numbers not look terrible
@@ -34,29 +47,66 @@
 ;; make comment delimiters not invisible
 (set-face-foreground 'font-lock-comment-delimiter-face "brightblack")
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
-(setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
+(setq blink-matching-paren t)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
-;; we'll manage our own install of language server in julia
-(setq lsp-julia-package-dir nil)
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/org/")
+;; (setq org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 
-(setq blink-matching-paren t)
+;; Whenever you reconfigure a package, make sure to wrap your config in an
+;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
+;;
+;;   (after! PACKAGE
+;;     (setq x y))
+;;
+;; The exceptions to this rule:
+;;
+;;   - Setting file/directory variables (like `org-directory')
+;;   - Setting variables which explicitly tell you to set them before their
+;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
+;;   - Setting doom variables (which start with 'doom-' or '+').
+;;
+;; Here are some additional functions/macros that will help you configure Doom.
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
+;; etc).
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+
+(map! :leader
+  ;; this overrides the default. was 'bookmark-jump
+  :desc "align dwim" "RET" #'dpzmick-align-dwim
+
+  ;; added by me
+  (:prefix "w"
+   :desc "split horizontally" :nv "S" #'split-window-horizontally)
+
+  (:prefix "S"
+   :desc "clear search" :nv "c" #'evil-ex-nohighlight))
+
 
 ;; doom installs "clippetty" plugin to share the emacs clipboard with the
 ;; system. this causes strange errors in mutliplexers like tmux (or dvtm):
 ;; https://github.com/spudlyo/clipetty/issues/15
 ;; following advice here: https://github.com/hlissner/doom-emacs/issues/2855
 (remove-hook 'tty-setup-hook 'doom-init-clipboard-in-tty-emacs-h)
-
-;; don't use a builtin language server for julia lsp
-;; instead, we will provide our own by installing it in julia
-(setq lsp-julia-package-dir nil) ;; FIXME get this working
 
 ;; doom disables both of these indicators in goggles, but I like them
 (use-package evil-goggles
@@ -73,22 +123,9 @@
   (define-key evil-normal-state-map (kbd "M-o") 'evil-jump-backward)
   (evil-set-toggle-key "M-!"))
 
-(use-package! swift-mode)
-(use-package! org-present)
-
 (use-package! tmux-pane
   :config
-  (tmux-pane-mode)
-  (map! :leader
-    (:prefix ("v" . "tmux pane")
-     :desc "Open hpane" :nv "s" #'tmux-pane-open-horizontal
-     :desc "Open vpane" :nv "S" #'tmux-pane-open-vertical
-     :desc "Close pane" :nv "c" #'tmux-pane-close
-     :desc "Rerun last command" :nv "r" #'tmux-pane-rerun))
-  (map! :leader
-    (:prefix "t"
-     :desc "vpane" :nv "v" #'tmux-pane-toggle-vertical
-     :desc "hpane" :nv "h" #'tmux-pane-toggle-horizontal)))
+  (tmux-pane-mode))
 
 (after! org
   ;; try and disable all of the visual quirks that doom turns on
@@ -99,18 +136,6 @@
   ;; remove the doom customization hook
   (remove-hook 'org-load-hook '+org-init-appearance-h))
 
-;; augment of doom-emacs default keybindings
-(map! :leader
-  ;; this overrides the default. was 'bookmark-jump
-  :desc "align dwim" "RET" #'dpzmick-align-dwim
-
-  ;; added by me
-  (:prefix "w"
-   :desc "split horizontally" :nv "S" #'split-window-horizontally)
-
-  (:prefix "S"
-   :desc "clear search" :nv "c" #'evil-ex-nohighlight))
-
 ;; default aligment mode
 ;; only does alignment, looking for something that will reindent and align at
 ;; the same time
@@ -120,34 +145,94 @@
 ;; many modes have rainbows enabled
 (defun disable-rainbows () (rainbow-delimiters-mode -1))
 
-(after! yasnippet
-  (define-key yas-minor-mode-map (kbd "<tab>") nil)
-  (define-key yas-minor-mode-map (kbd "TAB") nil)
+(defun xah-show-hexadecimal-value ()
+  "Prints the decimal value of a hexadecimal string under cursor.
 
-  (define-key yas-keymap (kbd "C-n") 'yas-next-field)
-  (define-key yas-keymap (kbd "C-p") 'yas-prev-field))
+Samples of valid input:
 
-(defun dpzmick-c-mode ()
-  (use-package lsp
-    :init
-    (setq eglot-put-doc-in-help-buffer t
-          eglot-auto-display-help-buffer nil
-          eglot-confirm-server-initiated-edits t))
-  ;;(eglot)
-  (setq-default c-basic-offset 2)
-  (disable-rainbows))
+  ffff → 65535
+  0xffff → 65535
+  #xffff → 65535
+  FFFF → 65535
+  0xFFFF → 65535
+  #xFFFF → 65535
 
-(add-hook 'c-mode-hook 'dpzmick-c-mode)
-(add-hook 'cpp-mode-hook 'dpzmick-c-mode)
+more test cases
+  64*0xc8+#x12c 190*0x1f4+#x258
+  100 200 300   400 500 600
 
-(defun dpzmick-julia-mode ()
-  (load! "julia.el")
-  (map! :leader
-    (:prefix ("m" . "meta commands")
-     :desc "run file" :nv "r" #'dpzmick/run-julia-in-tmux
-     :desc "run line" :nv "l" #'dpzmick/run-julia-line-in-tmux)))
+URL `http://xahlee.info/emacs/emacs/elisp_converting_hex_decimal.html'
+Version 2020-02-17"
+  (interactive )
+  (let ($inputStr $tempStr $p1 $p2 )
+    (if (region-active-p)
+        (progn
+          (setq $p1 (region-beginning))
+          (setq $p2 (region-end)))
+      (progn
+        (save-excursion
+          (skip-chars-backward "0123456789abcdefABCDEF#x")
+          (setq $p1 (point))
+          (skip-chars-forward "0123456789abcdefABCDEF#x" )
+          (setq $p2 (point)))))
+    (setq $inputStr (buffer-substring-no-properties $p1 $p2))
+    (let ((case-fold-search nil))
+      (setq $tempStr (replace-regexp-in-string "\\`0x" "" $inputStr )) ; C, Perl, …
+      (setq $tempStr (replace-regexp-in-string "\\`#x" "" $tempStr )) ; elisp …
+      (setq $tempStr (replace-regexp-in-string "\\`#" "" $tempStr )) ; CSS …
+      )
+    (string-to-number $tempStr 16)))
 
-(add-hook 'julia-mode-hook 'dpzmick-julia-mode)
+(defun bitboard-idx (x y)
+  (- 63 (+ (* y 8) x)))
+
+(defun bitboard-mask (x y)
+  (ash 1 (bitboard-idx x y)))
+
+;; iterate top left to bottom right
+
+(setq max-x 8)
+(setq max-y 8)
+
+(defun board-map-x (f acc x y)
+  (if (< x max-x)
+      (board-map-x f (funcall f acc x y) (+ x 1) y)
+    acc))
+
+(defun board-map-y (f acc y)
+  (if (< y max-y)
+      (board-map-y f (board-map-x f acc 0 y) (+ y 1))
+    acc))
+
+(defun board-map (f acc)
+  (board-map-y f acc 0))
+
+(defun bitboard-char (bitstring x y)
+  (if (not (zerop (logand bitstring (bitboard-mask x y)))) "*" "."))
+
+(defun popup-othello ()
+  (interactive)
+  (let* ((bs (xah-show-hexadecimal-value))
+         (g (lambda (acc x y)
+              (if (= x (- max-x 1))
+                       (format "%s%s\n" acc (bitboard-char bs x y))
+               (format  "%s%s" acc (bitboard-char bs x y))))))
+    (popup-tip (board-map g ""))))
+
+(map! :leader
+      (:prefix ("m" . "meta commands")
+       :desc "do popup" :nv "p" #'popup-othello)
+      (:prefix ("m" . "meta commands")
+       :desc "do popup" :nv "P" #'xah-show-hexadecimal-value))
+
+;; (defun dpzmick-julia-mode ()
+;;   (load! "julia.el")
+;;   (map! :leader
+;;     (:prefix ("m" . "meta commands")
+;;      :desc "run file" :nv "r" #'dpzmick/run-julia-in-tmux
+;;      :desc "run line" :nv "l" #'dpzmick/run-julia-line-in-tmux)))
+;; 
+;; (add-hook 'julia-mode-hook 'dpzmick-julia-mode)
 
 ;; a bunch of verilog setttings
 (setq verilog-indent-level             2
@@ -162,28 +247,9 @@
       verilog-auto-lineup              'declarations
       verilog-tool                     "iverilog")
 
-(setq org-ditaa-jar-path "/home/dpzmick/dotfiles/emacs/emacs.d.symlink/.local/straight/repos/org-mode/contrib/scripts/ditaa.jar")
-
 ;; FIXME git blame
 ;; FIXME overlay mode is awesome, use it more
 ;; - maybe find a way to quickly pop-up python repl all the time
 ;; FIXME man pages
 ;; FIXME show matching parens on insert only
 ;; FIXME remember last position in file
-
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c g k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
-;; they are implemented.

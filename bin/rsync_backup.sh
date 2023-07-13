@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/zsh
+
+export PATH=/sbin/:$PATH
 
 # Bail out and let healthchecks staleness warnings detect that we've stopped
 # backing up
@@ -9,9 +11,8 @@ then
 fi
 
 # FIXME maybe don't put this on the internet?
-declare -A urls
 
-who=$(hostname)
+who=$(hostname -s)
 src=/home/dpzmick/
 dst=worf.chi.dpzmick.com:/nas/backups/${who}/
 tmpfile=$(mktemp /tmp/rsync_backup.XXXXXX)
@@ -22,8 +23,12 @@ elif [ ${who} = "spock" ]; then
     healthchecks_url="https://hc-ping.com/f5e2ff62-eb66-42ec-8679-93c2311aeeda"
 elif [ ${who} = "worf" ]; then
     healthchecks_url="https://hc-ping.com/f5ffa77c-30b9-439b-b24c-63b6bc7a64b3"
+elif [ ${who} = "tpring" ]; then
+    # tpring is osx
+    src=/Users/dpzmick/
+    healthchecks_url="https://hc-ping.com/693dc4b0-d29d-4bfb-be20-35556f8ce550"
 else
-    echo "Don't know what healthchecks URL to use"
+    echo "Don't know what healthchecks URL to use for ${who}"
     exit 1
 fi
 
@@ -57,6 +62,10 @@ cat << EOF > ${tmpfile}
 /.wine/
 /.zoom/
 /.Rack/
+/.spack/
+/.Trash/
+/spack/
+/Library/
 /dotfiles/config.symlink/google-chrome/
 /builds/
 /dotfiles/config.symlink/google-chrome/
