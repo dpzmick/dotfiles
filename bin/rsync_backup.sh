@@ -2,6 +2,8 @@
 
 export PATH=/sbin/:$PATH
 
+echo "Running as $USER"
+
 # Bail out and let healthchecks staleness warnings detect that we've stopped
 # backing up
 if ! ping -c4 worf.chi.dpzmick.com >/dev/null;

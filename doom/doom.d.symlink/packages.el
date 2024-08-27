@@ -55,17 +55,11 @@
 (package! paren :disable t)
 (package! org-superstar :disable t) ;; ugly org mode bullets
 
-;; enable some packages
 (package! base16-theme)
+
 (package! tmux-pane)
-;(package! lsp-julia :recipe (:host github :repo "non-jedi/lsp-julia"))
+(package! org-books)
 
-;; I like eglot a lot better than lsp mode, much simpler
-(package! eglot)
+(package! popup) ;; used for othello thing
 
-(package! ein)
-(package! popup)
-
-;(package! emacs-jupyter)
-;(package! tide)
-;(package! swift-mode)
+(package! gptel)
