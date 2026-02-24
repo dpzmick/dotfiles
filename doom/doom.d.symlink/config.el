@@ -49,10 +49,6 @@
   (define-key evil-normal-state-map (kbd "M-o") 'evil-jump-backward)
   (evil-set-toggle-key "M-!"))
 
-;; (use-package! tmux-pane
-;;   :config
-;;   (tmux-pane-mode))
-
 ;;;; Org
 
 ;; Must be set before org loads
@@ -122,9 +118,7 @@ Skips if last update was less than `my/ics-update-interval' seconds ago."
 
   (advice-add #'org-agenda :before #'my/update-diary-from-ics)
 
-  ;; remove the doom customization hook
-  ;; FIXME this mechansim is deprcated
-  (remove-hook 'org-load-hook '+org-init-appearance-h))
+  )
 
 (use-package! org-habit
   :after org

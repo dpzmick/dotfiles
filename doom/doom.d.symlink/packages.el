@@ -57,9 +57,7 @@
 ;(package! rainbow-delimiters :disable t)
 
 (package! base16-theme)
-;;(package! tmux-pane)
 (package! org-books)
-(package! popup) ;; used for othello thing
 
 (package! gptel)
 ;; (package! gptel-quick
