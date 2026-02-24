@@ -54,12 +54,26 @@
 (package! hl-line :disable t)
 (package! paren :disable t)
 (package! org-superstar :disable t) ;; ugly org mode bullets
+;(package! rainbow-delimiters :disable t)
 
 (package! base16-theme)
-
-(package! tmux-pane)
+;;(package! tmux-pane)
 (package! org-books)
-
 (package! popup) ;; used for othello thing
 
 (package! gptel)
+;; (package! gptel-quick
+;;   :recipe (:host github :repo "karthink/gptel-quick"))
+(package! gptel-agent)
+
+;;(package! zotxt)
+;;(package! fireplace)
+
+(package! monet
+  :recipe (:host github :repo "stevemolitor/monet"))
+
+(package! emacs-mcp-server
+  :recipe (:host github :repo "rhblind/emacs-mcp-server"
+           :files ("*.el" "tools/*.el")))
+
+;; (package! org-caldav)

@@ -48,7 +48,7 @@ Plug 'chaoren/vim-wordmotion'
 
 " Generally useful programming plugins
 " Plug 'scrooloose/syntastic'
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
 Plug 'Raimondi/delimitMate'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'sheerun/vim-polyglot'

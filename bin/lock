@@ -1,2 +1,0 @@
-sudo keyboard-backlight off
-sleep 1 && xset dpms force off && slimlock

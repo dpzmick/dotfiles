@@ -96,8 +96,9 @@ class RapidHandler(SimpleHTTPRequestHandler):
             self.wfile.write(result.encode('utf-8'))
 
 if __name__ == "__main__":
-    host = socket.gethostname()
-    port = 5069
+    #host = socket.gethostname()
+    host = "0.0.0.0"
+    port = 5070
 
     print(f'Listening on http://{host}:{port}')
 

@@ -1,1 +1,0 @@
-rsync -a ~/programming/cs426/sync/$1/ zmick2@remlnx.ews.illinois.edu:/home/zmick2/cs426/$1/

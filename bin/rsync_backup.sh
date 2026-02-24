@@ -1,12 +1,17 @@
 #!/bin/zsh
+#set -xe
+set -e
 
 export PATH=/sbin/:$PATH
 
 echo "Running as $USER"
 
+host=worf.chi.dpzmick.com
+#host=100.85.121.19
+
 # Bail out and let healthchecks staleness warnings detect that we've stopped
 # backing up
-if ! ping -c4 worf.chi.dpzmick.com >/dev/null;
+if ! ping -c4 ${host} >/dev/null;
 then
     echo "Could not reach remote host"
     exit 2
@@ -16,7 +21,7 @@ fi
 
 who=$(hostname -s)
 src=/home/dpzmick/
-dst=worf.chi.dpzmick.com:/nas/backups/${who}/
+dst=dpzmick@${host}:/nas/backups/${who}/
 tmpfile=$(mktemp /tmp/rsync_backup.XXXXXX)
 
 if [ ${who} = "picard" ]; then

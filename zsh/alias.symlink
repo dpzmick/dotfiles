@@ -1,6 +1,10 @@
 #Aliases
-alias ls="ls --color=yes"
-alias l='ls -G' # this is important, in zshrc we defined ls=' ls' so it can be ignored
+if [[ "$(uname)" == "Darwin" ]]; then
+    alias ls="ls -G"
+else
+    alias ls="ls --color=auto"
+fi
+alias l='ls' # this is important, in zshrc we defined ls=' ls' so it can be ignored
 alias la='l -a'
 alias ll='l -l'
 alias las='l -las'

@@ -8,16 +8,10 @@ colors
 # use vim keybindings
 bindkey -v
 bindkey jk vi-cmd-mode # make jk escape
-
-# some keybindings I'll probably never use
-bindkey '^P' up-history
-bindkey '^N' down-history
-bindkey '^?' backward-delete-char
-bindkey '^h' backward-delete-char
-bindkey '^w' backward-kill-word
-bindkey '^r' history-incremental-search-backward
+bindkey '^?' backward-delete-char # make the backspace key work like vim not vi
 
 # some stuff to get the prompt nice
+# FIXME theres some bugs here
 vim_ins_mode="%{$fg[cyan]%}$"
 vim_cmd_mode="%{$fg[cyan]%}>%{$reset_color%}"
 vim_mode=$vim_ins_mode
@@ -85,8 +79,8 @@ setopt pushd_to_home            # `pushd` = `pushd $HOME`
 #                                   history                                    #
 ################################################################################
 HISTFILE=~/.zsh_history         # where to store zsh config
-HISTSIZE=1024                   # big history
-SAVEHIST=1024                   # big history
+HISTSIZE=4096                   # big history
+SAVEHIST=4096                   # big history
 setopt append_history           # append
 setopt hist_ignore_all_dups     # no duplicate
 setopt hist_ignore_space        # ignore space prefixed commands
@@ -140,10 +134,17 @@ function __git_prompt {
   fi
 }
 
+#function __spack_prompt {
+#    if [ x"${SPACK_ENV}" != "x" ]; then
+#        echo "($(basename ${SPACK_ENV}))"
+#    fi
+#}
+
 # idk something funky
 setopt promptsubst
 setopt promptpercent
 # add the opening brace
+#PROMPT=$'$(__spack_prompt)%{$fg[cyan]%}[ %T$(__git_prompt) %{$fg[green]%}%m:'
 PROMPT=$'%{$fg[cyan]%}[ %T$(__git_prompt) %{$fg[green]%}%m:'
 PROMPT+=$'%{$fg[yellow]%}${PWD/$HOME/~}%{$fg[cyan]%} ]'
 # print the $ and reset the color
@@ -164,3 +165,28 @@ zle -N zle-line-finish empty-buffer-to-ls
 
 BASE16_SHELL=$HOME/.config/base16-shell/
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
+
+# Enviroment variables
+export EDITOR=vim
+
+# whatever, just pretend we always have 256 colors
+export TERM=xterm-256color
+
+export PATH="$HOME/.config/emacs/bin:$HOME/dotfiles/bin:/usr/local/sbin:/usr/local/bin:$PATH"
+
+# nix is in /etc/zshrc
+# load brew second
+if [[ "$(uname)" == "Darwin" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# eval "$(direnv hook zsh)"
+
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+# source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
+# source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+
+if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
+ . "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
+fi
