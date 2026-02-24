@@ -51,13 +51,6 @@ setup_gitconfig () {
   fi
 }
 
-setup_base16 () {
-    if [ ! -d ~/.config/base16-shell ]; then
-        git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
-    fi
-}
-
-
 link_file () {
   local src=$1 dst=$2
 
@@ -138,27 +131,102 @@ install_dotfiles () {
 
   local overwrite_all=false backup_all=false skip_all=false
 
-  for src in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
+  for src in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*' -not -name 'config.symlink')
   do
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
 }
 
-setup_gitconfig
-install_dotfiles
+install_config () {
+  info 'installing config symlinks'
 
-# If we're on a Mac, let's install and setup homebrew.
-#if [ "$(uname -s)" == "Darwin" ]
-#then
-#  info "installing dependencies"
-#  if source bin/dot > /tmp/dotfiles-dot 2>&1
-#  then
-#    success "dependencies installed"
-#  else
-#    fail "error installing dependencies"
-#  fi
-#fi
+  local overwrite_all=false backup_all=false skip_all=false
+
+  mkdir -p "$HOME/.config"
+
+  for src in "$DOTFILES_ROOT"/config.symlink/*/
+  do
+    [ -d "$src" ] || continue
+    src="${src%/}"  # strip trailing slash
+    local name="$(basename "$src")"
+    local dst="$HOME/.config/$name"
+    link_file "$src" "$dst"
+  done
+}
+
+setup_submodules () {
+  info 'initializing submodules'
+  git -C "$DOTFILES_ROOT" submodule update --init --recursive
+  success 'submodules ready'
+}
+
+select_profile () {
+  local profile_file="$DOTFILES_ROOT/.profile"
+
+  if [ -f "$profile_file" ]; then
+    PROFILE=$(cat "$profile_file")
+    info "using profile: $PROFILE"
+    return
+  fi
+
+  local profiles=(generic arch)
+
+  echo ''
+  user 'Select a profile for this machine:'
+  for i in "${!profiles[@]}"; do
+    printf "    %d) %s\n" $((i+1)) "${profiles[$i]}"
+  done
+  printf "  > "
+  read -r choice
+
+  if [ "$choice" -ge 1 ] 2>/dev/null && [ "$choice" -le "${#profiles[@]}" ] 2>/dev/null; then
+    PROFILE="${profiles[$((choice-1))]}"
+  else
+    fail "invalid selection"
+  fi
+
+  echo "$PROFILE" > "$profile_file"
+  success "profile set to $PROFILE"
+}
+
+install_profile () {
+  local profile_config="$DOTFILES_ROOT/profiles/$PROFILE/config"
+
+  if [ ! -d "$profile_config" ]; then
+    info "no profile-specific config for '$PROFILE'"
+    return
+  fi
+
+  info "installing profile config for '$PROFILE'"
+
+  local overwrite_all=false backup_all=false skip_all=false
+
+  mkdir -p "$HOME/.config"
+
+  for src in "$profile_config"/*/; do
+    [ -d "$src" ] || continue
+    src="${src%/}"
+    local name="$(basename "$src")"
+    local dst="$HOME/.config/$name"
+    link_file "$src" "$dst"
+  done
+
+  # symlink top-level files (e.g. clean-chroot-manager.conf)
+  for src in "$profile_config"/*; do
+    [ -f "$src" ] || continue
+    local name="$(basename "$src")"
+    local dst="$HOME/.config/$name"
+    link_file "$src" "$dst"
+  done
+}
+
+select_profile
+setup_gitconfig
+setup_submodules
+install_dotfiles
+install_config
+install_profile
 
 echo ''
 echo '  All installed!'

@@ -1,4 +1,5 @@
 *.swp
+.profile
 *.pyc
 .DS_Store
 
