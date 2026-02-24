@@ -197,3 +197,7 @@
        :config
        ;;literate
        (default +bindings +smartparens))
+
+;; Always native-compile packages ahead-of-time during `doom sync`
+(after! straight
+  (setq straight--native-comp-available t))
