@@ -59,6 +59,5 @@ set -g message-style fg=colour02
 set -g message-command-style bg=colour16
 set -g message-command-style fg=colour18
 
-# Mode
-set -g mode-style bg=colour19
-set -g mode-style fg=colour18
+# Mode (visual selection in copy-mode)
+set -g mode-style bg=colour04,fg=colour18

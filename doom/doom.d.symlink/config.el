@@ -11,9 +11,12 @@
 (setq doom-theme 'base16-tomorrow-night)
 
 ;; make line numbers not look terrible
+;; "color-18" is a base16-shell extended palette color — only valid when
+;; base16-shell has configured the terminal's color slots.
 (set-face-inverse-video 'line-number-current-line nil)
 (set-face-foreground 'line-number-current-line "orange")
-(set-face-background 'line-number-current-line "color-18")
+(when (display-graphic-p)
+  (set-face-background 'line-number-current-line "color-18"))
 
 (setq display-line-numbers-type t)
 
@@ -25,11 +28,8 @@
 
 ;;;; General Editor Tweaks
 
-;; doom installs "clippetty" plugin to share the emacs clipboard with the
-;; system. this causes strange errors in mutliplexers like tmux (or dvtm):
-;; https://github.com/spudlyo/clipetty/issues/15
-;; following advice here: https://github.com/hlissner/doom-emacs/issues/2855
-(remove-hook 'tty-setup-hook 'doom-init-clipboard-in-tty-emacs-h)
+;; OSC-52 clipboard via clipetty (enabled by tty +osc module).
+;; Allows yank to reach system clipboard through tmux/ssh.
 
 ;;;; Evil
 
@@ -51,10 +51,7 @@
 
 ;;;; Org
 
-;; Must be set before org loads
-(setq org-directory "~/icloud/org/")
-(setq org-agenda-files '("/Users/dpzmick/icloud/org"))
-(setq org-books-file "~/icloud/org/book-list.org")
+;; org-directory, org-agenda-files, org-books-file set in config-local.el
 
 (after! org
   ;; try and disable all of the visual quirks that doom turns on
@@ -64,15 +61,7 @@
 
   (setq org-log-done 'time)  ; Timestamp when TODOs completed
 
-  (setq org-capture-templates
-        '(("t" "Dated TODO" entry (file+datetree "~/icloud/org/journal.org")
-          "**** TODO %?\n:PROPERTIES:\n:CREATED:: %U\n:END:")
-          ("a" "Article" entry (file+datetree "~/icloud/org/article-list.org")
-          "**** QUEUED %?\n:PROPERTIES:\n:CREATED:: %U\n:END:")
-          ("h" "Habit (daily)" entry (file "~/icloud/org/habits.org")
-          "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (current-time) t nil nil nil \" ++%^{Every N days}d\")\n:PROPERTIES:\n:STYLE:    habit\n:CREATED:: %U\n:END:")
-          ("H" "Habit (weekly)" entry (file "~/icloud/org/habits.org")
-          "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (current-time) t nil nil nil \" ++%^{Every N weeks}w\")\n:PROPERTIES:\n:STYLE:    habit\n:CREATED:: %U\n:END:")))
+  ;; org-capture-templates set in config-local.el
 
   (setq org-agenda-custom-commands
         '(("h" "Habits & Unscheduled"
@@ -86,38 +75,7 @@
 
   (add-hook 'org-after-todo-state-change-hook #'org-save-all-org-buffers)
 
-  ;; Diary integration (ICS calendar)
-  (setq org-agenda-include-diary t)
-  (setq diary-file (expand-file-name "~/.doom.d/diary")) ;; just tmp
-  (setq diary-number-of-entries 14)
-
-  (defvar my/ics-update-interval (* 60 60)
-    "Minimum seconds between ICS diary refreshes.")
-
-  (defvar my/ics-last-update-time nil
-    "Time of last successful ICS diary update.")
-
-  (defun my/update-diary-from-ics ()
-    "Fetch ICS calendar from 1Password and convert to Emacs diary.
-Skips if last update was less than `my/ics-update-interval' seconds ago."
-    (interactive)
-    (let ((now (float-time)))
-      (when (or (called-interactively-p 'any)
-                (null my/ics-last-update-time)
-                (> (- now my/ics-last-update-time) my/ics-update-interval))
-        (let* ((ics-url (my/op-read "fastmail-ics-file" "credential"))
-               (script "/Users/dpzmick/dotfiles/bin/ics_to_emacs_diary.py")
-               (out diary-file)
-               (cmd (format "%s --url %s --out %s || true"
-                            (shell-quote-argument script)
-                            (shell-quote-argument ics-url)
-                            (shell-quote-argument out))))
-          (shell-command cmd "*diary-update*" "*diary-update-errors*")
-          (setq my/ics-last-update-time now)
-          (message "ICS diary updated — reopen agenda to see new events")))))
-
-  (advice-add #'org-agenda :before #'my/update-diary-from-ics)
-
+  ;; Diary integration set up in config-local.el
   )
 
 (use-package! org-habit
@@ -139,6 +97,81 @@ Skips if last update was less than `my/ics-update-interval' seconds ago."
           :n "$" #'evil-end-of-visual-line))
 
   (add-hook 'org-mode-hook #'my/org-evil-visual-line-motions))
+
+;;;; TRAMP
+
+(after! tramp
+  (setq tramp-default-method "ssh")
+  (setq tramp-verbose 1)
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
+  ;; Aggressive caching — safe when you're the only editor on the remote
+  (setq remote-file-name-inhibit-cache nil)
+  (setq tramp-completion-reread-directory-timeout nil)
+
+  ;; Auto-save and backups to local machine so they never stall
+  (setq tramp-auto-save-directory
+        (expand-file-name "tramp-autosave/" doom-cache-dir))
+  (setq tramp-backup-directory-alist
+        `(("." . ,(expand-file-name "tramp-backup/" doom-cache-dir))))
+  (setq remote-file-name-inhibit-auto-save-visited t)
+  (setq remote-file-name-inhibit-locks t)
+
+  ;; Large files use out-of-band (scp) transfer
+  (setq tramp-copy-size-limit 1000000)
+
+  ;; Disable VC on remote files — huge speedup, use magit manually
+  (setq vc-ignore-dir-regexp
+        (format "\\(%s\\)\\|\\(%s\\)"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp)))
+
+;; tramp-rpc: faster RPC-based file operations (requires Emacs 30.1+)
+(use-package! tramp-rpc
+  :after tramp)
+
+;; Projectile: don't stall on remote
+(after! projectile
+  (setq projectile-enable-caching t)
+  (setq projectile-mode-line-function
+        (lambda ()
+          (if (file-remote-p default-directory)
+              " Proj[remote]"
+            (format " Proj[%s]" (projectile-project-name))))))
+
+;; Project search on remote: use rg on the remote if available, else grep.
+;; Local rg can't search remote files, so we must run the tool remotely.
+(defadvice! my/search-project-remote (orig-fn &rest args)
+  :around #'+default/search-project
+  (if (file-remote-p default-directory)
+      (let ((dir (or (doom-project-root) default-directory)))
+        (if (executable-find "rg" t)
+            (consult-ripgrep dir)
+          (consult-grep dir)))
+    (apply orig-fn args)))
+
+;; recentf: don't probe dead TRAMP connections on cleanup
+(after! recentf
+  (add-to-list 'recentf-keep #'file-remote-p))
+
+;;;; Tmux pane navigation
+;; Only activate when running inside tmux (terminal emacs).
+;; C-h/j/k/l move between emacs windows; at the edge, tmux-pane
+;; tells tmux to switch to the adjacent tmux pane instead.
+;; The tmux side (tmux.conf) has matching binds that detect when
+;; the active pane is running emacs and forwards the keys to us.
+;;
+;; We bind directly in evil states rather than using tmux-pane-mode's
+;; override keymap, which conflicts with C-h (help prefix) and causes
+;; input delay from key sequence timeout.
+
+(use-package! tmux-pane
+  :when (getenv "TMUX")
+  :config
+  (map! :nvi "C-h" #'tmux-pane-omni-window-left
+        :nvi "C-j" #'tmux-pane-omni-window-down
+        :nvi "C-k" #'tmux-pane-omni-window-up
+        :nvi "C-l" #'tmux-pane-omni-window-right))
 
 ;;;; Language Modes
 
@@ -164,24 +197,15 @@ Skips if last update was less than `my/ics-update-interval' seconds ago."
                                  (format "op read \"op://Private/%s/%s\"" item field)))
                    cache)))))
 
-(defun my/fetch-anthropic-models ()
-  "Fetch available model IDs from the Anthropic API."
-  (let* ((api-key (my/op-read "anthropic-gptel" "credential"))
-         (url-request-method "GET")
-         (url-request-extra-headers
-          `(("x-api-key" . ,api-key)
-            ("anthropic-version" . "2023-06-01")))
-         (buf (url-retrieve-synchronously "https://api.anthropic.com/v1/models" t)))
-    (when buf
-      (unwind-protect
-          (with-current-buffer buf
-            (goto-char (point-min))
-            (re-search-forward "\n\n")
-            (let* ((json (json-read))
-                   (data (cdr (assq 'data json))))
-              (mapcar (lambda (m) (intern (cdr (assq 'id m))))
-                      data)))
-        (kill-buffer buf)))))
+;; Declare backend/model vars — set by config-local.el
+(defvar my/ai-commentary-backend nil
+  "Backend for AI commentary (fast, no thinking).")
+(defvar my/ai-commentary-model nil
+  "Model symbol for AI commentary.")
+(defvar my/ai-complete-backend nil
+  "Backend for AI completion (no thinking).")
+(defvar my/ai-complete-model nil
+  "Model symbol for AI completion.")
 
 (after! gptel
   (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
@@ -191,34 +215,9 @@ Skips if last update was less than `my/ics-update-interval' seconds ago."
   ;; Remove the default ChatGPT backend
   (setq gptel--known-backends nil)
 
-  (let ((models (or (my/fetch-anthropic-models)
-                    '(claude-opus-4-6
-                      claude-sonnet-4-5-20250929
-                      claude-haiku-4-5-20251001))))
-    (setq gptel-backend
-          (gptel-make-anthropic "Claude"
-            :stream t
-            :models models
-            :request-params '(:thinking (:type "enabled" :budget_tokens 16384)
-                              :max_tokens 32768)
-            :key (lambda () (my/op-read "anthropic-gptel" "credential")))))
-  (setq gptel-model 'claude-sonnet-4-5-20250929)
-
-  ;; Fast backend for AI commentary (Haiku, no thinking)
-  (defvar my/ai-commentary-backend
-    (gptel-make-anthropic "Claude-fast"
-      :stream t
-      :models '(claude-haiku-4-5-20251001)
-      :request-params '(:max_tokens 4096)
-      :key (lambda () (my/op-read "anthropic-gptel" "credential"))))
-
-  ;; Mid-tier backend for completions (Sonnet, no thinking)
-  (defvar my/ai-complete-backend
-    (gptel-make-anthropic "Claude-complete"
-      :stream t
-      :models '(claude-sonnet-4-5-20250929)
-      :request-params '(:max_tokens 8192)
-      :key (lambda () (my/op-read "anthropic-gptel" "credential")))))
+  ;; gptel-backend, gptel-model, my/ai-commentary-backend,
+  ;; my/ai-complete-backend are all set in config-local.el
+  )
 
 ;;;; gptel-agent
 
@@ -360,7 +359,7 @@ Rules:
   (interactive)
   (require 'gptel)
   (let* ((gptel-backend my/ai-complete-backend)
-         (gptel-model 'claude-sonnet-4-5-20250929)
+         (gptel-model my/ai-complete-model)
          (has-region (use-region-p))
          (region-beg (and has-region (region-beginning)))
          (region-end-marker (and has-region (copy-marker (region-end))))
@@ -459,7 +458,7 @@ File: %s (buffer: %s)
   "Send PROMPT to Claude Haiku with no thinking, show result in side window."
   (let ((buf (get-buffer-create my/ai-commentary-buffer))
         (gptel-backend my/ai-commentary-backend)
-        (gptel-model 'claude-haiku-4-5-20251001))
+        (gptel-model my/ai-commentary-model))
     (with-current-buffer buf (erase-buffer) (markdown-mode) (insert "Waiting...\n"))
     (display-buffer buf '(display-buffer-in-side-window (side . bottom) (slot . 0) (window-height . 0.3)))
     (gptel-request prompt
@@ -516,4 +515,9 @@ File: %s (buffer: %s)
    :desc "ask about code" :nv "q" #'my/ai-ask
    :desc "implement"   :nv "i" #'my/ai-implement
    :desc "complete"    :nv "c" #'my/ai-complete))
+
+;;;; Local Overrides (work/home profiles)
+;; Load config-local.el — org paths, capture templates, LLM backends/models.
+;; At work, replace this file with work-specific settings (litellm, etc).
+(load! "config-local" doom-user-dir t)
 

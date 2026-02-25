@@ -74,4 +74,11 @@
   :recipe (:host github :repo "rhblind/emacs-mcp-server"
            :files ("*.el" "tools/*.el")))
 
+(package! msgpack)
+(package! tramp-rpc
+  :recipe (:host github :repo "ArthurHeymans/emacs-tramp-rpc"
+           :files ("lisp/*.el")))
+
+(package! tmux-pane)
+
 ;; (package! org-caldav)
