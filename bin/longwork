@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# longwork <command> [args...] : gray out this tmux tab while the command runs,
+# restore it when the command exits. Preserves the command's exit status.
+#
+#   longwork make -j8
+#   longwork ./deploy.sh staging
+#
+# Nesting is fine for a single window: each longwork sets "working" on start and
+# "default" on exit. (If something else in the same window also drives the tab,
+# last writer wins -- see tab-state.)
+set -u
+
+if [ "$#" -lt 1 ]; then
+  echo "usage: longwork <command> [args...]" >&2
+  exit 2
+fi
+
+here="$(cd "$(dirname "$0")" && pwd)"
+ts="$here/tab-state"
+
+"$ts" working
+# Restore the tab however we exit. EXIT covers normal/error paths; routing
+# INT/TERM through `exit` makes that same EXIT trap handle signals too, so the
+# restore runs exactly once. The real exit code is preserved by `exit "$rc"`.
+trap '"$ts" default' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+"$@"
+rc=$?
+exit "$rc"

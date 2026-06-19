@@ -1,0 +1,26 @@
+{
+  "model": "opus",
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "effortLevel": "medium",
+  "theme": "dark",
+  "statusLine": {
+    "type": "command",
+    "command": "\"$HOME/dotfiles/claude/statusline.sh\""
+  },
+  "hooks": {
+    "SessionStart": [
+      { "matcher": "startup|resume|clear", "hooks": [{ "type": "command", "command": "\"$HOME/dotfiles/bin/tab-state\" default" }] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "\"$HOME/dotfiles/bin/tab-state\" working" }] }
+    ],
+    "Notification": [
+      { "matcher": "permission_prompt", "hooks": [{ "type": "command", "command": "\"$HOME/dotfiles/bin/tab-notify\"" }] }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "\"$HOME/dotfiles/bin/tab-state\" default" }] }
+    ]
+  }
+}

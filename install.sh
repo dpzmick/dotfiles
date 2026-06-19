@@ -221,12 +221,21 @@ install_profile () {
   done
 }
 
+install_claude () {
+  # The *.symlink auto-linker only targets ~/.<name> at top level; it can't
+  # produce a nested path, so Claude Code's global settings are linked by hand.
+  info 'installing claude settings'
+  mkdir -p "$HOME/.claude"
+  link_file "$DOTFILES_ROOT/claude/settings.json" "$HOME/.claude/settings.json"
+}
+
 select_profile
 setup_gitconfig
 setup_submodules
 install_dotfiles
 install_config
 install_profile
+install_claude
 
 echo ''
 echo '  All installed!'

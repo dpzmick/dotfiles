@@ -10,6 +10,11 @@ bindkey -v
 bindkey jk vi-cmd-mode # make jk escape
 bindkey '^?' backward-delete-char # make the backspace key work like vim not vi
 
+# drop / and = from WORDCHARS so word-wise editing (e.g. insert-mode C-w) stops at
+# path separators instead of eating a whole path. mostly matters in insert mode
+# since movement/deletion in normal mode uses the vim keymap.
+WORDCHARS=${WORDCHARS//[\/=]}
+
 # some stuff to get the prompt nice
 # FIXME theres some bugs here
 vim_ins_mode="%{$fg[cyan]%}$"
@@ -32,31 +37,51 @@ zle -N zle-line-finish
 ################################################################################
 #                                 completions                                  #
 ################################################################################
-autoload compinit
-compinit -C
+autoload -Uz compinit
+# only do the full (slow) security audit if the dump is older than 24h,
+# otherwise trust the cache and skip it with -C
+if [[ -n ~/.zcompdump(#qNmh-24) ]]; then
+  compinit -C
+else
+  compinit
+fi
 
-zstyle ':completion::complete:*' use-cache on               # completion caching, use rehash to clear
-zstyle ':completion:*' cache-path ~/.zsh/cache              # cache path
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'   # ignore case
-zstyle ':completion:*' menu select=2                        # menu if nb items > 2
-#zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}       # colorz !
+# cache slow-to-build completion lists (e.g. package names) to disk; `rehash` clears it
+zstyle ':completion::complete:*' use-cache on
+# where that cache lives
+zstyle ':completion:*' cache-path ~/.zsh/cache
+# case-insensitive matching: typing lowercase still completes uppercase (foo -> Foo)
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+# show an interactive (arrow-key selectable) menu once there are more than 2 matches
+zstyle ':completion:*' menu select=2
+# colorize the completion list from $LS_COLORS, and highlight the part you've typed
 zstyle -e ':completion:*:default' list-colors 'reply=("${PREFIX:+=(#bi)($PREFIX:t)(?)*==34=34}:${(s.:.)LS_COLORS}")'
-zstyle ':completion:*::::' completer _expand _complete _ignored _approximate # list of completers to use
+# completion pipeline, tried in order: expand globs, normal completion,
+# ignored-pattern matches, then _approximate = typo-tolerant fuzzy completion
+zstyle ':completion:*::::' completer _expand _complete _ignored _approximate
 
-# sections completion !
+# show description text for completions (not just bare names)
 zstyle ':completion:*' verbose yes
+# blue header for the description lines that group/label completions
 zstyle ':completion:*:descriptions' format $'\e[00;34m%d'
+# red text for completion system messages (e.g. "no matches")
 zstyle ':completion:*:messages' format $'\e[00;31m%d'
+# group matches by type, each group under its own labeled header
 zstyle ':completion:*' group-name ''
+# when completing `man`, split candidates by manual section
 zstyle ':completion:*:manuals' separate-sections true
 
+# how `kill <TAB>` lists processes: only your own processes
 zstyle ':completion:*:processes' command 'ps -au$USER'
+# `kill <TAB>`: always show a selectable menu...
 zstyle ':completion:*:*:kill:*' menu yes select
+# ...and always render it as a list even for a single match
 zstyle ':completion:*:kill:*' force-list always
+# color the numeric PIDs in that `kill` menu
 zstyle ':completion:*:*:kill:*:processes' list-colors "=(#b) #([0-9]#)*=29=34"
+# same menu + force-list treatment for `killall <TAB>` (completes process names)
 zstyle ':completion:*:*:killall:*' menu yes select
 zstyle ':completion:*:killall:*' force-list always
-zstyle ':completion:*' users $users
 
 # be able to use shift tab
 bindkey '^[[Z' reverse-menu-complete
@@ -74,6 +99,10 @@ setopt auto_pushd
 setopt pushd_ignore_dups        # no duplicates in dir stack
 setopt pushd_silent             # no dir stack after pushd or popd
 setopt pushd_to_home            # `pushd` = `pushd $HOME`
+
+setopt interactive_comments     # allow # comments at the interactive prompt
+setopt extended_glob            # ^, ~, # and friends in globbing
+unsetopt beep                   # stop beeping at me
 
 ################################################################################
 #                                   history                                    #
@@ -102,35 +131,149 @@ alias time='time -p ' # -p for POSIX output
 ################################################################################
 #                                    prompt                                    #
 ################################################################################
-# some git thing I found on the internet
-function __git_prompt {
-  local DIRTY="%{$fg[yellow]%} git:"
-  local CLEAN="%{$fg[green]%} git:"
-  local UNMERGED="%{$fg[red]%} git:"
-  local RESET="%{$terminfo[sgr0]%}"
-  git rev-parse --git-dir >& /dev/null
-  if [[ $? == 0 ]]
-  then
-    if [[ `git ls-files -u >& /dev/null` == '' ]]
-    then
-      git diff --quiet >& /dev/null
-      if [[ $? == 1 ]]
-      then
-        echo -n $DIRTY
-      else
-        git diff --cached --quiet >& /dev/null
-        if [[ $? == 1 ]]
-        then
-          echo -n $DIRTY
-        else
-          echo -n $CLEAN
-        fi
-      fi
-    else
-      echo -n $UNMERGED
+# Async git status segment.
+#
+# Running git synchronously in the prompt lags on every Enter in a large repo
+# on slow storage. Instead a background worker computes the segment and signals
+# the prompt to redraw when it's ready (the same idea pure/zsh-async use, but
+# self-contained and keeping our own prompt look).
+autoload -Uz add-zsh-hook
+
+# Exit-status marker. Registered FIRST so it reads the real $? before the other
+# precmd hooks (git/timer) run commands that clobber it. We only show a marker
+# when a command actually ran this cycle (preexec fired) -- so a genuinely
+# interrupted command still shows ✗130, but mashing Ctrl-C at an empty prompt
+# (no command, $? left at 130) shows nothing.
+typeset -g __exit_info=""
+function __exit_preexec { __cmd_ran=1 }
+function __exit_precmd {
+  local ret=$?
+  if [[ -n ${__cmd_ran:-} ]] && (( ret != 0 )); then
+    __exit_info="%F{red}✗${ret}%f "
+  else
+    __exit_info=""
+  fi
+  __cmd_ran=""
+}
+add-zsh-hook preexec __exit_preexec
+add-zsh-hook precmd  __exit_precmd
+
+typeset -g  __git_async_info=""   # rendered segment shown in PROMPT
+typeset -gi __git_async_fd=0      # fd of the in-flight worker, 0 == none
+
+# Runs in a background subshell; prints the git segment (with prompt escapes).
+function __git_prompt_worker {
+  emulate -L zsh
+  # Don't take the optional index lock and don't rewrite a refreshed index to
+  # disk -- on slow storage that write is the expensive part and it lets these
+  # read-only commands run without contending with a real git operation.
+  export GIT_OPTIONAL_LOCKS=0
+
+  git rev-parse --git-dir &>/dev/null || return
+
+  local seg
+  # color alone signals git state; the branch name follows, no "git:" label
+  if git rev-parse -q --verify MERGE_HEAD &>/dev/null; then
+    seg="%F{red} "              # mid-merge / unmerged paths
+  elif ! git diff --quiet &>/dev/null || ! git diff --cached --quiet &>/dev/null; then
+    seg="%F{yellow} "           # dirty
+  else
+    seg="%F{green} "            # clean
+  fi
+
+  local branch
+  branch=$(git symbolic-ref --short HEAD 2>/dev/null) \
+    || branch=$(git rev-parse --short HEAD 2>/dev/null) \
+    || branch="?"
+  # double % so a branch like "wip%foo" renders literally, not as a prompt escape
+  branch=${branch//\%/%%}
+
+  print -r -- "${seg}${branch}%f"
+}
+
+# zle fd callback: the worker finished, read its output and redraw.
+function __git_prompt_callback {
+  local fd=$1 resp
+  {
+    IFS= read -r resp <&$fd
+    __git_async_info=$resp
+  } always {
+    zle -F $fd                 # unregister handler
+    exec {fd}<&-               # close fd
+    __git_async_fd=0
+  }
+  zle reset-prompt
+}
+
+# precmd hook: kick off a fresh worker for this prompt.
+function __git_prompt_async_start {
+  # cancel any still-running worker from a previous prompt
+  if (( __git_async_fd )); then
+    zle -F $__git_async_fd 2>/dev/null
+    exec {__git_async_fd}<&- 2>/dev/null
+    __git_async_fd=0
+  fi
+  exec {__git_async_fd}< <(__git_prompt_worker)
+  zle -F $__git_async_fd __git_prompt_callback
+}
+add-zsh-hook precmd __git_prompt_async_start
+
+# clear stale info immediately on cd so we never show the old repo's status
+function __git_prompt_chpwd { __git_async_info="" }
+add-zsh-hook chpwd __git_prompt_chpwd
+
+# Command timer: show how long the last command took, and keep showing it until
+# the *next command* runs (replaces the wall clock, which just went stale).
+# preexec stamps the start, precmd measures on the way back to the prompt.
+#
+# Deliberate: Ctrl-C (or Enter) on an empty prompt runs no command, so preexec
+# never fires and the previous duration stays put. That's why mashing Ctrl-C
+# leaves the last timing on screen -- it isn't stale, there just was no new
+# command to time. (See __exit_info above, which uses the same did-a-command-
+# -actually-run signal to decide whether to show ✗N.)
+zmodload zsh/datetime
+typeset -g __cmd_elapsed="%F{242}0s%f"   # dim grey until a command is slow enough to notice
+
+function __fmt_duration {
+  local total=$1 i=${1%.*}
+  if   (( i < 60 ));   then printf '%.2fs' $total
+  elif (( i < 3600 )); then printf '%dm%02ds' $(( i / 60 )) $(( i % 60 ))
+  else                      printf '%dh%02dm' $(( i / 3600 )) $(( (i % 3600) / 60 ))
+  fi
+}
+
+function __timer_preexec { __cmd_timer_start=$EPOCHREALTIME }
+function __timer_precmd {
+  if [[ -n ${__cmd_timer_start:-} ]]; then
+    local secs=$(( EPOCHREALTIME - __cmd_timer_start )) i color
+    i=${secs%.*}
+    # dim when fast, colored once it's slow enough to care about (red past 10s)
+    if   (( i >= 10 )); then color="%F{red}"
+    elif (( i >= 1 ));  then color="%F{yellow}"
+    else                     color="%F{242}"
     fi
-    echo -n `git branch | grep '* ' | sed 's/..//'`
-    echo -n $RESET
+    __cmd_elapsed="${color}$(__fmt_duration $secs)%f"
+    unset __cmd_timer_start
+  fi
+}
+add-zsh-hook preexec __timer_preexec
+add-zsh-hook precmd  __timer_precmd
+
+# Env segment: python venv / conda `activate` scripts already prepend their own
+# marker to PROMPT (we leave VIRTUAL_ENV_DISABLE_PROMPT unset so they do).
+#
+# direnv doesn't touch PROMPT, so we render our own marker. direnv's hook exports
+# DIRENV_DIR (the loaded dir, prefixed with a leading "-") whenever an .envrc is
+# active, so we just read that env var -- no extra process per prompt. Shown as
+# the leaf basename of the direnv root. The precmd that fills __direnv_info is
+# registered down by the `direnv hook zsh` eval so it runs *after* direnv's own
+# precmd has updated DIRENV_DIR (otherwise the marker would lag one prompt on cd).
+typeset -g __direnv_info=""
+function __direnv_precmd {
+  if [[ -n ${DIRENV_DIR:-} ]]; then
+    __direnv_info="%F{magenta}(${${DIRENV_DIR#-}:t})%f "
+  else
+    __direnv_info=""
   fi
 }
 
@@ -145,21 +288,25 @@ setopt promptsubst
 setopt promptpercent
 # add the opening brace
 #PROMPT=$'$(__spack_prompt)%{$fg[cyan]%}[ %T$(__git_prompt) %{$fg[green]%}%m:'
-PROMPT=$'%{$fg[cyan]%}[ %T$(__git_prompt) %{$fg[green]%}%m:'
+PROMPT=$'%{$fg[cyan]%}[ ${__direnv_info}${__cmd_elapsed}${__git_async_info} %{$fg[green]%}%m:'
 PROMPT+=$'%{$fg[yellow]%}${PWD/$HOME/~}%{$fg[cyan]%} ]'
 # print the $ and reset the color
-PROMPT+=$'\n%{$fg[cyan]%}$vim_mode%{$reset_color%} '
+PROMPT+=$'\n${__exit_info}%{$fg[cyan]%}$vim_mode%{$reset_color%} '
 
 # load aliases
 source ~/.alias
 
-function empty-buffer-to-ls() {
-    if [[ $#BUFFER == 0 ]]; then
+# Press Enter on an empty line to run `l`. This wraps the accept-line widget
+# instead of zle-line-finish -- the old `zle -N zle-line-finish ...` silently
+# replaced the vim-mode-indicator reset widget defined at the top of this file.
+function __accept_line_or_ls {
+    if [[ -z $BUFFER ]]; then
         BUFFER="l"
+        CURSOR=$#BUFFER
     fi
+    zle .accept-line
 }
-# set special widget, see man zshzle
-zle -N zle-line-finish empty-buffer-to-ls
+zle -N accept-line __accept_line_or_ls
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -180,12 +327,13 @@ if [[ "$(uname)" == "Darwin" ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# eval "$(direnv hook zsh)"
+if command -v direnv &>/dev/null; then
+    eval "$(direnv hook zsh)"
+    # register after direnv's hook so we read the freshly-updated DIRENV_DIR
+    add-zsh-hook precmd __direnv_precmd
+fi
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
-
-# source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-# source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
 
 if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
  . "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"

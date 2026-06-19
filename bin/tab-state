@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# tab-state: dim the current tmux window's tab while a long task runs, via a
+# per-window @tab_state option (rendered by tmux.conf). No-op outside tmux.
+# For a one-shot "needs you" alert use `tab-notify` instead.
+#
+#   tab-state working   # dim the tab
+#   tab-state default   # clear it
+set -u
+state="${1:-default}"
+
+command -v tmux >/dev/null 2>&1 || exit 0
+[ -n "${TMUX:-}" ] || exit 0
+
+# Target the caller's window ($TMUX_PANE), falling back to the active one.
+win=""
+[ -n "${TMUX_PANE:-}" ] && win=$(tmux display-message -p -t "$TMUX_PANE" '#{window_id}' 2>/dev/null)
+[ -n "$win" ] || win=$(tmux display-message -p '#{window_id}' 2>/dev/null)
+[ -n "$win" ] || exit 0
+
+case "$state" in
+  working|run)                       tmux set-option -w -t "$win" @tab_state working 2>/dev/null ;;
+  default|clear|off|done|idle|reset) tmux set-option -w -t "$win" -u @tab_state 2>/dev/null ;;
+  *) echo "usage: tab-state working|default" >&2; exit 2 ;;
+esac
+
+tmux refresh-client -S 2>/dev/null

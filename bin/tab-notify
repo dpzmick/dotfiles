@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# tab-notify: ring a bell so the current tmux window's tab flags red until you
+# visit it (via monitor-bell; see tmux.conf). Also bells the outer terminal for
+# a dock bounce. A one-shot alert, not a sticky state -- use `tab-state` for that.
+set -u
+
+# Drain any piped stdin (e.g. a hook payload) so we don't block; contents unused.
+[ -t 0 ] || cat >/dev/null 2>&1
+
+if command -v tmux >/dev/null 2>&1 && [ -n "${TMUX:-}" ]; then
+  pane="${TMUX_PANE:-}"
+  # Bell the pane pty -> tmux raises this window's bell flag (red tab).
+  pane_tty=$(tmux display-message -p ${pane:+-t "$pane"} '#{pane_tty}' 2>/dev/null)
+  [ -n "$pane_tty" ] && [ -w "$pane_tty" ] && printf '\a' > "$pane_tty"
+  # Bell the outer client too so the terminal (e.g. Ghostty) bounces its dock.
+  client_tty=$(tmux display-message -p ${pane:+-t "$pane"} '#{client_tty}' 2>/dev/null)
+  [ -n "$client_tty" ] && [ "$client_tty" != "$pane_tty" ] && [ -w "$client_tty" ] \
+    && printf '\a' > "$client_tty"
+  exit 0
+fi
+
+# Outside tmux: plain bell to the controlling terminal.
+[ -w /dev/tty ] && printf '\a' > /dev/tty
+exit 0
