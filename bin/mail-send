@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# mail-send <to-field> <text...> : send a one-line note to one of the Fastmail
+# processing addresses over SMTP. Subject and body are both <text>. All config
+# and credentials come from the 1Password "fastmail" item, so nothing sensitive
+# lives in this repo. Used by send-todo and send-article. Plain SMTP means no
+# copy is left in Sent.
+set -euo pipefail
+
+# GUI launchers (Alfred) start with a bare PATH; make sure op and msmtp resolve.
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+if [ "$#" -lt 2 ]; then
+  echo "usage: mail-send <to-field> <text...>" >&2
+  exit 2
+fi
+
+to_field=$1; shift
+text="$*"
+
+# Fetch the whole item in ONE op call (each op invocation hits the 1Password app
+# and is slow), then pull fields out locally with jq.
+item_json=$(op item get fastmail --vault Private --reveal --format json)
+field() { jq -r --arg l "$1" '.fields[] | select(.label==$l) | .value // empty' <<<"$item_json"; }
+
+user=$(field username)
+from=$(field from); [ -n "$from" ] || from="$user"
+to=$(field "$to_field")
+pw=$(field smtp_password)
+
+[ -n "$user" ] || { echo "mail-send: no 'username' field in 1Password item" >&2; exit 1; }
+[ -n "$to" ]   || { echo "mail-send: no '$to_field' field in 1Password item" >&2; exit 1; }
+[ -n "$pw" ]   || { echo "mail-send: no 'smtp_password' field in 1Password item" >&2; exit 1; }
+
+# Subject is a single header line; collapse any newlines. Full text stays in body.
+subject=${text//$'\n'/ }
+
+# Hand msmtp the password via an exported var read back by passwordeval, so it
+# never appears in argv (visible to `ps`). Flags-only invocation needs no rc file.
+export MSMTP_PW="$pw"
+printf 'From: %s\nTo: %s\nSubject: %s\nDate: %s\nMIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\n\n%s\n' \
+  "$from" "$to" "$subject" "$(date -R)" "$text" \
+| msmtp \
+    --host=smtp.fastmail.com \
+    --port=465 \
+    --tls=on \
+    --tls-starttls=off \
+    --auth=on \
+    --user="$user" \
+    --from="$from" \
+    --passwordeval='printf %s "$MSMTP_PW"' \
+    "$to"

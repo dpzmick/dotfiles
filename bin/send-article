@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# send-article <url-or-text...> : send a link/note to the feeds address (-> feeds_to).
+set -u
+here="$(cd "$(dirname "$0")" && pwd)"
+exec "$here/mail-send" feeds_to "$@"

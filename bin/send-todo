@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# send-todo <text...> : file a quick todo into Fastmail (-> todo_to address).
+set -u
+here="$(cd "$(dirname "$0")" && pwd)"
+exec "$here/mail-send" todo_to "$@"
