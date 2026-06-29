@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
-# send-todo <text...> : file a quick todo into Fastmail (-> todo_to address).
-set -u
-here="$(cd "$(dirname "$0")" && pwd)"
-exec "$here/mail-send" todo_to "$@"
+# send-todo <text...> : capture a TODO into tasks.org via a running Emacs server
+# (org-capture template "T", :immediate-finish). Errors if no Emacs is running --
+# nothing is written and the text is NOT silently dropped to a file.
+set -euo pipefail
+
+# GUI launchers (Alfred) start with a bare PATH; make sure emacsclient resolves.
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+# Ensure a missing server is an error, not an auto-started daemon (an empty/unset
+# ALTERNATE_EDITOR with -a would spawn one); we explicitly want it to fail.
+unset ALTERNATE_EDITOR
+
+if [ "$#" -lt 1 ]; then
+  echo "usage: send-todo <text...>" >&2
+  exit 2
+fi
+text="$*"
+
+# Quote the text as an Emacs Lisp string literal: backslashes then double quotes.
+esc=${text//\\/\\\\}
+esc=${esc//\"/\\\"}
+
+if ! emacsclient -e "(progn (org-capture-string \"$esc\" \"T\") (org-save-all-org-buffers))" >/dev/null 2>&1; then
+  echo "send-todo: no Emacs server reachable -- start Emacs first" >&2
+  exit 1
+fi
