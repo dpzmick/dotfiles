@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# lcars-digest [output.html] [--mobile] : render the `SPC o A h' (Habits &
+# Unscheduled) agenda as a standalone LCARS-themed HTML page via headless Emacs.
+# Faithful to the in-editor agenda and needs no running Emacs server. Delivery
+# (email / e-ink / serving) is handled elsewhere; this only writes the file.
+#   default    full-width LCARS console (e-ink / desktop)
+#   --mobile   phone-first single-column layout for a Fastmail/iOS email
+set -euo pipefail
+
+# GUI launchers start with a bare PATH; make sure emacs resolves.
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+out=$HOME/lcars-digest.html
+mobile=()
+for arg in "$@"; do
+  case "$arg" in
+    --mobile) mobile=(--mobile) ;;
+    *) out=$arg ;;
+  esac
+done
+
+emacs --batch -Q -l "$here/lcars-digest.el" -- "$out" "${mobile[@]}"
