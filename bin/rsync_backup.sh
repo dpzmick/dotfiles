@@ -21,8 +21,10 @@ fi
 
 who=$(hostname -s)
 src=/home/dpzmick/
-dst=dpzmick@${host}:/nas/backups/${who}/
+dstdir=/nas/backups/${who}
+dst=dpzmick@${host}:${dstdir}/
 tmpfile=$(mktemp /tmp/rsync_backup.XXXXXX)
+trap 'rm -f ${tmpfile}' EXIT
 
 if [ ${who} = "picard" ]; then
     healthchecks_url="https://hc-ping.com/397996f9-18b9-4e68-b9cf-9ef6b7c0fa33"
@@ -45,6 +47,8 @@ echo "Backing up ${src} to ${dst} (healthchecks url ${healthchecks_url})"
 cat << EOF > ${tmpfile}
 /.AMDuProf/
 /.BitwigStudio/
+/.Rack/
+/.Trash/
 /.audacity-data/
 /.cache/
 /.cargo/
@@ -52,6 +56,7 @@ cat << EOF > ${tmpfile}
 /.config/google-chrome/
 /.debug/
 /.duplicacy/
+/.elan/
 /.emacs.d/
 /.fzf/
 /.gradle/
@@ -60,45 +65,51 @@ cat << EOF > ${tmpfile}
 /.lein/
 /.local/
 /.mozilla/
+/.nix-defexpr/
+/.nix-profile/
 /.npm/
 /.opam/
 /.renderdoc/
 /.rustup/
+/.spack/
 /.steam/
 /.winbox/
 /.wine/
 /.zoom/
-/.Rack/
-/.spack/
-/.Trash/
-/spack/
 /Library/
-/dotfiles/config.symlink/google-chrome/
 /builds/
 /dotfiles/config.symlink/google-chrome/
+/dropbox
 /go/
+/icloud
 /qemu/
+/spack/
 EOF
 
+# don't let a healthchecks outage block the backup itself
 echo "Sending start message"
-curl --silent -fsS --retry 3 -X GET ${healthchecks_url}/start >/dev/null
+curl --silent -fsS --retry 3 -X GET ${healthchecks_url}/start >/dev/null || true
 
 cd ~/
-rsync -avx --delete --delete-excluded --exclude-from=${tmpfile} ${src} ${dst}
+rc=0
 
-# capture return code
-rc=$?
+# icloud/dropbox are symlinks into cloud storage; back their contents up to
+# sibling dest dirs (e.g. ${who}-icloud) so the main backup's --delete-excluded
+# never touches them (macOS openrsync ignores 'P' protect filters)
+for cloud in icloud dropbox; do
+    [ -d ~/${cloud} ] || continue
+    rsync -avx --delete ~/${cloud}/ dpzmick@${host}:${dstdir}-${cloud}/ || rc=$?
+done
+
+rsync -avx --delete --delete-excluded \
+    --exclude-from=${tmpfile} ${src} ${dst} || rc=$?
 
 if [ ${rc} -eq 0 ]; then
     echo "Success!"
-    curl --silent -fsS --retry 3 -X GET ${healthchecks_url} >/dev/null # done!
+    curl --silent -fsS --retry 3 -X GET ${healthchecks_url} >/dev/null || true # done!
 else
-    echo "Backup failed... Sending fail message"
-    curl --silent -fsS --retry 3 -X GET ${healthchecks_url}/fail >/dev/null
+    echo "Backup failed (rc=${rc})... Sending fail message"
+    curl --silent -fsS --retry 3 -X GET ${healthchecks_url}/fail >/dev/null || true
 fi
 
-# cleanup temp file
-rm ${tmpfile}
-
-# exit
 exit ${rc}
