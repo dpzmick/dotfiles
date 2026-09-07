@@ -10,18 +10,21 @@
 (setq base16-theme-256-color-source "colors")
 (setq doom-theme 'base16-tomorrow-night)
 
-;; make line numbers not look terrible
-;; "color-18" is a base16-shell extended palette color — only valid when
-;; base16-shell has configured the terminal's color slots.
-(set-face-inverse-video 'line-number-current-line nil)
-(set-face-foreground 'line-number-current-line "orange")
-(when (display-graphic-p)
-  (set-face-background 'line-number-current-line "color-18"))
+;; make line numbers not look terrible, and comment delimiters not invisible.
+;; custom-set-faces! reapplies these on theme load; bare set-face-* does not.
+(custom-set-faces!
+  '(line-number-current-line :inverse-video nil :foreground "orange")
+  '(font-lock-comment-delimiter-face :foreground "brightblack"))
+
+;; "color-18" is a base16-shell extended palette color — valid only in a
+;; terminal whose color slots base16-shell has configured, never in a GUI frame.
+(defun my/tty-line-number-background ()
+  (unless (display-graphic-p)
+    (set-face-background 'line-number-current-line "color-18")))
+(add-hook 'doom-load-theme-hook #'my/tty-line-number-background 90)
+(my/tty-line-number-background)
 
 (setq display-line-numbers-type t)
-
-;; make comment delimiters not invisible
-(set-face-foreground 'font-lock-comment-delimiter-face "brightblack")
 
 (setq fill-column 80)
 (global-display-fill-column-indicator-mode)
@@ -246,15 +249,20 @@ alone at the default level, so repeaters are never swept up."
 
 (let ((cache (make-hash-table :test 'equal)))
   (defun my/op-read (item field)
-    "Read a secret from 1Password, caching per session."
+    "Read a secret from 1Password, caching per session.
+Signals on failure rather than caching the error text as if it were the
+secret, which would poison every later read in the session."
     (when noninteractive
       (error "my/op-read called in batch mode"))
     (let ((key (format "%s/%s" item field)))
       (or (gethash key cache)
-          (puthash key
-                   (string-trim (shell-command-to-string
-                                 (format "op read \"op://Private/%s/%s\"" item field)))
-                   cache)))))
+          (with-temp-buffer
+            (let* ((status (call-process "op" nil t nil "read"
+                                         (format "op://Private/%s/%s" item field)))
+                   (out (string-trim (buffer-string))))
+              (unless (eq status 0)
+                (error "op read failed for %s/%s: %s" item field out))
+              (puthash key out cache)))))))
 
 ;; Declare backend/model vars — set by config-local.el
 (defvar my/ai-commentary-backend nil
@@ -365,6 +373,7 @@ has open. The old_str must match exactly (including whitespace/indentation)."
          (file (or (buffer-file-name) (buffer-name)))
          (line (line-number-at-pos))
          (lang (replace-regexp-in-string "-mode$" "" (symbol-name major-mode)))
+         (dir default-directory)
          (prompt (format "Implement the stub at line %d of %s (buffer: %s).
 Use ReadBuffer to check surrounding code for context if needed.
 Use EditBuffer to make changes.
@@ -377,7 +386,7 @@ Use EditBuffer to make changes.
                      nil nil nil)))
     ;; Set up agent environment in the buffer
     (with-current-buffer buf
-      (setq default-directory default-directory)
+      (setq default-directory dir)
       (gptel-agent-update)
       (gptel--apply-preset
        'gptel-agent

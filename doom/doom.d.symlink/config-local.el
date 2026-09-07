@@ -281,17 +281,19 @@ Skips if last update was less than `my/ics-update-interval' seconds ago."
 
 (after! gptel
   (let ((models (or (my/fetch-anthropic-models)
-                    '(claude-opus-4-6
-                      claude-sonnet-4-6
+                    '(claude-opus-5
+                      claude-sonnet-5
                       claude-haiku-4-5-20251001))))
     (setq gptel-backend
           (gptel-make-anthropic "Claude"
             :stream t
             :models models
-            :request-params '(:thinking (:type "enabled" :budget_tokens 16384)
+            ;; Adaptive thinking: the model sets its own depth. budget_tokens is
+            ;; rejected with a 400 on Claude 5 models.
+            :request-params '(:thinking (:type "adaptive")
                               :max_tokens 32768)
             :key (lambda () (my/op-read "anthropic-gptel" "credential")))))
-  (setq gptel-model 'claude-sonnet-4-6)
+  (setq gptel-model 'claude-sonnet-5)
 
   (setq my/ai-commentary-backend
         (gptel-make-anthropic "Claude-fast"
@@ -304,7 +306,7 @@ Skips if last update was less than `my/ics-update-interval' seconds ago."
   (setq my/ai-complete-backend
         (gptel-make-anthropic "Claude-complete"
           :stream t
-          :models '(claude-sonnet-4-6)
+          :models '(claude-sonnet-5)
           :request-params '(:max_tokens 8192)
           :key (lambda () (my/op-read "anthropic-gptel" "credential"))))
-  (setq my/ai-complete-model 'claude-sonnet-4-6))
+  (setq my/ai-complete-model 'claude-sonnet-5))
