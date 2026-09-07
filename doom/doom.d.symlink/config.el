@@ -31,6 +31,22 @@
 ;; OSC-52 clipboard via clipetty (enabled by tty +osc module).
 ;; Allows yank to reach system clipboard through tmux/ssh.
 
+;; Never lose an edit to a missed C-x C-s. Two halves:
+;;  1. Pull in changes made on disk (iCloud sync from the phone, Flat Habits).
+;;     auto-revert leaves *modified* buffers alone, so it can't clobber unsaved
+;;     local edits — it only refreshes buffers that are already in sync.
+(global-auto-revert-mode 1)
+(setq auto-revert-verbose nil)
+
+;;  2. Auto-save visited files after a short idle, but ONLY org buffers, so
+;;     captures and journal/notes edits hit disk without a manual save, while
+;;     code files keep normal save-when-you-mean-it behavior (no surprise
+;;     format-on-save). Marking a TODO/habit done already saves via
+;;     `org-after-todo-state-change-hook' -> `org-save-all-org-buffers'.
+(setq auto-save-visited-interval 10)
+(setq auto-save-visited-predicate (lambda () (derived-mode-p 'org-mode)))
+(auto-save-visited-mode 1)
+
 ;;;; Evil
 
 (setq-default evil-escape-key-sequence "jk")
@@ -61,6 +77,10 @@
 
   (setq org-log-done 'time)  ; Timestamp when TODOs completed
 
+  ;; Float all-day / untimed items to the TOP of each agenda day (calendar
+  ;; convention) instead of letting them land mid-list among timed events.
+  (setq org-sort-agenda-notime-is-late nil)
+
   ;; org-capture-templates set in config-local.el
 
   (setq org-agenda-custom-commands
@@ -68,10 +88,43 @@
            ((agenda "" ((org-agenda-span 3)
                         (org-agenda-show-all-dates nil)
                         (org-agenda-time-grid nil)
-                        (org-agenda-start-day nil)))
+                        (org-agenda-start-day nil)
+                        (org-agenda-overriding-header "")))
             (alltodo "" ((org-agenda-overriding-header "Unscheduled Tasks")
                          (org-agenda-todo-ignore-scheduled 'all)
                          (org-agenda-todo-ignore-deadlines 'all)))))))
+
+  ;; Archive DONE tasks into a datetree, filed by CLOSED date.
+  ;; org-archive-all-done only understands project trees, not datetrees, so we
+  ;; archive the first matching entry repeatedly — archiving mutates the buffer
+  ;; and invalidates any markers org-map-entries handed out, which is why this
+  ;; re-scans from point-min each pass instead of collecting a list up front.
+  ;; Archive location comes from the "#+ARCHIVE:" line in tasks.org.
+  (defun my/org-archive-done-tasks (&optional level)
+    "Archive every top-level DONE entry in the current buffer.
+With LEVEL (prefix arg), archive DONE entries at that outline level instead
+of 1. Entries nested under other headings (e.g. the Chores subtree) are left
+alone at the default level, so repeaters are never swept up."
+    (interactive "P")
+    (let ((want (if (numberp level) level 1))
+          (n 0))
+      (catch 'done
+        (while t
+          (goto-char (point-min))
+          (let (found)
+            (org-map-entries
+             (lambda ()
+               (unless found
+                 (when (and (= (org-current-level) want)
+                            (string= (org-get-todo-state) "DONE"))
+                   (setq found (point-marker)))))
+             nil 'file)
+            (unless found (throw 'done nil))
+            (goto-char found)
+            (org-archive-subtree)
+            (setq n (1+ n)))))
+      (org-save-all-org-buffers)
+      (message "Archived %d entr%s" n (if (= n 1) "y" "ies"))))
 
   (add-hook 'org-after-todo-state-change-hook #'org-save-all-org-buffers)
 
@@ -81,11 +134,17 @@
 (use-package! org-habit
   :after org
   :config
+  ;; Stays loaded because org-window-habit (config-local.el) requires and wraps
+  ;; it. The graph width now lives with org-window-habit; only the settings it
+  ;; still honours remain here (show on every agenda day, graph column).
   (add-to-list 'org-modules 'org-habit)
   (setq org-habit-show-habits-only-for-today nil
-        org-habit-following-days 3
-        org-habit-preceding-days 14
-        org-habit-graph-column 50))
+        org-habit-graph-column 70))
+
+;; org-cliplink: fetch a URL's page title to build [[url][title]] links
+;; (used by the bookmark capture helper, and via M-x org-cliplink).
+(use-package! org-cliplink
+  :after org)
 
 ;; Make j/k/0/$ move by *visual* (wrapped) lines, but only in Org buffers.
 (after! evil
@@ -515,6 +574,17 @@ File: %s (buffer: %s)
    :desc "ask about code" :nv "q" #'my/ai-ask
    :desc "implement"   :nv "i" #'my/ai-implement
    :desc "complete"    :nv "c" #'my/ai-complete))
+
+;; (add-to-list 'treesit-language-source-alist
+;;              '(typst "https://github.com/uben0/tree-sitter-typst"))
+
+;;;; TidalCycles
+;; tidal.el (from the upstream TidalCycles repo) defines `tidal-boot-script-path`
+;; as a plain defvar, so per-project .dir-locals.el that point it at a local
+;; BootTidal.hs trigger the "unsafe local variables" prompt on every find-file.
+;; In a -nw frame that prompt can be swallowed by evil before the buffer settles,
+;; making emacs look hung at startup. Mark it safe (any string path is fine).
+(put 'tidal-boot-script-path 'safe-local-variable #'stringp)
 
 ;;;; Local Overrides (work/home profiles)
 ;; Load config-local.el — org paths, capture templates, LLM backends/models.

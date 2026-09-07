@@ -23,7 +23,7 @@ from icalendar import Calendar
 def fetch_ics(url: str) -> bytes:
     # Fastmail ICS feeds can be behind long URLs; set a UA to be polite.
     req = Request(url, headers={"User-Agent": "fastmail-ics-to-diary/1.0"})
-    with urlopen(req, timeout=30) as resp:
+    with urlopen(req, timeout=5) as resp:
         return resp.read()
 
 
