@@ -12,3 +12,5 @@ emacs/emacs.d.symlink/places
 emacs/emacs.d.symlink/savehist
 emacs/emacs.d.symlink/straight/
 emacs/emacs.d.symlink/transient/
+doom/doom.d.symlink/custom.el
+doom/doom.d.symlink/diary
