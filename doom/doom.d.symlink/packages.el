@@ -58,6 +58,8 @@
 
 (package! base16-theme)
 (package! org-books)
+(package! org-cliplink)
+(package! org-window-habit)
 
 (package! gptel)
 ;; (package! gptel-quick
@@ -81,4 +83,21 @@
 
 (package! tmux-pane)
 
+;; these all seem broken
+;; (package! tlaplus-mode
+;;   :recipe (:host github :repo "Karljoad/tlaplus-mode"
+;;                  :files ("lisp/*.el")))
+;; (package! tla-tools)
+
+(package! lean4-mode
+  :recipe (:host github
+           :repo "leanprover-community/lean4-mode"
+           :files ("*.el" "data")))
+
 ;; (package! org-caldav)
+
+(package! typst-ts-mode
+  :recipe (:host codeberg
+           :repo "meow_king/typst-ts-mode"))
+
+(package! tidal)
