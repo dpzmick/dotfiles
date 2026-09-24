@@ -80,6 +80,20 @@
 
   (setq org-log-done 'time)  ; Timestamp when TODOs completed
 
+  ;; Record the old date whenever a task is pushed to a later day, so slippage
+  ;; is analysable after the fact ("Rescheduled from \"[old]\" on [new]").
+  ;; Lands in the LOGBOOK drawer (org-log-into-drawer, config-local.el) and
+  ;; travels with the entry into the archive datetree.
+  ;;
+  ;; Invisible to the agenda by design: org-agenda-get-progress only matches
+  ;; CLOSED, CLOCK and `- State "..."' lines, so these never show up even in
+  ;; log mode. 'time rather than 'note -- no prompt on the way past.
+  ;;
+  ;; Only `org-schedule' logs this (C-c C-s, and org-agenda-schedule). Bumping
+  ;; a date with S-<right> goes through org-timestamp-change and records
+  ;; nothing; neither does rescheduling from beorg.
+  (setq org-log-reschedule 'time)
+
   ;; Float all-day / untimed items to the TOP of each agenda day (calendar
   ;; convention) instead of letting them land mid-list among timed events.
   (setq org-sort-agenda-notime-is-late nil)
