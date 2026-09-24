@@ -39,12 +39,16 @@ Falls back to a manually typed title if the title fetch fails."
           ("T" "Task (immediate, from shell)" entry (file "~/dropbox/org/tasks.org")
            "* TODO %i\nSCHEDULED: %T\n:PROPERTIES:\n:CREATED: %U\n:END:"
            :prepend t :immediate-finish t)
-          ;; What I worked on -> journal.org datetree (under today's date). Tagged
-          ;; :log: to mark these notes apart from the DONE records that also land
-          ;; in the datetree, so the reflector can pull just the worked-on notes.
-          ("j" "Journal — worked on" entry
+          ;; Journal entry -> journal.org datetree, under today's date.
+          ;;
+          ;; Files immediately and jumps to the entry rather than opening a
+          ;; capture buffer: the headline comes from the prompt, and anything
+          ;; longer gets written in journal.org itself. Backing out is C-g at the
+          ;; prompt (nothing is filed) or deleting the subtree you land on.
+          ("j" "Journal" entry
            (file+olp+datetree "~/dropbox/org/journal.org")
-           "* %?  :log:\n:PROPERTIES:\n:CREATED: %U\n:END:")
+           "* %^{Journal}\n:PROPERTIES:\n:CREATED: %U\n:END:"
+           :immediate-finish t :jump-to-captured t)
           ("b" "Bookmark" entry (file "~/dropbox/org/bookmarks.org")
            "* %(my/bookmark-link)\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
            :prepend t)
