@@ -98,6 +98,15 @@
   ;; convention) instead of letting them land mid-list among timed events.
   (setq org-sort-agenda-notime-is-late nil)
 
+  ;; Drop finished items from the agenda entirely. Without this, org skips a
+  ;; done item on every day EXCEPT its own scheduled date, so something finished
+  ;; today lingers while the same task finished last week silently stops
+  ;; carrying forward. KILL counts as done (it is past the "|" in Doom's
+  ;; org-todo-keywords), so cancelled tasks go too. Use log mode (`l' in the
+  ;; agenda) to see what was actually closed on a day.
+  (setq org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t)
+
   ;; org-capture-templates set in config-local.el
 
   (setq org-agenda-custom-commands
