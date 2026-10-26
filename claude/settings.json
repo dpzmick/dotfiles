@@ -24,7 +24,7 @@
     ],
     "Notification": [
       {
-        "matcher": "permission_prompt",
+        "matcher": "permission_prompt|elicitation_dialog|idle_prompt",
         "hooks": [
           {
             "type": "command",
@@ -52,5 +52,6 @@
     "command": "\"$HOME/dotfiles/claude/statusline.sh\""
   },
   "effortLevel": "medium",
-  "theme": "dark"
+  "theme": "dark",
+  "preferredNotifChannel": "notifications_disabled"
 }
