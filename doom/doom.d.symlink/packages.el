@@ -101,3 +101,5 @@
            :repo "meow_king/typst-ts-mode"))
 
 (package! tidal)
+
+(package! gnugo) ; GNU ELPA; needs the gnugo binary (brew install gnugo)

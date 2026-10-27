@@ -618,6 +618,10 @@ File: %s (buffer: %s)
 ;; making emacs look hung at startup. Mark it safe (any string path is fine).
 (put 'tidal-boot-script-path 'safe-local-variable #'stringp)
 
+;;;; GnuGo
+;; M-x gnugo plays Go against the gnugo binary (brew install gnugo).
+(use-package! gnugo :commands gnugo)
+
 ;;;; Local Overrides (work/home profiles)
 ;; Load config-local.el — org paths, capture templates, LLM backends/models.
 ;; At work, replace this file with work-specific settings (litellm, etc).
