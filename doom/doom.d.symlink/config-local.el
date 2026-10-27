@@ -325,3 +325,14 @@ Skips if last update was less than `my/ics-update-interval' seconds ago."
           :request-params '(:max_tokens 8192)
           :key (lambda () (my/op-read "anthropic-gptel" "credential"))))
   (setq my/ai-complete-model 'claude-sonnet-5))
+
+;;;; aq: explorations run by agents on git branches (~/programming/agent-acquirium/cli)
+(use-package! aq
+  :load-path "~/programming/agent-acquirium/cli"
+  :commands (aq-home aq-explore aq-log))
+
+;; SPC e: aq's home for this repo. Everything else is in there: RET on anything opens a menu of
+;; what you can do with it, e explores, ? shows the keys.
+(map! :leader :desc "explore (aq)" "e" #'aq-home)
+
+(set-popup-rule! "^\\*aq \\(show\\|diff\\|log\\|follow\\)" :side 'right :size 0.5 :select t :quit t)
