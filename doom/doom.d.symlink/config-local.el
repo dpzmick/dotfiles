@@ -30,6 +30,17 @@ Falls back to a manually typed title if the title fetch fails."
                       (read-string "Title (fetch failed): "))))
       (org-link-make-string url title)))
 
+  (defun my/journal-goto-body ()
+    "Jump to the just-filed journal entry, on a blank line below its drawer."
+    (unless org-note-abort
+      (org-capture-goto-last-stored)
+      (org-fold-show-entry)
+      (org-end-of-meta-data t)
+      (unless (bolp) (insert "\n"))
+      (unless (eolp) (open-line 1))
+      (when (bound-and-true-p evil-local-mode)
+        (evil-insert-state))))
+
   (setq org-capture-templates
         '(("t" "Task" entry (file "~/dropbox/org/tasks.org")
            "* TODO %?\nSCHEDULED: %T\n:PROPERTIES:\n:CREATED: %U\n:END:"
@@ -48,7 +59,7 @@ Falls back to a manually typed title if the title fetch fails."
           ("j" "Journal" entry
            (file+olp+datetree "~/dropbox/org/journal.org")
            "* %^{Journal}\n:PROPERTIES:\n:CREATED: %U\n:END:"
-           :immediate-finish t :jump-to-captured t)
+           :immediate-finish t :after-finalize my/journal-goto-body)
           ("b" "Bookmark" entry (file "~/dropbox/org/bookmarks.org")
            "* %(my/bookmark-link)\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
            :prepend t)
