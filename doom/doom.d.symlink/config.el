@@ -620,7 +620,12 @@ File: %s (buffer: %s)
 
 ;;;; GnuGo
 ;; M-x gnugo plays Go against the gnugo binary (brew install gnugo).
-(use-package! gnugo :commands gnugo)
+(use-package! gnugo
+  :commands gnugo
+  :config
+  ;; The board has its own single-key map (RET/SPC move, ? lists the rest);
+  ;; evil's normal state would shadow it.
+  (set-evil-initial-state! 'gnugo-board-mode 'emacs))
 
 ;;;; Local Overrides (work/home profiles)
 ;; Load config-local.el — org paths, capture templates, LLM backends/models.
