@@ -627,6 +627,10 @@ File: %s (buffer: %s)
   ;; evil's normal state would shadow it.
   (set-evil-initial-state! 'gnugo-board-mode 'emacs))
 
+;;;; Tetris
+;; Arrow keys/SPC/n/p/q live in tetris-mode-map; evil's normal state shadows them.
+(set-evil-initial-state! 'tetris-mode 'emacs)
+
 ;;;; Local Overrides (work/home profiles)
 ;; Load config-local.el — org paths, capture templates, LLM backends/models.
 ;; At work, replace this file with work-specific settings (litellm, etc).
