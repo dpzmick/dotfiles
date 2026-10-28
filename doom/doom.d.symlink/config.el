@@ -627,9 +627,14 @@ File: %s (buffer: %s)
   ;; evil's normal state would shadow it.
   (set-evil-initial-state! 'gnugo-board-mode 'emacs))
 
-;;;; Tetris
-;; Arrow keys/SPC/n/p/q live in tetris-mode-map; evil's normal state shadows them.
-(set-evil-initial-state! 'tetris-mode 'emacs)
+;;;; Built-in games (M-x tetris, snake, ...)
+;; Their single-key maps are shadowed by evil's normal state. evil-collection
+;; resets tetris/snake to normal on load, so use mode hooks instead of
+;; `set-evil-initial-state!'. pong has no mode, just a local map.
+(dolist (hook '(tetris-mode-hook snake-mode-hook 5x5-mode-hook blackbox-mode-hook
+                bubbles-mode-hook gomoku-mode-hook mpuz-mode-hook solitaire-mode-hook))
+  (add-hook hook #'evil-emacs-state))
+(advice-add 'pong-init-buffer :after #'evil-emacs-state)
 
 ;;;; Local Overrides (work/home profiles)
 ;; Load config-local.el — org paths, capture templates, LLM backends/models.
