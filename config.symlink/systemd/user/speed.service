@@ -1,0 +1,9 @@
+[Unit]
+Description=network speed check
+
+[Service]
+Type=oneshot
+ExecStart=/home/dpzmick/speed.sh
+
+[Install]
+WantedBy=timers.target

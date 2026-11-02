@@ -11,3 +11,11 @@ emacs/emacs.d.symlink/places
 emacs/emacs.d.symlink/savehist
 emacs/emacs.d.symlink/straight/
 emacs/emacs.d.symlink/transient/
+
+# systemd user units that embed healthchecks ping urls
+config.symlink/systemd/user/mbsync.service
+config.symlink/systemd/user/nas_backup.service
+config.symlink/systemd/user/r2e.service
+config.symlink/systemd/user/vdirsync.service
+# per-machine enablement symlinks
+config.symlink/systemd/user/*.wants/

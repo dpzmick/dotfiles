@@ -1,0 +1,12 @@
+[Unit]
+Description=Awair Exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/dpzmick/awair-exporter-linux-x86
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

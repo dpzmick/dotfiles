@@ -1,0 +1,9 @@
+[Unit]
+Description=EBC inserter
+
+[Service]
+Type=oneshot
+ExecStart=/home/dpzmick/ebc-data/run-ingest.sh
+
+[Install]
+WantedBy=timers.target

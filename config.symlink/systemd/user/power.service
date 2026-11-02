@@ -1,0 +1,9 @@
+[Unit]
+Description=Check power usage
+
+[Service]
+Type=oneshot
+ExecStart=/home/dpzmick/power.sh
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=run r2e hourly
+
+[Timer]
+OnCalendar=00/2:0:0
+Persistent=true
+
+[Install]
+WantedBy=timers.target
