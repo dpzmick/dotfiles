@@ -25,3 +25,14 @@ config.symlink/omada/openapi.env
 config.symlink/omada/.token
 config.symlink/omada/backup/
 config.symlink/grafana/
+
+# app state that lands in ~/.config on worf (not dotfiles)
+config.symlink/TvB/
+config.symlink/borg/
+config.symlink/btop/
+config.symlink/cni/
+config.symlink/ghb/
+config.symlink/go/
+config.symlink/incus/
+config.symlink/libvirt/
+config.symlink/rss2email.cfg
