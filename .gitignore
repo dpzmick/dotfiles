@@ -19,3 +19,9 @@ config.symlink/systemd/user/r2e.service
 config.symlink/systemd/user/vdirsync.service
 # per-machine enablement symlinks
 config.symlink/systemd/user/*.wants/
+
+# local credentials and backups under ~/.config (config.symlink is ~/.config on worf)
+config.symlink/omada/openapi.env
+config.symlink/omada/.token
+config.symlink/omada/backup/
+config.symlink/grafana/

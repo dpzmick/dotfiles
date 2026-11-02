@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+# Scrape TP-Link Omada controller OpenAPI and print Influx line protocol for
+# telegraf inputs.exec: per-AP status/uplink/radio utilization/retry counters and
+# per-client signal/link rates. Credentials: /etc/telegraf/omada.env (or env):
+#   OMADA_URL, OMADA_ID, OMADA_CLIENT_ID, OMADA_CLIENT_SECRET[, OMADA_SITE]
+import json, os, re, ssl, sys, urllib.request
+
+ENV_FILE = "/etc/telegraf/omada.env"
+
+
+def load_env():
+    env = {}
+    try:
+        with open(ENV_FILE) as f:
+            for line in f:
+                k, sep, v = line.strip().partition("=")
+                if sep and not k.startswith("#"):
+                    env[k] = v
+    except OSError:
+        pass
+    env.update({k: v for k, v in os.environ.items() if k.startswith("OMADA_")})
+    return env
+
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE  # controller uses a self-signed cert
+
+
+def req(method, url, body=None, token=None):
+    headers = {"Content-Type": "application/json"}
+    if token:
+        headers["Authorization"] = f"AccessToken={token}"
+    r = urllib.request.Request(url, data=json.dumps(body).encode() if body is not None else None,
+                               headers=headers, method=method)
+    with urllib.request.urlopen(r, context=ctx, timeout=10) as resp:
+        d = json.loads(resp.read().decode())
+    if d.get("errorCode", 0) != 0:
+        raise RuntimeError(f"{url}: {d.get('errorCode')} {d.get('msg')}")
+    return d.get("result")
+
+
+def tag(v):
+    return re.sub(r"[ ,=]", "_", str(v)) or "unknown"
+
+
+def num(v):
+    m = re.match(r"\s*(\d+(?:\.\d+)?)", str(v))
+    return float(m.group(1)) if m else None
+
+
+def uptime_seconds(s):
+    total = 0
+    for n, unit in re.findall(r"(\d+)\s*(day\(s\)|h|m|s)", s or ""):
+        total += int(n) * {"day(s)": 86400, "h": 3600, "m": 60, "s": 1}[unit]
+    return total
+
+
+def main():
+    env = load_env()
+    try:
+        base, cid = env["OMADA_URL"], env["OMADA_ID"]
+        tok = req("POST", f"{base}/openapi/authorize/token?grant_type=client_credentials",
+                  {"omadacId": cid, "client_id": env["OMADA_CLIENT_ID"],
+                   "client_secret": env["OMADA_CLIENT_SECRET"]})["accessToken"]
+        api = f"{base}/openapi/v1/{cid}"
+        sites = req("GET", f"{api}/sites?page=1&pageSize=100", token=tok)["data"]
+        want = env.get("OMADA_SITE")
+        site = next(s for s in sites if not want or want in (s["name"], s["siteId"]))
+        S = f"{api}/sites/{site['siteId']}"
+        devices = req("GET", f"{S}/devices?page=1&pageSize=100", token=tok)["data"]
+        clients = req("GET", f"{S}/clients?page=1&pageSize=1000", token=tok)["data"]
+    except Exception as e:
+        print("omada_status up=0i")
+        print(f"omada scrape failed: {e}", file=sys.stderr)
+        return 1
+
+    out = ["omada_status up=1i"]
+    wireless = [c for c in clients if c.get("wireless")]
+    for d in devices:
+        if d.get("type") != "ap":
+            continue
+        mac, name = d["mac"], tag(d["name"])
+        t = f"ap={name},mac={mac},model={tag(d.get('model', ''))},firmware={tag(d.get('firmwareVersion', '').split(' ')[0])}"
+        mine = [c for c in wireless if c.get("apMac") == mac]
+        fields = [f"online={int(d.get('status') == 1)}i", f"uptime_s={uptime_seconds(d.get('uptime'))}i",
+                  f"cpu_pct={d.get('cpuUtil') or 0}i", f"mem_pct={d.get('memUtil') or 0}i",
+                  f"clients={len(mine)}i",
+                  f"clients_2g={sum(c.get('radioId') == 0 for c in mine)}i",
+                  f"clients_5g={sum(c.get('radioId') == 1 for c in mine)}i",
+                  f"clients_weak={sum((c.get('rssi') or 0) < -75 for c in mine)}i"]
+        try:
+            up = req("GET", f"{S}/aps/{mac}/wired-uplink", token=tok)["wiredUplink"]
+            fields += [f"uplink_mbps={int(num(up.get('rate')) or 0)}i",
+                       f"uplink_up_drops={int(up.get('upDropPackets') or 0)}i",
+                       f"uplink_down_drops={int(up.get('downDropPackets') or 0)}i",
+                       f"uplink_errors={int(up.get('upErrorsPackets') or 0) + int(up.get('downErrorsPackets') or 0)}i"]
+        except Exception as e:
+            print(f"{name} uplink: {e}", file=sys.stderr)
+        out.append(f"omada_ap,{t} {','.join(fields)}")
+
+        try:
+            radios = req("GET", f"{S}/aps/{mac}/radios", token=tok)
+        except Exception as e:
+            print(f"{name} radios: {e}", file=sys.stderr)
+            continue
+        for band, wp, tr in (("2g", "wp2g", "radioTraffic2g"), ("5g", "wp5g", "radioTraffic5g")):
+            w, r = radios.get(wp) or {}, radios.get(tr) or {}
+            if not w:
+                continue
+            f = [f"channel={int(num(w.get('actualChannel')) or 0)}i",
+                 f"width_mhz={int(num(w.get('bandWidth')) or 0)}i",
+                 f"max_rate_mbps={int(w.get('maxTxRate') or 0)}i", f"tx_power_dbm={int(w.get('txPower') or 0)}i",
+                 f"tx_util_pct={int(w.get('txUtil') or 0)}i", f"rx_util_pct={int(w.get('rxUtil') or 0)}i",
+                 f"interference_pct={int(w.get('interUtil') or 0)}i"]
+            for k in ("rxPkts", "txPkts", "rx", "tx", "rxRetryPkts", "txRetryPkts", "rxDropPkts", "txDropPkts",
+                      "rxErrPkts", "txErrPkts"):
+                if k in r:
+                    f.append(f"{re.sub(r'([A-Z])', lambda m: '_' + m.group(1).lower(), k)}={int(r[k])}i")
+            out.append(f"omada_radio,ap={name},band={band} {','.join(f)}")
+
+    for c in wireless:
+        name = tag(c.get("name") or c.get("hostName") or c["mac"])
+        band = {0: "2g", 1: "5g", 2: "5g2", 3: "6g"}.get(c.get("radioId"), "unknown")
+        t = f"client={name},mac={c['mac']},ap={tag(c.get('apName', ''))},band={band},ssid={tag(c.get('ssid', ''))}"
+        f = [f"rssi_dbm={int(c.get('rssi') or 0)}i", f"snr_db={int(c.get('snr') or 0)}i",
+             f"rx_rate_mbps={(c.get('rxRate') or 0) / 1000}", f"tx_rate_mbps={(c.get('txRate') or 0) / 1000}",
+             f"channel={int(c.get('channel') or 0)}i",
+             f"down_bps={int((c.get('activity') or 0) * 8)}i", f"up_bps={int((c.get('uploadActivity') or 0) * 8)}i",
+             f"traffic_down_bytes={int(c.get('trafficDown') or 0)}i", f"traffic_up_bytes={int(c.get('trafficUp') or 0)}i"]
+        out.append(f"omada_client,{t} {','.join(f)}")
+
+    print("\n".join(out))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+# Scrape a Motorola MB8611 cable modem's HNAP API and print Influx line protocol
+# for telegraf inputs.exec. Credentials: MODEM_USER / MODEM_PASS from
+# /etc/telegraf/modem.env (or the environment).
+#
+# Login (from the modem's own Login.js / SOAPAction.js):
+#   PrivateKey    = HMAC_MD5(PublicKey + password, Challenge)
+#   LoginPassword = HMAC_MD5(PrivateKey, Challenge)
+#   every request: HNAP_AUTH = HMAC_MD5(PrivateKey, ts + '"<ns><Action>"') + " " + ts
+import datetime, hashlib, hmac, http.cookiejar, json, os, re, ssl, sys, time, urllib.request
+
+HOST = "https://192.168.100.1"
+NS = "http://purenetworks.com/HNAP1/"
+ENV_FILE = "/etc/telegraf/modem.env"
+EVENT_WINDOW_S = 300
+
+
+def load_env():
+    env = {}
+    try:
+        with open(ENV_FILE) as f:
+            for line in f:
+                k, sep, v = line.strip().partition("=")
+                if sep and not k.startswith("#"):
+                    env[k] = v
+    except OSError:
+        pass
+    return os.environ.get("MODEM_USER", env.get("MODEM_USER", "admin")), \
+        os.environ.get("MODEM_PASS", env.get("MODEM_PASS"))
+
+
+def md5hmac(key, msg):
+    return hmac.new(key.encode(), msg.encode(), hashlib.md5).hexdigest().upper()
+
+
+class Modem:
+    def __init__(self):
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE  # modem uses a self-signed cert
+        self.opener = urllib.request.build_opener(
+            urllib.request.HTTPSHandler(context=ctx),
+            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+        self.key = "withoutloginkey"
+        self.cookie = None
+
+    def call(self, action, body):
+        uri = f'"{NS}{action}"'
+        ts = str(int(time.time() * 1000) % 2000000000000)
+        headers = {"Content-Type": "application/json; charset=utf-8", "SOAPAction": uri,
+                   "HNAP_AUTH": f"{md5hmac(self.key, ts + uri)} {ts}"}
+        if self.cookie:
+            headers["Cookie"] = f"uid={self.cookie}; PrivateKey={self.key}"
+        req = urllib.request.Request(f"{HOST}/HNAP1/", data=json.dumps(body).encode(), headers=headers)
+        with self.opener.open(req, timeout=10) as r:
+            return json.loads(r.read().decode())
+
+    def login(self, user, password):
+        req = {"Action": "request", "Username": user, "LoginPassword": "", "Captcha": "",
+               "PrivateLogin": "LoginPassword"}
+        r = self.call("Login", {"Login": req})["LoginResponse"]
+        self.key = md5hmac(r["PublicKey"] + password, r["Challenge"])
+        self.cookie = r["Cookie"]
+        req.update(Action="login", LoginPassword=md5hmac(self.key, r["Challenge"]))
+        result = self.call("Login", {"Login": req})["LoginResponse"]["LoginResult"]
+        if result not in ("OK", "OK_CHANGED"):
+            raise RuntimeError(f"login failed: {result}")
+
+    def get(self, *actions):
+        r = self.call("GetMultipleHNAPs", {"GetMultipleHNAPs": {a: "" for a in actions}})
+        return r["GetMultipleHNAPsResponse"]
+
+
+def rows(s):
+    return [[c.strip() for c in row.split("^")] for row in s.split("|+|") if row.strip()]
+
+
+def tag(v):
+    return re.sub(r"[ ,=]", "_", v)
+
+
+def uptime_seconds(s):
+    m = re.match(r"(\d+) days (\d+)h:(\d+)m:(\d+)s", s.strip())
+    if not m:
+        return None
+    d, h, mi, se = map(int, m.groups())
+    return ((d * 24 + h) * 60 + mi) * 60 + se
+
+
+def event_kind(desc):
+    if "T3 time" in desc:
+        return "t3_timeout"
+    if "T4 time" in desc:
+        return "t4_timeout"
+    if "MDD message timeout" in desc:
+        return "mdd_timeout"
+    if "Commanded Power" in desc:
+        return "power_warning"
+    if "No Ranging Response" in desc:
+        return "no_ranging_response"
+    m = re.search(r"Event Type Code: (\d+)", desc)
+    if m:
+        # DOCSIS 3.1 CM-STATUS codes: 16 = DS OFDM profile failure, 24 = profile recovery
+        return {"16": "ofdm_profile_failure", "24": "ofdm_profile_recovery"}.get(m.group(1), f"cm_status_{m.group(1)}")
+    return "other"
+
+
+def main():
+    user, password = load_env()
+    if not password:
+        print("modem_status up=0i")
+        print("MODEM_PASS not set", file=sys.stderr)
+        return 1
+    m = Modem()
+    try:
+        m.login(user, password)
+        d = m.get("GetMotoStatusDownstreamChannelInfo", "GetMotoStatusUpstreamChannelInfo",
+                  "GetMotoStatusConnectionInfo", "GetMotoStatusStartupSequence", "GetMotoStatusLog")
+    except Exception as e:
+        print("modem_status up=0i")
+        print(f"modem scrape failed: {e}", file=sys.stderr)
+        return 1
+
+    out = []
+    for c in rows(d["GetMotoStatusDownstreamChannelInfoResponse"]["MotoConnDownstreamChannel"]):
+        _, lock, mod, cid, freq, pwr, snr, corr, uncorr = c[:9]
+        fields = [f"locked={int(lock == 'Locked')}i", f"power_dbmv={float(pwr)}",
+                  f"corrected={int(corr)}i", f"uncorrected={int(uncorr)}i"]
+        if float(snr) > 0:  # OFDM PLC row reports SNR 0
+            fields.append(f"snr_db={float(snr)}")
+        out.append(f"modem_downstream,channel_id={cid},freq_mhz={freq},modulation={tag(mod)} {','.join(fields)}")
+
+    for c in rows(d["GetMotoStatusUpstreamChannelInfoResponse"]["MotoConnUpstreamChannel"]):
+        _, lock, typ, cid, symrate, freq, pwr = c[:7]
+        out.append(f"modem_upstream,channel_id={cid},type={tag(typ)} locked={int(lock == 'Locked')}i,"
+                   f"freq_mhz={float(freq)},power_dbmv={float(pwr)},symbol_rate_ksym={int(symrate)}i")
+
+    conn = d["GetMotoStatusConnectionInfoResponse"]
+    boot = d["GetMotoStatusStartupSequenceResponse"]
+    status = ["up=1i", f"network_access={int(conn.get('MotoConnNetworkAccess') == 'Allowed')}i",
+              f"boot_ok={int(boot.get('MotoConnBootStatus') == 'OK')}i",
+              f"connectivity_ok={int(boot.get('MotoConnConnectivityStatus') == 'OK')}i"]
+    up = uptime_seconds(conn.get("MotoConnSystemUpTime", ""))
+    if up is not None:
+        status.append(f"uptime_s={up}i")
+    out.append("modem_status " + ",".join(status))
+
+    # event log timestamps are UTC; report counts per kind seen in the last EVENT_WINDOW_S
+    now = datetime.datetime.now(datetime.timezone.utc)
+    counts = {k: 0 for k in ("t3_timeout", "t4_timeout", "mdd_timeout", "power_warning",
+                             "ofdm_profile_failure", "ofdm_profile_recovery", "other")}
+    for entry in d["GetMotoStatusLogResponse"]["MotoStatusLogList"].split("}-{"):
+        parts = [p.strip() for p in entry.split("^")]
+        if len(parts) < 4:
+            continue
+        try:
+            ts = datetime.datetime.strptime(f"{parts[1]} {parts[0]}", "%a %b %d %Y %H:%M:%S").replace(
+                tzinfo=datetime.timezone.utc)
+        except ValueError:
+            continue
+        if (now - ts).total_seconds() <= EVENT_WINDOW_S:
+            k = event_kind(parts[3])
+            counts[k] = counts.get(k, 0) + 1
+    for k, n in counts.items():
+        out.append(f"modem_events,kind={k} last_5m={n}i")
+
+    print("\n".join(out))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
